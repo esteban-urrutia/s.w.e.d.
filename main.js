@@ -23,6 +23,10 @@ telegramController.sendMessage(telegram, 's.w.e.t. Started', 'text')
   });
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
+/* - - - - - - - - - - PRIMARY TASKS - - - - - - - */
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - */
+
 /* - - - - - - - - - - SECONDARY TASKS - - - - - - */
 // scheduler that rotate all logs
 cron.schedule(env.logs_frequencyOfRotation, async () => {

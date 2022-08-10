@@ -106,48 +106,6 @@ async function sendMessage(telegram, message, type) {
   return null;
 }
 
-async function restartConnection(telegram) {
-  if (env.telegram_enabled === 'true') {
-    return new Promise(async (resolve, reject) => {
-      await telegram.stopPolling()
-        .then(async () => {
-          await telegram.closeWebHook()
-            .then(async () => {
-              await telegram.startPolling({ restart: true })
-                .then(async () => {
-                  await listenMessages(telegram)
-                    .then((response) => {
-                      resolve(response);
-                    });
-                })
-                .catch((error) => {
-                  reject({
-                    data: null,
-                    errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                    from: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook -> telegram.startPolling',
-                  });
-                });
-            })
-            .catch(async (error) => {
-              reject({
-                data: null,
-                errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                from: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook',
-              });
-            });
-        })
-        .catch(async (error) => {
-          reject({
-            data: null,
-            errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-            from: 'telegramController -> restartConnection -> telegram.stopPolling()',
-          });
-        });
-    });
-  }
-  return null;
-}
-
 async function helpMenu(telegram) {
   const menu = `Commands for  ${env.telegram_botOf_thisRpi}\n\n\n`
                 + '1)   /profitStatus\n\n'
@@ -341,6 +299,48 @@ async function listenMessages(telegram, semaphoreMiniDB) {
       telegram.on('error', errorHandler);
 
       resolve(telegram);
+    });
+  }
+  return null;
+}
+
+async function restartConnection(telegram) {
+  if (env.telegram_enabled === 'true') {
+    return new Promise(async (resolve, reject) => {
+      await telegram.stopPolling()
+        .then(async () => {
+          await telegram.closeWebHook()
+            .then(async () => {
+              await telegram.startPolling({ restart: true })
+                .then(async () => {
+                  await listenMessages(telegram)
+                    .then((response) => {
+                      resolve(response);
+                    });
+                })
+                .catch((error) => {
+                  reject({
+                    data: null,
+                    errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
+                    from: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook -> telegram.startPolling',
+                  });
+                });
+            })
+            .catch(async (error) => {
+              reject({
+                data: null,
+                errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
+                from: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook',
+              });
+            });
+        })
+        .catch(async (error) => {
+          reject({
+            data: null,
+            errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
+            from: 'telegramController -> restartConnection -> telegram.stopPolling()',
+          });
+        });
     });
   }
   return null;
