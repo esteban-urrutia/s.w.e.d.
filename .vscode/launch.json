@@ -7,10 +7,6 @@
           "request": "launch",
           "program": "/Users/esteban.urrutia/Documents/s.w.e.d./general/s.w.e.d./main.js",
           "args": [],
-          // Working directory
-          "cwd": "${workspaceFolder}",
-          "console": "integratedTerminal",
-          "runtimeExecutable": "node"
       }
   ]
 }

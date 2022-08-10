@@ -10,7 +10,6 @@ const device = require('systeminformation');
 const { exec } = require('child_process');
 const compress = require('compressing');
 const fs = require('fs');
-const utils = require('../utils/utils');
 const miniDBController = require('./miniDBcontroller');
 const log = require('./logController').getInstance();
 
@@ -261,7 +260,7 @@ async function rebootRpi(telegram) {
 
 async function getLogs(telegram) {
   return new Promise(async (resolve, reject) => {
-    const compressedLogs = `log_${utils.getDateStamp().replace(/[:]/g, '.')}.zip`;
+    const compressedLogs = 'logs.zip';
 
     await compress.zip.compressDir('logs', compressedLogs)
       .then(async () => {
