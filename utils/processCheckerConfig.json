@@ -1,0 +1,8 @@
+[
+  {
+    "name": "main",
+    "path": "/home/pi/binanceWiggleBot/main.js",
+    "start":"pm2 start /home/pi/binanceWiggleBot/main.js",
+    "restart":"pm2 restart main.js"
+  }
+]

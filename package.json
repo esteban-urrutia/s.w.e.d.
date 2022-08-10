@@ -1,0 +1,21 @@
+{
+  "name": "binancewigglebot",
+  "version": "1.0.0",
+  "author": "El Esse",
+  "dependencies": {
+    "compressing": "^1.6.2",
+    "dotenv": "^16.0.1",
+    "fast-folder-size": "^1.7.0",
+    "node-cron": "^3.0.1",
+    "node-telegram-bot-api": "^0.58.0",
+    "objects-to-csv": "^1.3.6",
+    "ping": "^0.4.2",
+    "semaphore": "^1.1.0",
+    "systeminformation": "^5.12.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
