@@ -1,7 +1,7 @@
-const ECofGrowSpace = {
+const ECofNutrientSolution = {
   get: (() => ''), // i2c obtener
 };
 
 module.exports = {
-  ECofGrowSpace,
+  ECofNutrientSolution,
 };

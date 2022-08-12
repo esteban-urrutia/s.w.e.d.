@@ -1,13 +1,14 @@
-const recirculationOfNutrientSolution = {
+const waterPumpForRecirculationOfNutrientSolution = {
   on: (() => ''), // i2c encender
-  off: (() => ''), // i2c encender
+  off: (() => ''), // i2c apagar
 };
 
-const sampleOfNutrientSolution = {
-  get: (() => ''), // i2c encender
+const waterPumpForSampleOfNutrientSolution = {
+  on: (() => ''), // i2c encender
+  off: (() => ''), // i2c apagar
 };
 
 module.exports = {
-  recirculationOfNutrientSolution,
-  sampleOfNutrientSolution,
+  waterPumpForRecirculationOfNutrientSolution,
+  waterPumpForSampleOfNutrientSolution,
 };

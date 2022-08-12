@@ -1,7 +1,7 @@
-const temperatureOfGrowSpace = {
+const temperatureAndHumidityOfGrowSpace = {
   get: (() => ''), // i2c obtener
 };
 
 module.exports = {
-  temperatureOfGrowSpace,
+  temperatureAndHumidityOfGrowSpace,
 };

@@ -1,14 +1,14 @@
-const irrigationOfFrontGarden = {
+const waterValveForIrrigationOfFrontGarden = {
   on: (() => ''), // i2c encender
-  off: (() => ''), // i2c encender
+  off: (() => ''), // i2c apagar
 };
 
-const irrigationOfBackGarden = {
+const waterValveForIrrigationOfBackGarden = {
   on: (() => ''), // i2c encender
-  off: (() => ''), // i2c encender
+  off: (() => ''), // i2c apagar
 };
 
 module.exports = {
-  irrigationOfFrontGarden,
-  irrigationOfBackGarden,
+  waterValveForIrrigationOfFrontGarden,
+  waterValveForIrrigationOfBackGarden,
 };
