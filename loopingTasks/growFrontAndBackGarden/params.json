@@ -1,6 +1,6 @@
 {
     "irrigationMethod": "fixedTime",
-    "irrigationStatus": null,
+    "irrigationStatus": false,
     "irrigationEvents": [
       {
         "startTime": "08:00",

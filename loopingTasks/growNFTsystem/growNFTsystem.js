@@ -3,14 +3,13 @@
 /* eslint-disable radix */
 /* eslint-disable no-plusplus */
 const {
-  waterValveForIrrigationOfFrontGarden,
-  waterValveForIrrigationOfBackGarden,
-} = require('../../peripherals/waterValves');
+  waterPumpForNFTsystem,
+} = require('../../peripherals/waterPumps');
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 
 async function manageIrrigation(miniDB, semaphoreMiniDB) {
-  for (let i = 0; i < miniDB.growFrontAndBackGarden.irrigationEvents.length; i++) {
-    const { startTime, finishTime } = miniDB.growFrontAndBackGarden.irrigationEvents[i];
+  for (let i = 0; i < miniDB.growNFTsystem.irrigationEvents.length; i++) {
+    const { startTime, finishTime } = miniDB.growNFTsystem.irrigationEvents[i];
 
     const now = new Date();
     const startHour = parseInt(startTime.substring(0, 2));
@@ -20,17 +19,14 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 
     if (startHour === now.getHours()
     && startMinute === now.getMinutes()) {
-      await waterValveForIrrigationOfFrontGarden.on();
-      await waterValveForIrrigationOfBackGarden.on();
-      miniDB.growFrontAndBackGarden.irrigationStatus = true;
+      await waterPumpForNFTsystem.on();
+      miniDB.growNFTsystem.irrigationStatus = true;
       await saveMiniDB(semaphoreMiniDB, miniDB);
     // eslint-disable-next-line no-trailing-spaces, brace-style
-    }
+    } 
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
-      await waterValveForIrrigationOfFrontGarden.off();
-      await waterValveForIrrigationOfBackGarden.off();
-      miniDB.growFrontAndBackGarden.irrigationStatus = false;
+      await waterPumpForNFTsystem.off();
       await saveMiniDB(semaphoreMiniDB, miniDB);
     }
   }
@@ -38,14 +34,14 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 }
 
 /**
- * growFrontAndBackGarden: - irrigates front and back garden
+ * growNFTsystem: - irrigates NFT system
  */
-async function growFrontAndBackGarden(miniDB, semaphoreMiniDB, telegramController) {
+async function growNFTsystem(miniDB, semaphoreMiniDB, telegramController) {
   await manageIrrigation(miniDB, semaphoreMiniDB);
 
   return true;
 }
 
 module.exports = {
-  growFrontAndBackGarden,
+  growNFTsystem,
 };

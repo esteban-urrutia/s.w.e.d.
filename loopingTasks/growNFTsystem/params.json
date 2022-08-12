@@ -1,0 +1,102 @@
+{
+    "irrigationMethod": "fixedTime",
+    "irrigationStatus": false,
+    "irrigationEvents": [
+      {
+        "startTime": "08:00",
+        "finishTime": "08:15"
+      },
+      {
+        "startTime": "08:30",
+        "finishTime": "08:45"
+      },
+      {
+        "startTime": "09:00",
+        "finishTime": "09:15"
+      },
+      {
+        "startTime": "09:30",
+        "finishTime": "09:45"
+      },
+      {
+        "startTime": "10:00",
+        "finishTime": "10:15"
+      },
+      {
+        "startTime": "10:30",
+        "finishTime": "10:45"
+      },
+      {
+        "startTime": "11:00",
+        "finishTime": "11:15"
+      },
+      {
+        "startTime": "11:30",
+        "finishTime": "11:45"
+      },
+      {
+        "startTime": "12:00",
+        "finishTime": "12:15"
+      },
+      {
+        "startTime": "12:30",
+        "finishTime": "12:45"
+      },
+      {
+        "startTime": "13:00",
+        "finishTime": "13:15"
+      },
+      {
+        "startTime": "13:30",
+        "finishTime": "13:45"
+      },
+      {
+        "startTime": "14:00",
+        "finishTime": "14:15"
+      },
+      {
+        "startTime": "14:30",
+        "finishTime": "14:45"
+      },
+      {
+        "startTime": "15:00",
+        "finishTime": "15:15"
+      },
+      {
+        "startTime": "15:30",
+        "finishTime": "15:45"
+      },
+      {
+        "startTime": "16:00",
+        "finishTime": "16:15"
+      },
+      {
+        "startTime": "16:30",
+        "finishTime": "16:45"
+      },
+      {
+        "startTime": "17:00",
+        "finishTime": "17:15"
+      },
+      {
+        "startTime": "17:30",
+        "finishTime": "17:45"
+      },
+      {
+        "startTime": "18:00",
+        "finishTime": "18:15"
+      },
+      {
+        "startTime": "18:30",
+        "finishTime": "18:45"
+      },
+      {
+        "startTime": "19:00",
+        "finishTime": "19:15"
+      },
+      {
+        "startTime": "19:30",
+        "finishTime": "19:45"
+      }
+    ]
+  }

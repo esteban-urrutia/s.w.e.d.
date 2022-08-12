@@ -4,9 +4,11 @@
 /* eslint-disable no-async-promise-executor */
 const fs = require('fs');
 const growFrontAndBackGarden = require('../loopingTasks/growFrontAndBackGarden/params.json');
+const growNFTsystem = require('../loopingTasks/growNFTsystem/params.json');
 
 const miniDBtemplate = {
   growFrontAndBackGarden,
+  growNFTsystem,
 };
 
 async function readMiniDB(semaphoreMiniDB) {

@@ -8,7 +8,7 @@ const waterPumpForSampleOfNutrientSolution = {
   off: (async () => ''), // i2c apagar
 };
 
-const waterPumpForLettuceNftSystem = {
+const waterPumpForNFTsystem = {
   on: (async () => ''), // i2c encender
   off: (async () => ''), // i2c apagar
 };
@@ -16,5 +16,5 @@ const waterPumpForLettuceNftSystem = {
 module.exports = {
   waterPumpForRecirculationOfNutrientSolution,
   waterPumpForSampleOfNutrientSolution,
-  waterPumpForLettuceNftSystem,
+  waterPumpForNFTsystem,
 };

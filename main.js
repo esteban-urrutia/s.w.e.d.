@@ -7,6 +7,7 @@ const log = require('./controllers/logController').getInstance();
 const secondaryTasksController = require('./controllers/secondaryTasksController');
 const telegramController = require('./controllers/telegramController');
 const { growFrontAndBackGarden } = require('./loopingTasks/growFrontAndBackGarden/growFrontAndBackGarden');
+const { growNFTsystem } = require('./loopingTasks/growNFTsystem/growNFTsystem');
 const utils = require('./utils/utils');
 const { readMiniDB } = require('./controllers/miniDBcontroller');
 
@@ -36,8 +37,25 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
         });
     });
 
-  /* growMarancandinhuana(); */
-/* growNftSystem(); */
+  // manage grow of Marancandinhuana
+  await growMarancandinhuana(miniDB, semaphoreMiniDB, telegramController)
+    .catch(async (error) => {
+      await log.save(error, 'error');
+      telegramController.sendMessage(telegram, error, 'text')
+        .catch(async (telegramError) => {
+          await log.save(telegramError, 'error');
+        });
+    });
+
+  // manage grow of NFT System
+  await growNFTsystem(miniDB, semaphoreMiniDB, telegramController)
+    .catch(async (error) => {
+      await log.save(error, 'error');
+      telegramController.sendMessage(telegram, error, 'text')
+        .catch(async (telegramError) => {
+          await log.save(telegramError, 'error');
+        });
+    });
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
