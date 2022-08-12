@@ -1,11 +1,11 @@
 const waterValveForIrrigationOfFrontGarden = {
-  on: (() => ''), // i2c encender
-  off: (() => ''), // i2c apagar
+  on: (async () => 'a'), // i2c encender
+  off: (async () => 'b'), // i2c apagar
 };
 
 const waterValveForIrrigationOfBackGarden = {
-  on: (() => ''), // i2c encender
-  off: (() => ''), // i2c apagar
+  on: (async () => 'c'), // i2c encender
+  off: (async () => 'd'), // i2c apagar
 };
 
 module.exports = {

@@ -19,7 +19,10 @@ async function sendMessage(telegram, message, type) {
       // send message according to specified type
       switch (type) {
         case 'text':
-          await telegram.sendMessage(env.telegram_chatId, message)
+          await telegram.sendMessage(
+            env.telegram_chatId,
+            (typeof message === 'object' ? JSON.stringify(message) : message),
+          )
             .then(() => {
               resolve(true);
             })

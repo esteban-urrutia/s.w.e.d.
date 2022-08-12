@@ -1,0 +1,22 @@
+{
+    "irrigationMethod": "fixedTime",
+    "irrigationStatus": null,
+    "irrigationEvents": [
+      {
+        "startTime": "08:00",
+        "finishTime": "08:05"
+      },
+      {
+        "startTime": "12:00",
+        "finishTime": "12:05"
+      },
+      {
+        "startTime": "16:00",
+        "finishTime": "16:05"
+      },
+      {
+        "startTime": "20:00",
+        "finishTime": "20:05"
+      }
+    ]
+  }

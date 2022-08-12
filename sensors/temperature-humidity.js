@@ -1,5 +1,5 @@
 const temperatureAndHumidityOfGrowSpace = {
-  get: (() => ''), // i2c obtener
+  get: (async () => ''), // i2c obtener
 };
 
 module.exports = {

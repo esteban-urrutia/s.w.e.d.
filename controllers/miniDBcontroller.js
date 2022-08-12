@@ -3,28 +3,23 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable no-async-promise-executor */
 const fs = require('fs');
+const growFrontAndBackGarden = require('../loopingTasks/growFrontAndBackGarden/params.json');
 
-async function read(semaphoreMiniDB) {
+const miniDBtemplate = {
+  growFrontAndBackGarden,
+};
+
+async function readMiniDB(semaphoreMiniDB) {
   return new Promise(async (resolve, reject) => {
     semaphoreMiniDB.take(async () => {
       let miniDB;
       try {
         // if miniDB.json exist
-        if (fs.existsSync('miniDB.json')) {
+        if (await fs.existsSync('miniDB.json')) {
           // read and parse miniDB.json
           miniDB = await JSON.parse((await fs.readFileSync('miniDB.json')).toString());
         } else {
-          miniDB = {
-            tradeEnabled: false,
-            selectedSymbol: null,
-            activeSymbol: null,
-            lastOrder: null,
-            ipBanUntil: null,
-            timestampStartRoundOfTrade: null,
-            sellOrdersFilled: 0,
-            buyOrdersFilled: 0,
-            priceOfLastBuyOrder: -1,
-          };
+          miniDB = miniDBtemplate;
           await fs.writeFileSync('miniDB.json', JSON.stringify(miniDB, null, 4));
         }
 
@@ -42,7 +37,7 @@ async function read(semaphoreMiniDB) {
   });
 }
 
-async function save(semaphoreMiniDB, miniDB) {
+async function saveMiniDB(semaphoreMiniDB, miniDB) {
   return new Promise(async (resolve, reject) => {
     semaphoreMiniDB.take(async () => {
       try {
@@ -62,28 +57,7 @@ async function save(semaphoreMiniDB, miniDB) {
   });
 }
 
-async function update(semaphoreMiniDB, param, data) {
-  return new Promise(async (resolve, reject) => {
-    await read(semaphoreMiniDB)
-      .then(async (miniDB) => {
-        miniDB[param] = data;
-
-        await save(semaphoreMiniDB, miniDB)
-          .then(async () => {
-            resolve(true);
-          })
-          .catch(async (error) => {
-            reject(error);
-          });
-      })
-      .catch(async (error) => {
-        reject(error);
-      });
-  });
-}
-
 module.exports = {
-  read,
-  save,
-  update,
+  readMiniDB,
+  saveMiniDB,
 };

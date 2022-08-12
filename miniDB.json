@@ -1,0 +1,24 @@
+{
+    "growFrontAndBackGarden": {
+        "irrigationMethod": "fixedTime",
+        "irrigationStatus": false,
+        "irrigationEvents": [
+            {
+                "startTime": "23:44",
+                "finishTime": "03:05"
+            },
+            {
+                "startTime": "12:00",
+                "finishTime": "12:05"
+            },
+            {
+                "startTime": "16:00",
+                "finishTime": "16:05"
+            },
+            {
+                "startTime": "20:00",
+                "finishTime": "20:05"
+            }
+        ]
+    }
+}

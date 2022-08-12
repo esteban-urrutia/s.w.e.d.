@@ -1,5 +1,5 @@
 {
-  "name": "binancewigglebot",
+  "name": "s.w.e.d.",
   "version": "1.0.0",
   "author": "El Esse",
   "dependencies": {
@@ -8,6 +8,7 @@
     "fast-folder-size": "^1.7.0",
     "node-cron": "^3.0.1",
     "node-telegram-bot-api": "^0.58.0",
+    "nodemon": "^2.0.19",
     "objects-to-csv": "^1.3.6",
     "ping": "^0.4.2",
     "semaphore": "^1.1.0",
