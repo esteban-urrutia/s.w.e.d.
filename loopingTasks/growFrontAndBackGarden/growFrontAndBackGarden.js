@@ -8,6 +8,9 @@ const {
 } = require('../../peripherals/waterValves');
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 
+/**
+ * growFrontAndBackGarden: - irrigates front and back garden
+ */
 async function growFrontAndBackGarden(miniDB, semaphoreMiniDB, telegramController) {
   for (let i = 0; i < miniDB.growFrontAndBackGarden.irrigationEvents.length; i++) {
     const { startTime, finishTime } = miniDB.growFrontAndBackGarden.irrigationEvents[i];
@@ -18,13 +21,15 @@ async function growFrontAndBackGarden(miniDB, semaphoreMiniDB, telegramControlle
     const finishHour = parseInt(finishTime.substring(0, 2));
     const finishMinute = parseInt(finishTime.substring(3, 5));
 
-    if (startHour === now.getHours() && startMinute === now.getMinutes()) {
+    if (startHour === now.getHours()
+    && startMinute === now.getMinutes()) {
       await waterValveForIrrigationOfFrontGarden.on();
       await waterValveForIrrigationOfBackGarden.on();
       miniDB.growFrontAndBackGarden.irrigationStatus = true;
       await saveMiniDB(semaphoreMiniDB, miniDB);
     }
-    if (finishHour === now.getHours() && finishMinute === now.getMinutes()) {
+    else if (finishHour === now.getHours()
+    && finishMinute === now.getMinutes()) {
       await waterValveForIrrigationOfFrontGarden.off();
       await waterValveForIrrigationOfBackGarden.off();
       miniDB.growFrontAndBackGarden.irrigationStatus = false;
