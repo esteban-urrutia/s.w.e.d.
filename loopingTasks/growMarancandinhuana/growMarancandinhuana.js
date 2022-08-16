@@ -51,8 +51,18 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
  *     pruning
  *     defoliation
  */
-async function growMarancandinhuana(miniDB, semaphoreMiniDB, telegram) {
-  await manageIrrigation(miniDB, semaphoreMiniDB);
+async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
+  await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB);
+  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB);
+  await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionEc(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionPh(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB);
+  await manageTrainingTopping(miniDB, semaphoreMiniDB);
+  await manageTrainingPruning(miniDB, semaphoreMiniDB);
+  await manageTrainingDefoliation(miniDB, semaphoreMiniDB);
 
   return true;
 }

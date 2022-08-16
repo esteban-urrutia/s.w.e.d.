@@ -97,17 +97,17 @@
     "topping": {
       "status": false,
       "date": "",
-      "daysOfBlocking": 15
+      "daysOfBlock": 15
     },
     "pruning": {
       "status": false,
       "date": "",
-      "daysOfBlocking": 15
+      "daysOfBlock": 15
     },
     "defoliation": {
       "status": false,
       "date": "",
-      "daysOfBlocking": 15
+      "daysOfBlock": 15
     }
   }
 }

@@ -28,8 +28,8 @@ telegramController.sendMessage(telegram, 's.w.e.t. Started', 'text')
 cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
-  // manage grow of front and back garden
-  await growFrontAndBackGarden(miniDB, semaphoreMiniDB, telegram)
+  // manage grow of Marancandinhuana
+  await growMarancandinhuana(miniDB, semaphoreMiniDB)
     .catch(async (error) => {
       await log.save(error, 'error');
       telegramController.sendMessage(telegram, error, 'text')
@@ -38,8 +38,8 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
         });
     });
 
-  // manage grow of Marancandinhuana
-  await growMarancandinhuana(miniDB, semaphoreMiniDB, telegram)
+  // manage grow of front and back garden
+  await growFrontAndBackGarden(miniDB, semaphoreMiniDB)
     .catch(async (error) => {
       await log.save(error, 'error');
       telegramController.sendMessage(telegram, error, 'text')
@@ -49,7 +49,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
     });
 
   // manage grow of NFT System
-  await growNFTsystem(miniDB, semaphoreMiniDB, telegram)
+  await growNFTsystem(miniDB, semaphoreMiniDB)
     .catch(async (error) => {
       await log.save(error, 'error');
       telegramController.sendMessage(telegram, error, 'text')
