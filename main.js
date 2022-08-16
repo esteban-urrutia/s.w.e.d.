@@ -6,10 +6,11 @@ const TelegramBot = require('node-telegram-bot-api');
 const log = require('./controllers/logController').getInstance();
 const secondaryTasksController = require('./controllers/secondaryTasksController');
 const telegramController = require('./controllers/telegramController');
-const { growFrontAndBackGarden } = require('./loopingTasks/growFrontAndBackGarden/growFrontAndBackGarden');
-const { growNFTsystem } = require('./loopingTasks/growNFTsystem/growNFTsystem');
 const utils = require('./utils/utils');
 const { readMiniDB } = require('./controllers/miniDBcontroller');
+const { growFrontAndBackGarden } = require('./loopingTasks/growFrontAndBackGarden/growFrontAndBackGarden');
+const { growNFTsystem } = require('./loopingTasks/growNFTsystem/growNFTsystem');
+const { growMarancandinhuana } = require('./loopingTasks/growMarancandinhuana/growMarancandinhuana');
 
 let telegram = (env.telegram_enabled === 'true') ? new TelegramBot(env.telegram_token, { polling: true }) : null;
 // eslint-disable-next-line no-unused-vars
@@ -28,7 +29,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   // manage grow of front and back garden
-  await growFrontAndBackGarden(miniDB, semaphoreMiniDB, telegramController)
+  await growFrontAndBackGarden(miniDB, semaphoreMiniDB, telegram)
     .catch(async (error) => {
       await log.save(error, 'error');
       telegramController.sendMessage(telegram, error, 'text')
@@ -38,7 +39,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
     });
 
   // manage grow of Marancandinhuana
-  await growMarancandinhuana(miniDB, semaphoreMiniDB, telegramController)
+  await growMarancandinhuana(miniDB, semaphoreMiniDB, telegram)
     .catch(async (error) => {
       await log.save(error, 'error');
       telegramController.sendMessage(telegram, error, 'text')
@@ -48,7 +49,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
     });
 
   // manage grow of NFT System
-  await growNFTsystem(miniDB, semaphoreMiniDB, telegramController)
+  await growNFTsystem(miniDB, semaphoreMiniDB, telegram)
     .catch(async (error) => {
       await log.save(error, 'error');
       telegramController.sendMessage(telegram, error, 'text')

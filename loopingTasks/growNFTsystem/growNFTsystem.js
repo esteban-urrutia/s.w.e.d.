@@ -27,6 +27,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
       await waterPumpForNFTsystem.off();
+      miniDB.growNFTsystem.irrigationStatus = false;
       await saveMiniDB(semaphoreMiniDB, miniDB);
     }
   }
@@ -36,7 +37,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 /**
  * growNFTsystem: - irrigates NFT system
  */
-async function growNFTsystem(miniDB, semaphoreMiniDB, telegramController) {
+async function growNFTsystem(miniDB, semaphoreMiniDB, telegram) {
   await manageIrrigation(miniDB, semaphoreMiniDB);
 
   return true;

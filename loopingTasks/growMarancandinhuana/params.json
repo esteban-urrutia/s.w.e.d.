@@ -1,93 +1,113 @@
 {
-  "airTemperature": {
-    "day":{
-      "maximum": 40,
-      "minimum": 0
+  "growSpace": {
+    "temperature": {
+      "method": "fixedMinMax",
+      "status": false,
+      "values": {
+        "day":{
+          "max": 45,
+          "min": 0
+        },
+        "night":{
+          "max": 45,
+          "min": 0
+        }
+      }
     },
-    "night":{
-      "maximum": 40,
-      "minimum": 0
+    "humidity": {
+      "method": "fixedMinMax",
+      "status": false,
+      "values": {
+        "day":{
+          "max": 100,
+          "min": 0
+        },
+        "night":{
+          "max": 100,
+          "min": 0
+        }
+      }
+    },
+    "airRenew": {
+      "method": "fixedEvents",
+      "status": false,
+      "events": [
+        {
+          "start": "08:00",
+          "finish": "08:05"
+        },
+        {
+          "start": "12:00",
+          "finish": "12:05"
+        }
+      ]
     }
   },
-  "airHumidity": {
-    "day":{
-      "maximum": 100,
-      "minimum": 10
+  "nutritiveSolution": {
+    "temperature": {
+      "method": "fixedMinMax",
+      "status": false,
+      "values": {
+        "day":{
+          "max": 45,
+          "min": 0
+        },
+        "night":{
+          "max": 45,
+          "min": 0
+        }
+      }
     },
-    "night":{
-      "maximum": 90,
-      "minimum": 9
+    "recirculation": {
+      "method": "fixedEvents",
+      "status": false,
+      "events": [
+        {
+          "start": "08:00",
+          "finish": "08:05"
+        },
+        {
+          "start": "12:00",
+          "finish": "12:05"
+        }
+      ]
+    },
+    "ec": {
+      
+    },
+    "ph": {
+      
+    },
+    "oxygenation": {
+      "method": "fixedEvents",
+      "status": false,
+      "events": [
+        {
+          "start": "08:00",
+          "finish": "08:05"
+        },
+        {
+          "start": "12:00",
+          "finish": "12:05"
+        }
+      ]
     }
   },
-  "airRenewOnGrowSpace": {
-    "airRenewMethod": "fixedTime",
-    "airRenewStatus": false,
-    "airRenewEvents": [
-      {
-        "startTime": "08:00",
-        "finishTime": "08:05"
-      },
-      {
-        "startTime": "12:00",
-        "finishTime": "12:05"
-      }
-    ]
-  },
-  "nutSolTemperature": {
-    "day":{
-      "maximum": 40,
-      "minimum": 0
+  "training": {
+    "topping": {
+      "status": false,
+      "date": "",
+      "daysOfBlocking": 15
     },
-    "night":{
-      "maximum": 40,
-      "minimum": 0
+    "pruning": {
+      "status": false,
+      "date": "",
+      "daysOfBlocking": 15
+    },
+    "defoliation": {
+      "status": false,
+      "date": "",
+      "daysOfBlocking": 15
     }
-  },
-  "nutSolRecirculation": {
-    "recirculationMethod": "fixedTime",
-    "recirculationStatus": false,
-    "recirculationEvents": [
-      {
-        "startTime": "08:00",
-        "finishTime": "08:05"
-      },
-      {
-        "startTime": "12:00",
-        "finishTime": "12:05"
-      }
-    ]
-  },
-  "nutSolEC": {
-    
-  },
-  "nutSolPH": {
-    
-  },
-  "nutSolOxygenation": {
-    "oxygenationMethod": "fixedTime",
-    "oxygenationStatus": false,
-    "oxygenationEvents": [
-      {
-        "startTime": "08:00",
-        "finishTime": "08:05"
-      },
-      {
-        "startTime": "12:00",
-        "finishTime": "12:05"
-      }
-    ]
-  },
-  "topping": {
-    "toppingStatus": false,
-    "date": ""
-  },
-  "pruning": {
-    "pruningStatus": false,
-    "date": ""
-  },
-  "defoliation": {
-    "defoliationStatus": false,
-    "date": ""
   }
 }
-

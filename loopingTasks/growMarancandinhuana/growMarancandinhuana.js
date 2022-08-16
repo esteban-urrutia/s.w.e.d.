@@ -27,6 +27,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
       await waterPumpForNFTsystem.off();
+      miniDB.growNFTsystem.irrigationStatus = false;
       await saveMiniDB(semaphoreMiniDB, miniDB);
     }
   }
@@ -35,21 +36,22 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 
 /**
  * growMarancandinhuana -> Manages:
- * 1.-  air temperature
- * 2.-  air humidity
- * 3.-  air renew on grow space
- * 4.-  nutSol temperature
- * 5.-  nutSol recirculation
- * 6.-  nutSol EC
- * 7.-  nutSol PH
- * 8.-  nutSol oxygenation
- * 9.-  topping
- * 10.- pruning
- * 11.- defoliation
- * 
- * 
+ *   growSpace
+ *     temperature
+ *     humidity
+ *     airRenew
+ *   nutritiveSolution
+ *     temperature
+ *     recirculation
+ *     ec
+ *     pc
+ *     oxygenation
+ *   training
+ *     topping
+ *     pruning
+ *     defoliation
  */
-async function growMarancandinhuana(miniDB, semaphoreMiniDB, telegramController) {
+async function growMarancandinhuana(miniDB, semaphoreMiniDB, telegram) {
   await manageIrrigation(miniDB, semaphoreMiniDB);
 
   return true;

@@ -10,7 +10,6 @@ const device = require('systeminformation');
 const { exec } = require('child_process');
 const compress = require('compressing');
 const fs = require('fs');
-const miniDBController = require('./miniDBcontroller');
 const log = require('./logController').getInstance();
 
 async function sendMessage(telegram, message, type) {
