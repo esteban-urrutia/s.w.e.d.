@@ -1,8 +1,9 @@
+/* eslint-disable radix */
 /**
  * sleep: sleep a certain amount of seconds
  * @returns {promise<void>}
  */
-function sleep(seconds) {
+async function sleep(seconds) {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }
@@ -47,9 +48,39 @@ function getDateStampFromTimeStamp(timeStamp) {
   );
 }
 
+/**
+ * getPhotoperiod: get photoperiod based on start/finish time
+ * @returns {String}
+ */
+function getPhotoperiod(miniDB) {
+  const now = new Date();
+
+  const startTime = new Date();
+  const startHour = parseInt(miniDB.training.photoperiod.start.substring(0, 2));
+  const startMinute = parseInt(miniDB.training.photoperiod.start.substring(3, 5));
+  startTime.setHours(startHour);
+  startTime.setMinutes(startMinute);
+  startTime.setSeconds(0);
+  startTime.setMilliseconds(0);
+
+  const finishTime = new Date();
+  const finishHour = parseInt(miniDB.training.photoperiod.finish.substring(0, 2));
+  const finishMinute = parseInt(miniDB.training.photoperiod.finish.substring(3, 5));
+  finishTime.setHours(finishHour);
+  finishTime.setMinutes(finishMinute);
+  finishTime.setSeconds(0);
+  finishTime.setMilliseconds(0);
+
+  if (startTime.getTime() <= now.getTime()
+  && now.getTime() <= finishTime.getTime()) {
+    return 'day';
+  }
+  return 'night';
+}
 module.exports = {
   sleep,
   getDateStamp,
   getTimeStamp,
   getDateStampFromTimeStamp,
+  getPhotoperiod,
 };

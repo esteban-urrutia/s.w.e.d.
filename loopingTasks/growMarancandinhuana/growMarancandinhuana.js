@@ -1,44 +1,110 @@
+/* eslint-disable brace-style */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable radix */
 /* eslint-disable no-plusplus */
+const { airHeaterOfGrowSpace } = require('../../peripherals/airHeaters');
+const { airPumpOfNutrientSolution } = require('../../peripherals/airPumps');
+const { humidifierOfGrowSpace } = require('../../peripherals/humidifiers');
+const { ventilatorOfGrowSpace } = require('../../peripherals/ventilators');
+const { waterHeaterOfNutrientSolution } = require('../../peripherals/waterHeaters');
 const {
-  waterPumpForNFTsystem,
+  waterPumpForSampleOfNutrientSolution,
+  waterPumpForRecirculationOfNutrientSolution,
 } = require('../../peripherals/waterPumps');
+const { ECofNutrientSolution } = require('../../sensors/ec');
+const { PHofNutrientSolution } = require('../../sensors/ph');
+const { temperatureAndHumidityOfGrowSpace } = require('../../sensors/temperature-humidity');
+const { temperatureOfNutrientSolution } = require('../../sensors/waterTemperature');
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
+const { getPhotoperiod } = require('../../utils/utils');
 
-async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB) {
-  return true;
-}
+async function manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB) {
+  const { temperature, humidity } = await temperatureAndHumidityOfGrowSpace.get();
 
-/*
-async function manageIrrigation(miniDB, semaphoreMiniDB) {
-  for (let i = 0; i < miniDB.growNFTsystem.events.length; i++) {
-    const { start, finish } = miniDB.growNFTsystem.events[i];
+  const photoperiod = getPhotoperiod();
 
-    const now = new Date();
-    const startHour = parseInt(start.substring(0, 2));
-    const startMinute = parseInt(start.substring(3, 5));
-    const finishHour = parseInt(finish.substring(0, 2));
-    const finishMinute = parseInt(finish.substring(3, 5));
 
-    if (startHour === now.getHours()
-    && startMinute === now.getMinutes()) {
-      await waterPumpForNFTsystem.on();
-      miniDB.growNFTsystem.status = true;
-      await saveMiniDB(semaphoreMiniDB, miniDB);
-    // eslint-disable-next-line no-trailing-spaces, brace-style
-    }
-    else if (finishHour === now.getHours()
-    && finishMinute === now.getMinutes()) {
-      await waterPumpForNFTsystem.off();
-      miniDB.growNFTsystem.status = false;
-      await saveMiniDB(semaphoreMiniDB, miniDB);
-    }
+
+
+
+
+
+  if (
+    temperature
+    <= miniDB
+      .growMarancandinhuanaParams
+      .growSpace
+      .temperature
+      .values[photoperiod]
+      .min
+  ) {
+    await airHeaterOfGrowSpace.on();
+    miniDB.growMarancandinhuanaParams.growSpace.temperature.status = 'heating';
+    await saveMiniDB(semaphoreMiniDB, miniDB);
+  // eslint-disable-next-line brace-style
   }
+  else if (
+    temperature
+    >= miniDB
+      .growMarancandinhuanaParams
+      .growSpace
+      .temperature
+      .values[photoperiod]
+      .max
+  ) {
+    await airHeaterOfGrowSpace.off();
+    miniDB.growMarancandinhuanaParams.growSpace.temperature.status = 'cooling';
+    await saveMiniDB(semaphoreMiniDB, miniDB);
+  }
+  else {
+    await airHeaterOfGrowSpace.off();
+    miniDB.growMarancandinhuanaParams.growSpace.temperature.status = null;
+    await saveMiniDB(semaphoreMiniDB, miniDB);
+  }
+
+
+
+
+
+
+  if (
+    humidity
+    <= miniDB
+      .growMarancandinhuanaParams
+      .growSpace
+      .humidity
+      .values[photoperiod]
+      .min
+  ) {
+    await humidifierOfGrowSpace.on();
+    miniDB.growMarancandinhuanaParams.growSpace.humidity.status = 'humidifying';
+    await saveMiniDB(semaphoreMiniDB, miniDB);
+  }
+  else if (
+    humidity
+    >= miniDB
+      .growMarancandinhuanaParams
+      .growSpace
+      .humidity
+      .values[photoperiod]
+      .max
+  ) {
+    await humidifierOfGrowSpace.off();
+    miniDB.growMarancandinhuanaParams.growSpace.humidity.status = null;
+    await saveMiniDB(semaphoreMiniDB, miniDB);
+  }
+  else {
+    await humidifierOfGrowSpace.off();
+    miniDB.growMarancandinhuanaParams.growSpace.humidity.status = null;
+    await saveMiniDB(semaphoreMiniDB, miniDB);
+  }
+
+
+
+  
   return true;
 }
-*/
 
 /**
  * growMarancandinhuana -> Manages:
@@ -58,7 +124,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
  *     defoliation
  */
 async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
-  await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB);
+  await manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB);
   await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB);
   await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
   await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB);

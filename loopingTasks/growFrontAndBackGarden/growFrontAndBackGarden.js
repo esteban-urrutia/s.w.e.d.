@@ -9,8 +9,8 @@ const {
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 
 async function manageIrrigation(miniDB, semaphoreMiniDB) {
-  for (let i = 0; i < miniDB.growFrontAndBackGarden.events.length; i++) {
-    const { start, finish } = miniDB.growFrontAndBackGarden.events[i];
+  for (let i = 0; i < miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events.length; i++) {
+    const { start, finish } = miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events[i];
 
     const now = new Date();
     const startHour = parseInt(start.substring(0, 2));
@@ -22,7 +22,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
     && startMinute === now.getMinutes()) {
       await waterValveForIrrigationOfFrontGarden.on();
       await waterValveForIrrigationOfBackGarden.on();
-      miniDB.growFrontAndBackGarden.status = true;
+      miniDB.growFrontAndBackGardenParamsParams.growSpace.irrigation.status = 'irrigating';
       await saveMiniDB(semaphoreMiniDB, miniDB);
     // eslint-disable-next-line no-trailing-spaces, brace-style
     }
@@ -30,7 +30,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
     && finishMinute === now.getMinutes()) {
       await waterValveForIrrigationOfFrontGarden.off();
       await waterValveForIrrigationOfBackGarden.off();
-      miniDB.growFrontAndBackGarden.status = false;
+      miniDB.growFrontAndBackGardenParamsParams.growSpace.irrigation.status = null;
       await saveMiniDB(semaphoreMiniDB, miniDB);
     }
   }

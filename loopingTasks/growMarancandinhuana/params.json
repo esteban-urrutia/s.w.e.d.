@@ -118,6 +118,10 @@
       "status": null,
       "date": null,
       "daysOfBlock": 15
+    },
+    "photoperiod": {
+      "start": "08:00",
+      "finish": "20:00"
     }
   }
 }
