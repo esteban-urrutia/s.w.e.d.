@@ -1,3 +1,4 @@
+/* eslint-disable brace-style */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable radix */
@@ -21,16 +22,15 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
     && startMinute === now.getMinutes()) {
       await waterPumpForNFTsystem.on();
       miniDB.growNFTsystemParams.growSpace.irrigation.status = 'irrigating';
-      await saveMiniDB(semaphoreMiniDB, miniDB);
-    // eslint-disable-next-line no-trailing-spaces, brace-style
-    } 
+    }
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
       await waterPumpForNFTsystem.off();
       miniDB.growNFTsystemParams.growSpace.irrigation.status = null;
-      await saveMiniDB(semaphoreMiniDB, miniDB);
     }
   }
+
+  await saveMiniDB(semaphoreMiniDB, miniDB);
   return true;
 }
 
