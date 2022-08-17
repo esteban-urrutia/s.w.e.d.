@@ -3,12 +3,14 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable no-async-promise-executor */
 const fs = require('fs');
-const growFrontAndBackGarden = require('../loopingTasks/growFrontAndBackGarden/params.json');
-const growNFTsystem = require('../loopingTasks/growNFTsystem/params.json');
+const growFrontAndBackGardenParams = require('../loopingTasks/growFrontAndBackGarden/params.json');
+const growNFTsystemParams = require('../loopingTasks/growNFTsystem/params.json');
+const growMarancandinhuanaParams = require('../loopingTasks/growMarancandinhuana/params.json');
 
 const miniDBtemplate = {
-  growFrontAndBackGarden,
-  growNFTsystem,
+  growFrontAndBackGardenParams,
+  growNFTsystemParams,
+  growMarancandinhuanaParams,
 };
 
 async function readMiniDB(semaphoreMiniDB) {
