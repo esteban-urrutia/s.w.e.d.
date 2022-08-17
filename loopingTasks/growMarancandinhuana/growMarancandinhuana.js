@@ -19,17 +19,7 @@ const { temperatureOfNutrientSolution } = require('../../sensors/waterTemperatur
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 const { getPhotoperiod } = require('../../utils/utils');
 
-async function manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB) {
-  const { temperature, humidity } = await temperatureAndHumidityOfGrowSpace.get();
-
-  const photoperiod = getPhotoperiod();
-
-
-
-
-
-
-
+async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, photoperiod, temperature) {
   if (
     temperature
     <= miniDB
@@ -42,7 +32,6 @@ async function manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB) {
     await airHeaterOfGrowSpace.on();
     miniDB.growMarancandinhuanaParams.growSpace.temperature.status = 'heating';
     await saveMiniDB(semaphoreMiniDB, miniDB);
-  // eslint-disable-next-line brace-style
   }
   else if (
     temperature
@@ -62,12 +51,10 @@ async function manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB) {
     miniDB.growMarancandinhuanaParams.growSpace.temperature.status = null;
     await saveMiniDB(semaphoreMiniDB, miniDB);
   }
+  return true;
+}
 
-
-
-
-
-
+async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, photoperiod, humidity) {
   if (
     humidity
     <= miniDB
@@ -99,10 +86,6 @@ async function manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB) {
     miniDB.growMarancandinhuanaParams.growSpace.humidity.status = null;
     await saveMiniDB(semaphoreMiniDB, miniDB);
   }
-
-
-
-  
   return true;
 }
 
@@ -124,16 +107,29 @@ async function manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB) {
  *     defoliation
  */
 async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
-  await manageGrowSpaceTemperatureAndHumidity(miniDB, semaphoreMiniDB);
-  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB);
+  const { temperature, humidity } = await temperatureAndHumidityOfGrowSpace.get();
+  const photoperiod = getPhotoperiod();
+
+  await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, photoperiod, temperature);
+
+  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, photoperiod, humidity);
+
   await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
+
   await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB);
+
   await manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB);
+
   await manageNutritiveSolutionEc(miniDB, semaphoreMiniDB);
+
   await manageNutritiveSolutionPh(miniDB, semaphoreMiniDB);
+
   await manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB);
+
   await manageTrainingTopping(miniDB, semaphoreMiniDB);
+
   await manageTrainingPruning(miniDB, semaphoreMiniDB);
+
   await manageTrainingDefoliation(miniDB, semaphoreMiniDB);
 
   return true;
