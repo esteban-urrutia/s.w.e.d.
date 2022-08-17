@@ -1,102 +1,106 @@
 {
-    "irrigationMethod": "fixedTime",
-    "irrigationStatus": false,
-    "irrigationEvents": [
-      {
-        "startTime": "08:00",
-        "finishTime": "08:15"
-      },
-      {
-        "startTime": "08:30",
-        "finishTime": "08:45"
-      },
-      {
-        "startTime": "09:00",
-        "finishTime": "09:15"
-      },
-      {
-        "startTime": "09:30",
-        "finishTime": "09:45"
-      },
-      {
-        "startTime": "10:00",
-        "finishTime": "10:15"
-      },
-      {
-        "startTime": "10:30",
-        "finishTime": "10:45"
-      },
-      {
-        "startTime": "11:00",
-        "finishTime": "11:15"
-      },
-      {
-        "startTime": "11:30",
-        "finishTime": "11:45"
-      },
-      {
-        "startTime": "12:00",
-        "finishTime": "12:15"
-      },
-      {
-        "startTime": "12:30",
-        "finishTime": "12:45"
-      },
-      {
-        "startTime": "13:00",
-        "finishTime": "13:15"
-      },
-      {
-        "startTime": "13:30",
-        "finishTime": "13:45"
-      },
-      {
-        "startTime": "14:00",
-        "finishTime": "14:15"
-      },
-      {
-        "startTime": "14:30",
-        "finishTime": "14:45"
-      },
-      {
-        "startTime": "15:00",
-        "finishTime": "15:15"
-      },
-      {
-        "startTime": "15:30",
-        "finishTime": "15:45"
-      },
-      {
-        "startTime": "16:00",
-        "finishTime": "16:15"
-      },
-      {
-        "startTime": "16:30",
-        "finishTime": "16:45"
-      },
-      {
-        "startTime": "17:00",
-        "finishTime": "17:15"
-      },
-      {
-        "startTime": "17:30",
-        "finishTime": "17:45"
-      },
-      {
-        "startTime": "18:00",
-        "finishTime": "18:15"
-      },
-      {
-        "startTime": "18:30",
-        "finishTime": "18:45"
-      },
-      {
-        "startTime": "19:00",
-        "finishTime": "19:15"
-      },
-      {
-        "startTime": "19:30",
-        "finishTime": "19:45"
-      }
-    ]
+  "growSpace":{
+    "irrigation": {
+      "method": "fixedEvents",
+      "status": null,
+      "events": [
+        {
+          "start": "08:00",
+          "finish": "08:15"
+        },
+        {
+          "start": "08:30",
+          "finish": "08:45"
+        },
+        {
+          "start": "09:00",
+          "finish": "09:15"
+        },
+        {
+          "start": "09:30",
+          "finish": "09:45"
+        },
+        {
+          "start": "10:00",
+          "finish": "10:15"
+        },
+        {
+          "start": "10:30",
+          "finish": "10:45"
+        },
+        {
+          "start": "11:00",
+          "finish": "11:15"
+        },
+        {
+          "start": "11:30",
+          "finish": "11:45"
+        },
+        {
+          "start": "12:00",
+          "finish": "12:15"
+        },
+        {
+          "start": "12:30",
+          "finish": "12:45"
+        },
+        {
+          "start": "13:00",
+          "finish": "13:15"
+        },
+        {
+          "start": "13:30",
+          "finish": "13:45"
+        },
+        {
+          "start": "14:00",
+          "finish": "14:15"
+        },
+        {
+          "start": "14:30",
+          "finish": "14:45"
+        },
+        {
+          "start": "15:00",
+          "finish": "15:15"
+        },
+        {
+          "start": "15:30",
+          "finish": "15:45"
+        },
+        {
+          "start": "16:00",
+          "finish": "16:15"
+        },
+        {
+          "start": "16:30",
+          "finish": "16:45"
+        },
+        {
+          "start": "17:00",
+          "finish": "17:15"
+        },
+        {
+          "start": "17:30",
+          "finish": "17:45"
+        },
+        {
+          "start": "18:00",
+          "finish": "18:15"
+        },
+        {
+          "start": "18:30",
+          "finish": "18:45"
+        },
+        {
+          "start": "19:00",
+          "finish": "19:15"
+        },
+        {
+          "start": "19:30",
+          "finish": "19:45"
+        }
+      ]
+    }
   }
+}

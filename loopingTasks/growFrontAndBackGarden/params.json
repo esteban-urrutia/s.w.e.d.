@@ -1,22 +1,26 @@
 {
-    "irrigationMethod": "fixedTime",
-    "irrigationStatus": false,
-    "irrigationEvents": [
-      {
-        "startTime": "08:00",
-        "finishTime": "08:05"
-      },
-      {
-        "startTime": "12:00",
-        "finishTime": "12:05"
-      },
-      {
-        "startTime": "16:00",
-        "finishTime": "16:05"
-      },
-      {
-        "startTime": "20:00",
-        "finishTime": "20:05"
-      }
-    ]
+  "growSpace":{
+    "irrigation": {
+      "method": "fixedEvents",
+      "status": null,
+      "events": [
+        {
+          "start": "08:00",
+          "finish": "08:05"
+        },
+        {
+          "start": "12:00",
+          "finish": "12:05"
+        },
+        {
+          "start": "16:00",
+          "finish": "16:05"
+        },
+        {
+          "start": "20:00",
+          "finish": "20:05"
+        }
+      ]
+    }
   }
+}

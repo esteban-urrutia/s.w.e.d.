@@ -1,8 +1,8 @@
 {
   "growSpace": {
     "temperature": {
-      "method": "fixedMinMax",
-      "status": false,
+      "method": "fixedDayNightMinMax",
+      "status": null,
       "values": {
         "day":{
           "max": 45,
@@ -15,8 +15,8 @@
       }
     },
     "humidity": {
-      "method": "fixedMinMax",
-      "status": false,
+      "method": "fixedDayNightMinMax",
+      "status": null,
       "values": {
         "day":{
           "max": 100,
@@ -30,7 +30,7 @@
     },
     "airRenew": {
       "method": "fixedEvents",
-      "status": false,
+      "status": null,
       "events": [
         {
           "start": "08:00",
@@ -45,8 +45,8 @@
   },
   "nutritiveSolution": {
     "temperature": {
-      "method": "fixedMinMax",
-      "status": false,
+      "method": "fixedDayNightMinMax",
+      "status": null,
       "values": {
         "day":{
           "max": 45,
@@ -60,7 +60,7 @@
     },
     "recirculation": {
       "method": "fixedEvents",
-      "status": false,
+      "status": null,
       "events": [
         {
           "start": "08:00",
@@ -73,14 +73,24 @@
       ]
     },
     "ec": {
-      
+      "method": "fixedMinMax",
+      "status": null,
+      "values": {
+        "max": 6.5,
+        "min": 5.5
+      }
     },
     "ph": {
-      
+      "method": "fixedMinMax",
+      "status": null,
+      "values": {
+        "max": 6.5,
+        "min": 5.5
+      }
     },
     "oxygenation": {
       "method": "fixedEvents",
-      "status": false,
+      "status": null,
       "events": [
         {
           "start": "08:00",
@@ -95,18 +105,18 @@
   },
   "training": {
     "topping": {
-      "status": false,
-      "date": "",
+      "status": null,
+      "date": null,
       "daysOfBlock": 15
     },
     "pruning": {
-      "status": false,
-      "date": "",
+      "status": null,
+      "date": null,
       "daysOfBlock": 15
     },
     "defoliation": {
-      "status": false,
-      "date": "",
+      "status": null,
+      "date": null,
       "daysOfBlock": 15
     }
   }
