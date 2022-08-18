@@ -52,15 +52,18 @@ class Log {
       }
 
       // create logs folders if they don't exist
-      if (!fs.existsSync('logs')) { await fs.mkdirSync('logs'); }
-      if (!fs.existsSync('logs/info')) { await fs.mkdirSync('logs/info'); }
-      if (!fs.existsSync('logs/error')) { await fs.mkdirSync('logs/error'); }
-      if (!fs.existsSync('logs/incomingTelegramMessages')) { await fs.mkdirSync('logs/incomingTelegramMessages'); }
+      if (!fs.existsSync('logs')) { fs.mkdirSync('logs'); }
+      if (!fs.existsSync('logs/info')) { fs.mkdirSync('logs/info'); }
+      if (!fs.existsSync('logs/error')) { fs.mkdirSync('logs/error'); }
+      if (!fs.existsSync('logs/incomingTelegramMessages')) { fs.mkdirSync('logs/incomingTelegramMessages'); }
 
       // save to log's csv file
       await this.objectsToCsvInstance.toDisk(logFile, { append: true })
         .catch((error) => {
-          console.log(`Error guardando log  :  \n${JSON.stringify(this.objectsToCsvInstance.data[0])}\nError details  :  ${error.hasOwnProperty('stack') ? error.stack : error}`);
+          console.log(`Error guardando log  :
+            \n${JSON.stringify(this.objectsToCsvInstance.data[0])}
+            \nError details  :  
+            ${error.hasOwnProperty('stack') ? error.stack : error}`);
         })
         .finally(() => {
           this.cleanObjectsToCsvInstance();
@@ -78,20 +81,20 @@ class Log {
         try { logs.filesInFolder.info = fs.readdirSync('./logs/info').length; } catch (error) { logs.filesInFolder.info = undefined; }
         try { logs.filesInFolder.error = fs.readdirSync('./logs/error').length; } catch (error) { logs.filesInFolder.error = undefined; }
         try { logs.filesInFolder.incomingTelegramMessages = fs.readdirSync('./logs/incomingTelegramMessages').length; } catch (error) { logs.filesInFolder.incomingTelegramMessages = undefined; }
-        try { logs.fileSize.info = (await fs.statSync('./logs/info/log_info.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.info = undefined; }
-        try { logs.fileSize.error = (await fs.statSync('./logs/error/log_error.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.error = undefined; }
-        try { logs.fileSize.incomingTelegramMessages = (await fs.statSync('./logs/incomingTelegramMessages/log_incomingTelegramMessages.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.incomingTelegramMessages = undefined; }
+        try { logs.fileSize.info = (fs.statSync('./logs/info/log_info.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.info = undefined; }
+        try { logs.fileSize.error = (fs.statSync('./logs/error/log_error.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.error = undefined; }
+        try { logs.fileSize.incomingTelegramMessages = (fs.statSync('./logs/incomingTelegramMessages/log_incomingTelegramMessages.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.incomingTelegramMessages = undefined; }
 
         // if a log file size in greater than 10 MB... rotate this log
         // then... if logs folder size is greater than 2 GB...
         // erase oldest logFile from folder with more logFiles
         await this.renameLogFilesGreaterThanSpecified(logs)
           .then(async (response) => {
-            if (!response.hasOwnProperty('redirectedError')) {
+            if (!response.hasOwnProperty('thrownOff')) {
               await this.eraseOldestLogFileFromFolderWithMoreLogFiles(logs)
                 .then((innerResponse) => {
                   semaphoreLog.leave();
-                  if (!innerResponse.hasOwnProperty('redirectedError')) {
+                  if (!innerResponse.hasOwnProperty('thrownOff')) {
                     resolve(innerResponse);
                   }
                   reject(innerResponse);
@@ -118,19 +121,15 @@ class Log {
         try {
           if (logFileSizeArray[i][1]
             && logFileSizeArray[i][1] > parseInt(env.logs_maxSizeOfEachLogFileInMB, 10)) {
-            await fs.renameSync(`./logs/${logFileSizeArray[i][0]}/log_${logFileSizeArray[i][0]}.csv`, (`./logs/${logFileSizeArray[i][0]}/log_${logFileSizeArray[i][0]}__${utils.getDateStamp()}.csv`).replace(/[:]/g, '.'));
+            fs.renameSync(`./logs/${logFileSizeArray[i][0]}/log_${logFileSizeArray[i][0]}.csv`, (`./logs/${logFileSizeArray[i][0]}/log_${logFileSizeArray[i][0]}__${utils.getDateStamp()}.csv`).replace(/[:]/g, '.'));
           }
           // if this is the last logFile, being analyzed
           if (i + 1 === logFileSizeArray.length) {
             resolve(true);
           }
         } catch (error) {
-          resolve({
-            data: null,
-            redirectedError: true,
-            errorMessage: `error rotating ${logFileSizeArray[0]}`,
-            from: 'logController -> rotateLogs -> if a log file size in greater than 10 MB... rotate this log',
-          });
+          error.thrownOff = true;
+          resolve(error);
         }
       }
     });
@@ -156,18 +155,14 @@ class Log {
 
         // erase oldest file from this folder
         try {
-          oldestFile = await fs.readdirSync(`./logs/${folderWithMoreFiles.folder}`);
+          oldestFile = fs.readdirSync(`./logs/${folderWithMoreFiles.folder}`);
           oldestFile = oldestFile[oldestFile.length - 1];
-          await fs.unlinkSync(`./logs/${folderWithMoreFiles.folder}/${oldestFile}`);
+          fs.unlinkSync(`./logs/${folderWithMoreFiles.folder}/${oldestFile}`);
 
           resolve(true);
         } catch (error) {
-          resolve({
-            data: null,
-            redirectedError: true,
-            errorMessage: `error erasing ${oldestFile} from folder ${folderWithMoreFiles.folder}`,
-            from: 'logController -> rotateLogs -> eraseOldestLogFromFolderWithMoreLogs',
-          });
+          error.thrownOff = true;
+          resolve(error);
         }
       } else {
         resolve(true);
