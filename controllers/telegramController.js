@@ -247,7 +247,7 @@ async function listenMessages(telegram, semaphoreMiniDB) {
         if (msg.hasOwnProperty('text')) {
           // log incoming message
           const incomingMessage = {
-            stack: {
+            from: {
               firstName: msg.from.first_name,
               lastName: msg.from.last_name,
               username: msg.from.username,
