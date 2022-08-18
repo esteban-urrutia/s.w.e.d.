@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable radix */
 /**
  * sleep: sleep a certain amount of seconds
@@ -101,10 +102,51 @@ function getPhotoperiod(miniDB) {
   }
   return 'night';
 }
+
+/**
+ * normalize: normalize text for csv log
+ * @returns {String}
+ */
+function normalizeTextForCsv(param) {
+  let response = (typeof param === 'object'
+    ? JSON.stringify(param)
+    : param
+  );
+  if (response === '{}') {
+    if (param.hasOwnProperty('stack')) {
+      response = param.stack.toString();
+    } else {
+      response = param.toString();
+    }
+  }
+  return response.replace(/[\n]/g, '  ');
+}
+
+/**
+ * normalize: normalize for telegram message
+ * @returns {String}
+ */
+function normalizeTextForTelegramMessage(param) {
+  let response = (typeof param === 'object'
+    ? JSON.stringify(param)
+    : param
+  );
+  if (response === '{}') {
+    if (param.hasOwnProperty('stack')) {
+      response = param.stack.toString();
+    } else {
+      response = param.toString();
+    }
+  }
+  return response;
+}
+
 module.exports = {
   sleep,
   getDateStamp,
   getTimeStamp,
   getDateStampFromTimeStamp,
   getPhotoperiod,
+  normalizeTextForCsv,
+  normalizeTextForTelegramMessage,
 };

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable prefer-destructuring */
@@ -15,13 +16,6 @@ class Log {
     Log.instance = null;
   }
 
-  normalize(param) {
-    return (typeof param === 'object'
-      ? JSON.stringify(param)
-      : param
-    ).replace(/[\n]/g, '  ');
-  }
-
   async save(dataToLog, logType) {
     semaphoreLog.take(async () => {
       // create log according to log type
@@ -30,21 +24,21 @@ class Log {
         case 'info':
           logFile = './logs/info/log_info.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
-          this.objectsToCsvInstance.data[0].data = this.normalize(dataToLog);
+          this.objectsToCsvInstance.data[0].data = utils.normalizeTextForCsv(dataToLog);
           break;
 
         case 'error':
           logFile = './logs/error/log_error.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
-          this.objectsToCsvInstance.data[0].errorMessage = this.normalize(dataToLog.message);
-          this.objectsToCsvInstance.data[0].from = this.normalize(dataToLog.stack);
+          this.objectsToCsvInstance.data[0].errorMessage = utils.normalizeTextForCsv(dataToLog.message);
+          this.objectsToCsvInstance.data[0].from = utils.normalizeTextForCsv(dataToLog.stack);
           break;
 
         case 'incomingTelegramMessages':
           logFile = './logs/incomingTelegramMessages/log_incomingTelegramMessages.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
           this.objectsToCsvInstance.data[0].from = dataToLog.from;
-          this.objectsToCsvInstance.data[0].command = this.normalize(dataToLog.command);
+          this.objectsToCsvInstance.data[0].command = utils.normalizeTextForCsv(dataToLog.command);
           break;
 
         default:

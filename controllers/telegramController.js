@@ -11,6 +11,7 @@ const { exec } = require('child_process');
 const compress = require('compressing');
 const fs = require('fs');
 const log = require('./logController').getInstance();
+const { normalizeTextForTelegramMessage } = require('../utils/utils');
 
 async function sendMessage(telegram, message, type) {
   if (env.telegram_enabled === 'true') {
@@ -18,9 +19,10 @@ async function sendMessage(telegram, message, type) {
       // send message according to specified type
       switch (type) {
         case 'text':
+          message = normalizeTextForTelegramMessage(message);
           await telegram.sendMessage(
             env.telegram_chatId,
-            (typeof message === 'object' ? JSON.stringify(message) : message),
+            message,
           )
             .then(() => {
               resolve(true);
@@ -28,8 +30,8 @@ async function sendMessage(telegram, message, type) {
             .catch(async (error) => {
               reject({
                 data: { message: message.replace(/[\n]/g, ' '), type },
-                errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                from: 'telegramController -> sendMessage -> text',
+                message: (error.hasOwnProperty('stack') ? error.stack : error),
+                stack: 'telegramController -> sendMessage -> text',
               });
             });
           break;
@@ -43,8 +45,8 @@ async function sendMessage(telegram, message, type) {
               } catch (error) {
                 reject({
                   data: { message, type },
-                  errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                  from: 'telegramController -> sendMessage -> document -> deleting from disk',
+                  message: (error.hasOwnProperty('stack') ? error.stack : error),
+                  stack: 'telegramController -> sendMessage -> document -> deleting from disk',
                 });
               }
             })
@@ -53,15 +55,15 @@ async function sendMessage(telegram, message, type) {
                 .catch(async (error) => {
                   await log.save({
                     data: { message, type },
-                    errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                    from: 'telegramController -> sendErrorMessage -> send document',
+                    message: (error.hasOwnProperty('stack') ? error.stack : error),
+                    stack: 'telegramController -> sendErrorMessage -> send document',
                   }, 'error');
                 })
                 .finally(() => {
                   reject({
                     data: { message, type },
-                    errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                    from: 'telegramController -> send document -> error',
+                    message: (error.hasOwnProperty('stack') ? error.stack : error),
+                    stack: 'telegramController -> send document -> error',
                   });
                 });
             });
@@ -76,8 +78,8 @@ async function sendMessage(telegram, message, type) {
               } catch (error) {
                 reject({
                   data: { message, type },
-                  errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                  from: 'telegramController -> sendMessage -> image -> deleting from disk',
+                  message: (error.hasOwnProperty('stack') ? error.stack : error),
+                  stack: 'telegramController -> sendMessage -> image -> deleting from disk',
                 });
               }
             })
@@ -86,15 +88,15 @@ async function sendMessage(telegram, message, type) {
                 .catch(async (error) => {
                   await log.save({
                     data: { message, type },
-                    errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                    from: 'telegramController -> sendErrorMessage -> send image',
+                    message: (error.hasOwnProperty('stack') ? error.stack : error),
+                    stack: 'telegramController -> sendErrorMessage -> send image',
                   }, 'error');
                 })
                 .finally(() => {
                   reject({
                     data: { message, type },
-                    errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                    from: 'telegramController -> send image -> error',
+                    message: (error.hasOwnProperty('stack') ? error.stack : error),
+                    stack: 'telegramController -> send image -> error',
                   });
                 });
             });
@@ -156,12 +158,12 @@ async function aliveReport(telegram) {
     .catch(async (error) => {
       error = {
         data: 'aliveReport',
-        errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-        from: 'telegramController -> aliveReport -> networkInterfaces',
+        message: (error.hasOwnProperty('stack') ? error.stack : error),
+        stack: 'telegramController -> aliveReport -> networkInterfaces',
       };
       await log.save(error, 'error');
 
-      await sendMessage(telegram, error.errorMessage, 'text')
+      await sendMessage(telegram, error.message, 'text')
         .catch(async (telegramError) => {
           await log.save(telegramError, 'error');
         });
@@ -172,9 +174,8 @@ async function rebootService(telegram) {
   await telegram.sendMessage(env.telegram_chatId, 'Service Rebooting')
     .catch(async (error) => {
       await log.save({
-        data: null,
-        errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-        from: 'rebootRpi -> rebooting',
+        message: (error.hasOwnProperty('stack') ? error.stack : error),
+        stack: 'rebootRpi -> rebooting',
       }, 'error');
     })
     .finally(async () => {
@@ -184,8 +185,8 @@ async function rebootService(telegram) {
             .catch(async (error) => {
               await log.save({
                 data: `Error executing (pm2 restart main):  ${error}`,
-                errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                from: 'telegramController -> sendErrorMessage -> pm2 restart main',
+                message: (error.hasOwnProperty('stack') ? error.stack : error),
+                stack: 'telegramController -> sendErrorMessage -> pm2 restart main',
               }, 'error');
             });
         }
@@ -197,9 +198,8 @@ async function rebootRpi(telegram) {
   await telegram.sendMessage(env.telegram_chatId, 'Rpi rebooting')
     .catch(async (error) => {
       await log.save({
-        data: null,
-        errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-        from: 'rebootRpi -> rebooting',
+        message: (error.hasOwnProperty('stack') ? error.stack : error),
+        stack: 'rebootRpi -> rebooting',
       }, 'error');
     })
     .finally(async () => {
@@ -209,8 +209,8 @@ async function rebootRpi(telegram) {
             .catch(async (error) => {
               await log.save({
                 data: `Error executing (pm2 restart main):  ${error}`,
-                errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                from: 'telegramController -> sendErrorMessage -> sudo reboot now',
+                message: (error.hasOwnProperty('stack') ? error.stack : error),
+                stack: 'telegramController -> sendErrorMessage -> sudo reboot now',
               }, 'error');
             });
         }
@@ -231,9 +231,8 @@ async function getLogs(telegram) {
       })
       .catch((error) => {
         reject({
-          data: null,
-          errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-          from: 'telegramController -> all_logsInZip -> compress.zip.compressDir',
+          message: (error.hasOwnProperty('stack') ? error.stack : error),
+          stack: 'telegramController -> all_logsInZip -> compress.zip.compressDir',
         });
       });
   });
@@ -248,7 +247,7 @@ async function listenMessages(telegram, semaphoreMiniDB) {
         if (msg.hasOwnProperty('text')) {
           // log incoming message
           const incomingMessage = {
-            from: {
+            stack: {
               firstName: msg.from.first_name,
               lastName: msg.from.last_name,
               username: msg.from.username,
@@ -289,9 +288,8 @@ async function listenMessages(telegram, semaphoreMiniDB) {
       // error handler
       const errorHandler = async (error) => {
         await log.save({
-          data: null,
-          errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-          from: 'telegramController -> errorHandler',
+          message: (error.hasOwnProperty('stack') ? error.stack : error),
+          stack: 'telegramController -> errorHandler',
         }, 'error');
       };
 
@@ -322,25 +320,22 @@ async function restartConnection(telegram) {
                 })
                 .catch((error) => {
                   reject({
-                    data: null,
-                    errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                    from: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook -> telegram.startPolling',
+                    message: (error.hasOwnProperty('stack') ? error.stack : error),
+                    stack: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook -> telegram.startPolling',
                   });
                 });
             })
             .catch(async (error) => {
               reject({
-                data: null,
-                errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-                from: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook',
+                message: (error.hasOwnProperty('stack') ? error.stack : error),
+                stack: 'telegramController -> restartConnection -> telegram.stopPolling -> telegram.closeWebHook',
               });
             });
         })
         .catch(async (error) => {
           reject({
-            data: null,
-            errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-            from: 'telegramController -> restartConnection -> telegram.stopPolling()',
+            message: (error.hasOwnProperty('stack') ? error.stack : error),
+            stack: 'telegramController -> restartConnection -> telegram.stopPolling()',
           });
         });
     });

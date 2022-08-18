@@ -32,7 +32,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
   await growMarancandinhuana(miniDB, semaphoreMiniDB)
     .catch(async (error) => {
       await log.save(error, 'error');
-      telegramController.sendMessage(telegram, error, 'text')
+      await telegramController.sendMessage(telegram, error, 'text')
         .catch(async (telegramError) => {
           await log.save(telegramError, 'error');
         });
@@ -42,7 +42,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
   await growFrontAndBackGarden(miniDB, semaphoreMiniDB)
     .catch(async (error) => {
       await log.save(error, 'error');
-      telegramController.sendMessage(telegram, error, 'text')
+      await telegramController.sendMessage(telegram, error, 'text')
         .catch(async (telegramError) => {
           await log.save(telegramError, 'error');
         });
@@ -52,7 +52,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
   await growNFTsystem(miniDB, semaphoreMiniDB)
     .catch(async (error) => {
       await log.save(error, 'error');
-      telegramController.sendMessage(telegram, error, 'text')
+      await telegramController.sendMessage(telegram, error, 'text')
         .catch(async (telegramError) => {
           await log.save(telegramError, 'error');
         });
@@ -82,9 +82,8 @@ cron.schedule(env.hardwareAlerts_frequencyOf_internetCheck, async () => {
           .then(async (responseTelegram) => {
             telegram = responseTelegram;
             await log.save({
-              data: null,
-              errorMessage: 'telegram connection restarted and back online',
-              from: 'main -> CRON_internetCheck -> secondaryTasksController.internetCheck -> telegramController.restartConnection',
+              message: 'telegram connection restarted and back online',
+              stack: 'main -> CRON_internetCheck -> secondaryTasksController.internetCheck -> telegramController.restartConnection',
             }, 'error');
 
             await telegramController.sendMessage(telegram, 'Internet back online\n\n\n'
@@ -132,12 +131,12 @@ const errorHandler = async (error) => {
   // eslint-disable-next-line no-param-reassign
   error = {
     data: 'uncaughtError',
-    errorMessage: error.stack.replace(/\n/g, '\n\n'),
-    from: 'main -> process.on(unhandledRejection  ||  warning)',
+    message: error.stack.replace(/\n/g, '\n\n'),
+    stack: 'main -> process.on(unhandledRejection  ||  warning)',
   };
 
   await log.save(error, 'error');
-  await telegramController.sendMessage(telegram, `UNCAUGHT ERROR:\n\n${error.errorMessage}`, 'text')
+  await telegramController.sendMessage(telegram, `UNCAUGHT ERROR:\n\n${error.message}`, 'text')
     .catch(async (telegramError) => {
       await log.save(telegramError, 'error');
     });

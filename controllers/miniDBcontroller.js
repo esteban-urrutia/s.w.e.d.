@@ -33,8 +33,8 @@ async function readMiniDB(semaphoreMiniDB) {
         semaphoreMiniDB.leave();
         reject({
           data: 'miniDB.json',
-          errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-          from: 'miniDBcontroller -> readMiniDB',
+          message: (error.hasOwnProperty('stack') ? error.stack : error),
+          stack: 'miniDBcontroller -> readMiniDB',
         });
       }
     });
@@ -53,8 +53,8 @@ async function saveMiniDB(semaphoreMiniDB, miniDB) {
         semaphoreMiniDB.leave();
         reject({
           data: miniDB,
-          errorMessage: (error.hasOwnProperty('stack') ? error.stack : error),
-          from: 'miniDBcontroller -> saveMiniDB',
+          message: (error.hasOwnProperty('stack') ? error.stack : error),
+          stack: 'miniDBcontroller -> saveMiniDB',
         });
       }
     });
