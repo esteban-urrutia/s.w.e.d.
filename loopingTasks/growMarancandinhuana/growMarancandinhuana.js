@@ -19,12 +19,12 @@ const { temperatureOfNutrientSolution } = require('../../sensors/waterTemperatur
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 const { getPhotoperiod } = require('../../utils/utils');
 
-async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperature) {
+async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperatureOfGrowSpace) {
   const photoperiod = getPhotoperiod(miniDB);
 
-  // temperature <= min
+  // temperatureOfGrowSpace <= min
   if (
-    temperature
+    temperatureOfGrowSpace
     <= miniDB
       .growMarancandinhuanaParams
       .growSpace
@@ -36,9 +36,9 @@ async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperature) 
     await ventilatorOfGrowSpace.off();
     miniDB.growMarancandinhuanaParams.growSpace.temperature.status = 'heating';
   }
-  // temperature >= max
+  // temperatureOfGrowSpace >= max
   else if (
-    temperature
+    temperatureOfGrowSpace
     >= miniDB
       .growMarancandinhuanaParams
       .growSpace
@@ -50,7 +50,7 @@ async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperature) 
     await ventilatorOfGrowSpace.on();
     miniDB.growMarancandinhuanaParams.growSpace.temperature.status = 'cooling';
   }
-  // min < temperature < max
+  // min < temperatureOfGrowSpace < max
   else {
     await airHeaterOfGrowSpace.off();
     await ventilatorOfGrowSpace.off();
@@ -61,12 +61,12 @@ async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperature) 
   return true;
 }
 
-async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidity) {
+async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidityOfGrowSpace) {
   const photoperiod = getPhotoperiod(miniDB);
 
-  // humidity <= min
+  // humidityOfGrowSpace <= min
   if (
-    humidity
+    humidityOfGrowSpace
     <= miniDB
       .growMarancandinhuanaParams
       .growSpace
@@ -77,9 +77,9 @@ async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidity) {
     await humidifierOfGrowSpace.on();
     miniDB.growMarancandinhuanaParams.growSpace.humidity.status = 'humidifying';
   }
-  // humidity >= max
+  // humidityOfGrowSpace >= max
   else if (
-    humidity
+    humidityOfGrowSpace
     >= miniDB
       .growMarancandinhuanaParams
       .growSpace
@@ -90,7 +90,7 @@ async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidity) {
     await humidifierOfGrowSpace.off();
     miniDB.growMarancandinhuanaParams.growSpace.humidity.status = null;
   }
-  // min < humidity < max
+  // min < humidityOfGrowSpace < max
   else {
     await humidifierOfGrowSpace.off();
     miniDB.growMarancandinhuanaParams.growSpace.humidity.status = null;
@@ -100,9 +100,51 @@ async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidity) {
   return true;
 }
 
+async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB) {
+  const photoperiod = getPhotoperiod(miniDB);
+
+  const temperatureOfNutSol = await temperatureOfNutrientSolution.get();
+
+  // temperatureOfNutSol <= min
+  if (
+    temperatureOfNutSol
+    <= miniDB
+      .growMarancandinhuanaParams
+      .nutritiveSolution
+      .temperature
+      .values[photoperiod]
+      .min
+  ) {
+    await waterHeaterOfNutrientSolution.on();
+    miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = 'heating';
+  }
+  // temperatureOfNutSol >= max
+  else if (
+    temperatureOfNutSol
+    >= miniDB
+      .growMarancandinhuanaParams
+      .nutritiveSolution
+      .temperature
+      .values[photoperiod]
+      .max
+  ) {
+    await waterHeaterOfNutrientSolution.off();
+    miniDB.growMarancandinhuanaParams.growSpace.temperature.status = null;
+  }
+  // min < temperatureOfNutSol < max
+  else {
+    await waterHeaterOfNutrientSolution.off();
+    miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = null;
+  }
+
+  await saveMiniDB(semaphoreMiniDB, miniDB);
+  return true;
+}
+
 /**
  * growMarancandinhuana -> Manages:
  *   growSpace
+ *     light
  *     temperature
  *     humidity
  *     airRenew
@@ -118,13 +160,17 @@ async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidity) {
  *     defoliation
  */
 async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
-  const { temperature, humidity } = await temperatureAndHumidityOfGrowSpace.get();
+  // await manageGrowSpaceLight(miniDB, semaphoreMiniDB);
+  const {
+    temperatureOfGrowSpace,
+    humidityOfGrowSpace,
+  } = await temperatureAndHumidityOfGrowSpace.get();
 
-  await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperature);
+  await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperatureOfGrowSpace);
 
-  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidity);
+  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidityOfGrowSpace);
 
-  await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
+  // await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
 
   await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB);
 

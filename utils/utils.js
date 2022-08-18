@@ -56,16 +56,40 @@ function getPhotoperiod(miniDB) {
   const now = new Date();
 
   const startTime = new Date();
-  const startHour = parseInt(miniDB.training.photoperiod.start.substring(0, 2));
-  const startMinute = parseInt(miniDB.training.photoperiod.start.substring(3, 5));
+  const startHour = parseInt(
+    miniDB
+      .growMarancandinhuanaParams
+      .training
+      .photoperiod
+      .start.substring(0, 2),
+  );
+  const startMinute = parseInt(
+    miniDB
+      .growMarancandinhuanaParams
+      .training
+      .photoperiod
+      .start.substring(3, 5),
+  );
   startTime.setHours(startHour);
   startTime.setMinutes(startMinute);
   startTime.setSeconds(0);
   startTime.setMilliseconds(0);
 
   const finishTime = new Date();
-  const finishHour = parseInt(miniDB.training.photoperiod.finish.substring(0, 2));
-  const finishMinute = parseInt(miniDB.training.photoperiod.finish.substring(3, 5));
+  const finishHour = parseInt(
+    miniDB
+      .growMarancandinhuanaParams
+      .training
+      .photoperiod
+      .finish.substring(0, 2),
+  );
+  const finishMinute = parseInt(
+    miniDB
+      .growMarancandinhuanaParams
+      .training
+      .photoperiod
+      .finish.substring(3, 5),
+  );
   finishTime.setHours(finishHour);
   finishTime.setMinutes(finishMinute);
   finishTime.setSeconds(0);

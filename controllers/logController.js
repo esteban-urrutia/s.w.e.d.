@@ -15,6 +15,13 @@ class Log {
     Log.instance = null;
   }
 
+  normalize(param) {
+    return (typeof param === 'object'
+      ? JSON.stringify(param)
+      : param
+    ).replace(/[\n]/g, '  ');
+  }
+
   async save(dataToLog, logType) {
     semaphoreLog.take(async () => {
       // create log according to log type
@@ -23,22 +30,21 @@ class Log {
         case 'info':
           logFile = './logs/info/log_info.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
-          this.objectsToCsvInstance.data[0].data = ((typeof dataToLog === 'object') ? JSON.stringify(dataToLog) : dataToLog).replace(/[\n]/g, '  ');
+          this.objectsToCsvInstance.data[0].data = this.normalize(dataToLog);
           break;
 
         case 'error':
           logFile = './logs/error/log_error.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
-          this.objectsToCsvInstance.data[0].data = ((typeof dataToLog.data === 'object') ? JSON.stringify(dataToLog.data) : dataToLog.data).replace(/[\n]/g, '  ');
-          this.objectsToCsvInstance.data[0].errorMessage = ((typeof dataToLog.errorMessage === 'object') ? JSON.stringify(dataToLog.errorMessage) : dataToLog.errorMessage).replace(/[\n]/g, '  ');
-          this.objectsToCsvInstance.data[0].from = dataToLog.from;
+          this.objectsToCsvInstance.data[0].errorMessage = this.normalize(dataToLog.message);
+          this.objectsToCsvInstance.data[0].from = this.normalize(dataToLog.stack);
           break;
 
         case 'incomingTelegramMessages':
           logFile = './logs/incomingTelegramMessages/log_incomingTelegramMessages.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
           this.objectsToCsvInstance.data[0].from = dataToLog.from;
-          this.objectsToCsvInstance.data[0].command = dataToLog.command.replace(/[\n]/g, '  ');
+          this.objectsToCsvInstance.data[0].command = this.normalize(dataToLog.command);
           break;
 
         default:
