@@ -40,7 +40,7 @@ async function sendMessage(telegram, message, type) {
           await telegram.sendDocument(env.telegram_chatId, message)
             .then(async () => {
               try {
-                await fs.unlinkSync(message);
+                fs.unlinkSync(message);
                 resolve(true);
               } catch (error) {
                 reject({
@@ -73,7 +73,7 @@ async function sendMessage(telegram, message, type) {
           await telegram.sendPhoto(env.telegram_chatId, message)
             .then(async () => {
               try {
-                await fs.unlinkSync(message);
+                fs.unlinkSync(message);
                 resolve(true);
               } catch (error) {
                 reject({

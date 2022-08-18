@@ -8,9 +8,9 @@ const growNFTsystemParams = require('../loopingTasks/growNFTsystem/params.json')
 const growMarancandinhuanaParams = require('../loopingTasks/growMarancandinhuana/params.json');
 
 const miniDBtemplate = {
-  growFrontAndBackGardenParams,
-  growNFTsystemParams,
   growMarancandinhuanaParams,
+  growNFTsystemParams,
+  growFrontAndBackGardenParams,
 };
 
 async function readMiniDB(semaphoreMiniDB) {
@@ -19,12 +19,12 @@ async function readMiniDB(semaphoreMiniDB) {
       let miniDB;
       try {
         // if miniDB.json exist
-        if (await fs.existsSync('miniDB.json')) {
+        if (fs.existsSync('miniDB.json')) {
           // read and parse miniDB.json
-          miniDB = await JSON.parse((await fs.readFileSync('miniDB.json')).toString());
+          miniDB = await JSON.parse((fs.readFileSync('miniDB.json')).toString());
         } else {
           miniDB = miniDBtemplate;
-          await fs.writeFileSync('miniDB.json', JSON.stringify(miniDB, null, 4));
+          fs.writeFileSync('miniDB.json', JSON.stringify(miniDB, null, 4));
         }
 
         semaphoreMiniDB.leave();
@@ -45,7 +45,7 @@ async function saveMiniDB(semaphoreMiniDB, miniDB) {
   return new Promise(async (resolve, reject) => {
     semaphoreMiniDB.take(async () => {
       try {
-        await fs.writeFileSync('miniDB.json', JSON.stringify(miniDB, null, 4));
+        fs.writeFileSync('miniDB.json', JSON.stringify(miniDB, null, 4));
 
         semaphoreMiniDB.leave();
         resolve(true);

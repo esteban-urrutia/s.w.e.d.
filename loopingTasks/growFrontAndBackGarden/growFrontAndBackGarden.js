@@ -23,13 +23,13 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
     && startMinute === now.getMinutes()) {
       await waterValveForIrrigationOfFrontGarden.on();
       await waterValveForIrrigationOfBackGarden.on();
-      miniDB.growFrontAndBackGardenParamsParams.growSpace.irrigation.status = 'irrigating';
+      miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = 'irrigating';
     }
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
       await waterValveForIrrigationOfFrontGarden.off();
       await waterValveForIrrigationOfBackGarden.off();
-      miniDB.growFrontAndBackGardenParamsParams.growSpace.irrigation.status = null;
+      miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = null;
     }
   }
 
