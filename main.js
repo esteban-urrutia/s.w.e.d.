@@ -18,7 +18,7 @@ let internetStatus = null;
 
 /* - - - - - - - - - - STARTUP - - - - - - - - - - */
 // boot notification
-telegramController.sendMessage(telegram, 's.w.e.t. Started', 'text')
+telegramController.sendMessage(telegram, 's.w.e.d. Started', 'text')
   .catch(async (telegramError) => {
     await log.save(telegramError, 'error');
   });
