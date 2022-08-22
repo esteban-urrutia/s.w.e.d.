@@ -5,7 +5,7 @@
           "name": "s.w.e.d.",
           "type": "node",
           "request": "launch",
-          "program": "/home/pi/s.w.e.d./main.js",
+          "program": "/Users/esteban.urrutia/Documents/s.w.e.d./general/s.w.e.d./main.js",
           "args": [],
       }
   ]
