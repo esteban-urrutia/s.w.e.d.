@@ -1,15 +1,21 @@
 #include <Wire.h>
 
-const int i2cMessageLength = 5;
-const int i2cArduinoMegaAddress = 8;
-String responseMessage = "";
+#define i2cMessageLength 5
+#define i2cArduinoMegaAddress 8
+char responseMessage[i2cMessageLength];
 
 void setup() {
+  delay(2000);
   Serial.begin(9600);
   Wire.begin(i2cArduinoMegaAddress);
   
   Wire.onReceive(i2cReceive);
   Wire.onRequest(i2cSend);
+
+  for (int i = 22; i <= 43; i++) {
+    pinMode(i, OUTPUT);
+    digitalWrite(i, HIGH);
+  }
 }
 
 void loop() {
@@ -17,24 +23,28 @@ void loop() {
 }
 
 void i2cReceive(int howMany) {
-  char receivedChar;
-  String message;
-  
+  char message[i2cMessageLength];
+  int aux = 0;
   while(Wire.available()) {
-    receivedChar = Wire.read();
-    message = message + receivedChar;
+    message[aux] = Wire.read();
+    aux = aux + 1;
   }
 
   messageManager(message);
 }
 
 void i2cSend() {
-  Wire.write(responseMessage.c_str());
-  responseMessage = "";
+  Wire.write(responseMessage);
+  for(int i = 0; i < i2cMessageLength; i++) {
+    responseMessage[i] = ' ';
+  }
 }
 
-void messageManager(String message) {
-  if(message == "chela") {
+void messageManager(char message[]) {
+  if(message[0] == 'i'  &&
+     message[1] == 'o') {
+    
+
     responseMessage = "beker";
   }
   else if(message == "porro") {
