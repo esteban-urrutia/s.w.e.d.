@@ -5,7 +5,7 @@
 char responseMessage[i2cMessageLength];
 
 void setup() {
-  delay(2000);
+  delay(3000);
   Serial.begin(9600);
   Wire.begin(i2cArduinoMegaAddress);
   
