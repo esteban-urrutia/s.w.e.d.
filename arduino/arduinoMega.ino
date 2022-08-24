@@ -25,8 +25,12 @@ void loop() {
 void i2cReceive(int howMany) {
   char message[i2cMessageLength];
   int aux = 0;
+
   while(Wire.available()) {
-    message[aux] = Wire.read();
+    char receivedCharacter = Wire.read();
+    if(aux < i2cMessageLength) {
+      message[aux] = receivedCharacter;
+      }
     aux = aux + 1;
   }
 
@@ -41,13 +45,16 @@ void i2cSend() {
 }
 
 void messageManager(char message[]) {
-  if(message[0] == 'i'  &&
-     message[1] == 'o') {
-    
-
-    responseMessage = "beker";
-  }
-  else if(message == "porro") {
-    responseMessage = "gollo";
+  if(message[0] == 'p'  &&
+     message[1] == 'o'  &&
+     message[2] == 'r'  &&
+     message[3] == 'r'  &&
+     message[4] == 'o' ) {
+      
+      responseMessage[0] = 'g';
+      responseMessage[1] = 'o';
+      responseMessage[2] = 'l';
+      responseMessage[3] = 'l';
+      responseMessage[4] = 'o';
   }
 }
