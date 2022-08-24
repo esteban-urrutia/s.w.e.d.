@@ -24,8 +24,8 @@ function receiveMessage(senderAddress){
 
 
 
- // sendMessage("porro", env.i2c_arduinoMega_address);
- // console.log( receiveMessage(env.i2c_arduinoMega_address) );
+  sendMessage("SR07d", env.i2c_arduinoMega_address);
+  console.log( receiveMessage(env.i2c_arduinoMega_address) );
 
 
 

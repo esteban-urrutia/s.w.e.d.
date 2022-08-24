@@ -34,7 +34,7 @@ void i2cReceive(int howMany) {
     aux = aux + 1;
   }
 
-  messageManager(message);
+  deviceManager(message);
 }
 
 void i2cSend() {
@@ -44,17 +44,34 @@ void i2cSend() {
   }
 }
 
-void messageManager(char message[]) {
-  if(message[0] == 'p'  &&
-     message[1] == 'o'  &&
-     message[2] == 'r'  &&
-     message[3] == 'r'  &&
-     message[4] == 'o' ) {
-      
-      responseMessage[0] = 'g';
-      responseMessage[1] = 'o';
-      responseMessage[2] = 'l';
-      responseMessage[3] = 'l';
-      responseMessage[4] = 'o';
+void deviceManager(char message[]) {
+
+  // manages SolidStateRelay
+  if(message[0] == 'S'
+  && message[1] == 'R'
+  && isDigit(message[2])
+  && isDigit(message[3])
+  && (message[4] == 'e' || message[4] == 'd')) {
+    
+    int pin = (String(message[2]) + String(message[3])).toInt();
+
+    if(message[4] == 'e') { 
+      digitalWrite(pin, LOW);
+    }
+    else if(message[4] == 'd') { 
+      digitalWrite(pin, HIGH);
+    }
+
+    for(int i = 0; i < i2cMessageLength; i++) {
+      responseMessage[i] = message[i];
+    }
+  }
+  // manages undefined message
+  else {
+      responseMessage[0] = 'u';
+      responseMessage[1] = 'n';
+      responseMessage[2] = 'd';
+      responseMessage[3] = 'e';
+      responseMessage[4] = 'f';
   }
 }
