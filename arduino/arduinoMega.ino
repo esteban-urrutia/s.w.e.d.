@@ -1,8 +1,14 @@
 #include <Wire.h>
 
+// I2C
 #define i2cMessageLength 5
 #define i2cArduinoMegaAddress 8
+#define i2cArduinoMegaAddress 8
 char responseMessage[i2cMessageLength];
+
+// Solid State Relay
+#define startPin_solidStateRelay 23
+#define finishPin_solidStateRelay 38
 
 void setup() {
   delay(2000);
@@ -13,7 +19,7 @@ void setup() {
   Wire.onRequest(i2cSend);
   
   // Solid State Relay - all channels off
-  for (int i = 23; i <= 38; i++) {
+  for (int i = startPin_solidStateRelay; i <= finishPin_solidStateRelay; i++) {
     pinMode(i, OUTPUT);
     digitalWrite(i, HIGH);
   }
@@ -21,7 +27,7 @@ void setup() {
   // 220v Power Supply NC fix
   delay(2000);
   pinMode(22, OUTPUT);
-  digitalWrite(22, LOW);
+  digitalWrite(22, HIGH);
 }
 
 void loop() {
@@ -61,17 +67,29 @@ void deviceManager(char message[]) {
     
     int pin = (String(message[2]) + String(message[3])).toInt();
 
-    if(message[4] == 'e') { 
-      digitalWrite(pin, LOW);
+    if(pin >= startPin_solidStateRelay
+    && pin <= finishPin_solidStateRelay) {
+      if(message[4] == 'e') { 
+        digitalWrite(pin, LOW);
+      }
+      else if(message[4] == 'd') { 
+        digitalWrite(pin, HIGH);
+      }
+  
+      for(int i = 0; i < i2cMessageLength; i++) {
+        responseMessage[i] = message[i];
+      }
     }
-    else if(message[4] == 'd') { 
-      digitalWrite(pin, HIGH);
+    else {
+      responseMessage[0] = 'u';
+      responseMessage[1] = 'n';
+      responseMessage[2] = 'd';
+      responseMessage[3] = 'e';
+      responseMessage[4] = 'f';
     }
 
-    for(int i = 0; i < i2cMessageLength; i++) {
-      responseMessage[i] = message[i];
-    }
   }
+
   // manages undefined message
   else {
       responseMessage[0] = 'u';

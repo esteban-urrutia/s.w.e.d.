@@ -22,9 +22,6 @@ function receiveMessage(senderAddress) {
   return message;
 }
 
-sendMessage('SR07d', env.i2c_arduinoMega_address);
-console.log(receiveMessage(env.i2c_arduinoMega_address));
-
 module.exports = {
   sendMessage,
   receiveMessage,

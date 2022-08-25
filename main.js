@@ -17,8 +17,6 @@ let telegram = (env.telegram_enabled === 'true') ? new TelegramBot(env.telegram_
 let internetStatus = null;
 
 /* - - - - - - - - - - STARTUP - - - - - - - - - - */
-// activate 220v power supply
-
 // boot notification
 telegramController.sendMessage(telegram, 's.w.e.d. Started', 'text')
   .catch(async (telegramError) => {
