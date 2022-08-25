@@ -1,8 +1,8 @@
 [
   {
     "name": "main",
-    "path": "/home/pi/swed/main.js",
-    "start":"pm2 start /home/pi/swed/main.js",
+    "path": "/home/pi/s.w.e.d./main.js",
+    "start":"pm2 start /home/pi/s.w.e.d./main.js",
     "restart":"pm2 restart main.js"
   }
 ]
