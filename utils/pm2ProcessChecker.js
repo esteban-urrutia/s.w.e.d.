@@ -31,7 +31,7 @@ function check() {
       const size = result.length - 1;
       const mod = Math.trunc(size / separator);
 
-      for (let i = 1; i < mod - 1; i + 1) {
+      for (let i = 1; i < mod - 1; i++) {
         const process_running_name = (result[2 + separator * i]).replace(/[ ]/g, '');
         const process_running_status = (result[9 + separator * i]).replace(/[ ]/g, '');
         process_running_list.push(process_running_name);
