@@ -12,7 +12,8 @@ void setup() {
   Wire.onReceive(i2cReceive);
   Wire.onRequest(i2cSend);
 
-  for (int i = 22; i <= 43; i++) {
+  digitalWrite(22, LOW);
+  for (int i = 23; i <= 43; i++) {
     pinMode(i, OUTPUT);
     digitalWrite(i, HIGH);
   }
