@@ -128,7 +128,7 @@ telegramController.listenMessages(telegram, semaphoreMiniDB)
   });
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
-/* - - - - - - - - - - ERROR HANDLER - - - - - - - */
+/* - - - - - - - - - - UNHANDLED-REJECTION AND WARNING HANDLER - - - - - - - */
 const errorHandler = async (error) => {
   // eslint-disable-next-line no-param-reassign
   error = {
