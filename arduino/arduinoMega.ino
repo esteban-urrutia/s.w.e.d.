@@ -12,7 +12,10 @@ void setup() {
   Wire.onReceive(i2cReceive);
   Wire.onRequest(i2cSend);
 
+  // 220v Power Supply
   digitalWrite(22, LOW);
+
+  // Solid State Relay
   for (int i = 23; i <= 43; i++) {
     pinMode(i, OUTPUT);
     digitalWrite(i, HIGH);
