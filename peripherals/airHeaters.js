@@ -1,41 +1,9 @@
-const i2c = require('../controllers/i2cController');
 const env = require('dotenv').config().parsed;
+const i2c = require('../controllers/i2cController');
 
 const airHeaterOfGrowSpace = {
-  on: (async () => {
-    const messageToSend = 'SR'+env.pin_airHeater+'e';
-
-    i2c.sendMessage(messageToSend, env.i2c_arduinoMega_address);
-    const receivedMessage = i2c.receiveMessage(env.i2c_arduinoMega_address);
-
-    if(messageToSend === receivedMessage){
-      return true;
-    }
-    else if(receivedMessage === 'undef'){
-      throw 'message sended('+messageToSend+') was now recognized';
-    }
-    else{
-      throw 'message sended('+messageToSend+') is different from message received('+receivedMessage+')';
-    }
-
-  }),
-  off: (async () => {
-    const messageToSend = 'SR'+env.pin_airHeater+'d';
-
-    i2c.sendMessage(messageToSend, env.i2c_arduinoMega_address);
-    const receivedMessage = i2c.receiveMessage(env.i2c_arduinoMega_address);
-
-    if(messageToSend === receivedMessage){
-      return true;
-    }
-    else if(receivedMessage === 'undef'){
-      throw 'message sended('+messageToSend+') was now recognized';
-    }
-    else{
-      throw 'message sended('+messageToSend+') is different from message received('+receivedMessage+')';
-    }
-
-  }),
+  on: (async () => i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_airHeaterOfGrowSpace, 'e')),
+  off: (async () => i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_airHeaterOfGrowSpace, 'd')),
 };
 
 module.exports = {
