@@ -1,11 +1,14 @@
+const env = require('dotenv').config().parsed;
+const i2c = require('../controllers/i2cController');
+
 const waterValveForIrrigationOfFrontGarden = {
-  on: (async () => 'a'), // i2c encender
-  off: (async () => 'b'), // i2c apagar
+  on: (async () => i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfFrontGarden, 'e')),
+  off: (async () => i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfFrontGarden, 'd')),
 };
 
 const waterValveForIrrigationOfBackGarden = {
-  on: (async () => 'c'), // i2c encender
-  off: (async () => 'd'), // i2c apagar
+  on: (async () => i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfBackGarden, 'e')),
+  off: (async () => i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfBackGarden, 'd')),
 };
 
 module.exports = {

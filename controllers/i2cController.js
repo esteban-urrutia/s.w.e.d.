@@ -5,7 +5,7 @@
 const I2C = require('i2c-bus');
 const env = require('dotenv').config().parsed;
 
-function sendMessage(destinataryAddress, message) {
+async function sendMessage(destinataryAddress, message) {
   message = Buffer.from(message);
 
   const i2c = I2C.openSync(1);
@@ -13,7 +13,7 @@ function sendMessage(destinataryAddress, message) {
   i2c.closeSync();
 }
 
-function receiveMessage(senderAddress) {
+async function receiveMessage(senderAddress) {
   let message = Buffer.alloc(parseInt(env.i2c_message_length));
 
   const i2c = I2C.openSync(1);
@@ -24,11 +24,11 @@ function receiveMessage(senderAddress) {
   return message;
 }
 
-function post(address, device, pin, status) {
+async function post(address, device, pin, status) {
   const messageToSend = `${device}${pin}${status}`;
 
-  sendMessage(address, messageToSend);
-  const receivedMessage = receiveMessage(address);
+  await sendMessage(address, messageToSend);
+  const receivedMessage = await receiveMessage(address);
 
   if (messageToSend === receivedMessage) {
     return true;

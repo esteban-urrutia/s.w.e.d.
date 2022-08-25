@@ -3,7 +3,6 @@
 // I2C
 #define i2cMessageLength 5
 #define i2cArduinoMegaAddress 8
-#define i2cArduinoMegaAddress 8
 char responseMessage[i2cMessageLength];
 
 // Solid State Relay
@@ -57,29 +56,25 @@ void i2cSend() {
 }
 
 void deviceManager(char message[]) {
-
-  // manages SolidStateRelay channels
+  // manages SolidStateRelay
   if(message[0] == 'S'
   && message[1] == 'R'
   && isDigit(message[2])
   && isDigit(message[3])
   && (message[4] == 'e' || message[4] == 'd')) {
-    
     int pin = (String(message[2]) + String(message[3])).toInt();
 
+    // validate pin received
     if(pin >= startPin_solidStateRelay
     && pin <= finishPin_solidStateRelay) {
-      if(message[4] == 'e') { 
-        digitalWrite(pin, LOW);
-      }
-      else if(message[4] == 'd') { 
-        digitalWrite(pin, HIGH);
-      }
+      
+      // pin enable/disable
+      if(message[4] == 'e') { digitalWrite(pin, LOW); }
+      else if(message[4] == 'd') { digitalWrite(pin, HIGH); }
   
-      for(int i = 0; i < i2cMessageLength; i++) {
-        responseMessage[i] = message[i];
-      }
-    }
+      // response with same message
+      for(int i = 0; i < i2cMessageLength; i++) { responseMessage[i] = message[i]; }
+    }    
     else {
       responseMessage[0] = 'u';
       responseMessage[1] = 'n';
@@ -87,7 +82,6 @@ void deviceManager(char message[]) {
       responseMessage[3] = 'e';
       responseMessage[4] = 'f';
     }
-
   }
 
   // manages undefined message
