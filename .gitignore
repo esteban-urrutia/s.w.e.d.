@@ -2,3 +2,4 @@ node_modules/
 package-lock.json
 logs/
 miniDB.json
+pm2ProcessCheck.csv
