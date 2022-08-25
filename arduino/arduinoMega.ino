@@ -5,21 +5,23 @@
 char responseMessage[i2cMessageLength];
 
 void setup() {
-  delay(3000);
+  delay(2000);
   Serial.begin(9600);
   Wire.begin(i2cArduinoMegaAddress);
   
   Wire.onReceive(i2cReceive);
   Wire.onRequest(i2cSend);
-
-  // 220v Power Supply
-  digitalWrite(22, LOW);
-
-  // Solid State Relay
-  for (int i = 23; i <= 43; i++) {
+  
+  // Solid State Relay - all channels off
+  for (int i = 23; i <= 38; i++) {
     pinMode(i, OUTPUT);
     digitalWrite(i, HIGH);
   }
+  
+  // 220v Power Supply NC fix
+  delay(2000);
+  pinMode(22, OUTPUT);
+  digitalWrite(22, LOW);
 }
 
 void loop() {
@@ -50,7 +52,7 @@ void i2cSend() {
 
 void deviceManager(char message[]) {
 
-  // manages SolidStateRelay
+  // manages SolidStateRelay channels
   if(message[0] == 'S'
   && message[1] == 'R'
   && isDigit(message[2])
