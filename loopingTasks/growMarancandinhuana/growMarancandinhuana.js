@@ -189,23 +189,23 @@ async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB) {
   return true;
 }
 
-/**
- * growMarancandinhuana -> Manages:
- *   growSpace
- *     light
- *     temperature
- *     humidity
- *     airRenew
- *   nutritiveSolution
- *     temperature
- *     recirculation
- *     ec
- *     pc
- *     oxygenation
- *   training
- *     topping
- *     pruning
- *     defoliation
+/*
+  growMarancandinhuana -> Manages:
+    growSpace
+    x   light
+    ✓   temperature
+   ✓/2  humidity
+    x   airRenew
+  nutritiveSolution
+   ✓/2  temperature
+    ✓   recirculation
+    x   ec
+   ✓/2   ph
+    ✓   oxygenation
+  training
+    x  topping
+    x  pruning
+    x  defoliation
  */
 async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
   // await manageGrowSpaceLight(miniDB, semaphoreMiniDB);

@@ -10,8 +10,11 @@ const { waterPumpForSampleOfNFTsystem } = require('./peripherals/waterPumps');
 const { waterValveForIrrigationOfFrontGarden } = require('./peripherals/waterValves');
 const { waterValveForIrrigationOfBackGarden } = require('./peripherals/waterValves');
 const { sleep } = require('./utils/utils');
+const { temperatureAndHumidityOfGrowSpace } = require('./sensors/temperature-humidity');
 
+// Solid State Relay
 // 1
+/*
 console.info('airHeaterOfGrowSpace.on()');
 airHeaterOfGrowSpace.on()
 .then(async () => {
@@ -109,7 +112,7 @@ airHeaterOfGrowSpace.on()
                                                                                     console.info('waterValveForIrrigationOfBackGarden.off()\n\n');
                                                                                     await waterValveForIrrigationOfBackGarden.off()
                                                                                     .then(async () => {
-                                                                                        console.info('success');
+                                                                                        console.info('Solid State Relay test success');
                                                                                     })
                                                                                 })
                                                                             })
@@ -135,3 +138,11 @@ airHeaterOfGrowSpace.on()
 .catch((error) => {
     console.error(error);
 })
+*/
+
+// Dht22
+// 1
+temperatureAndHumidityOfGrowSpace.get()
+.then((response) => {
+    console.log(response)
+});
