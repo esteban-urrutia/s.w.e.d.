@@ -145,4 +145,7 @@ airHeaterOfGrowSpace.on()
 temperatureAndHumidityOfGrowSpace.get()
 .then((response) => {
     console.log(response)
+})
+.catch((response) => {
+    console.log(response)
 });
