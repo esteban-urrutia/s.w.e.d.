@@ -1,5 +1,5 @@
 const temperatureOfNutrientSolution = {
-  get: (async () => ''), // i2c obtener
+  get: (async () => 30), // i2c obtener
 };
 
 module.exports = {

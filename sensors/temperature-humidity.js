@@ -1,39 +1,48 @@
+/* eslint-disable radix */
 const env = require('dotenv').config().parsed;
 const dht22 = require('node-dht-sensor').promises;
 
 const temperatureAndHumidityOfGrowSpace = {
   get: (async () => {
-    const { 
+    const {
       temperature: temperatureOfGrowSpace1,
-      humidity: humidityOfGrowSpace1
+      humidity: humidityOfGrowSpace1,
     } = dht22.readSync(22, parseInt(env.pin_temperatureAndHumidityOfGrowSpace1));
-    if(!temperatureOfGrowSpace1  ||  !humidityOfGrowSpace1){
-      throw 'error: malfunction on dht22 connected at pin '+env.pin_temperatureAndHumidityOfGrowSpace1;
+    if (!temperatureOfGrowSpace1 || !humidityOfGrowSpace1) {
+      throw new Error(`error: malfunction on dht22 connected at pin ${env.pin_temperatureAndHumidityOfGrowSpace1}`);
     }
 
-    const { 
+    const {
       temperature: temperatureOfGrowSpace2,
-      humidity: humidityOfGrowSpace2
+      humidity: humidityOfGrowSpace2,
     } = dht22.readSync(22, parseInt(env.pin_temperatureAndHumidityOfGrowSpace2));
-    if(!temperatureOfGrowSpace2  ||  !humidityOfGrowSpace2){
-      throw 'error: malfunction on dht22 connected at pin '+env.pin_temperatureAndHumidityOfGrowSpace2;
+    if (!temperatureOfGrowSpace2 || !humidityOfGrowSpace2) {
+      throw new Error(`error: malfunction on dht22 connected at pin ${env.pin_temperatureAndHumidityOfGrowSpace2}`);
     }
 
-    const { 
+    const {
       temperature: temperatureOfGrowSpace3,
-      humidity: humidityOfGrowSpace3
+      humidity: humidityOfGrowSpace3,
     } = dht22.readSync(22, parseInt(env.pin_temperatureAndHumidityOfGrowSpace3));
-    if(!temperatureOfGrowSpace3  ||  !humidityOfGrowSpace3){
-      throw 'error: malfunction on dht22 connected at pin '+env.pin_temperatureAndHumidityOfGrowSpace3;
+    if (!temperatureOfGrowSpace3 || !humidityOfGrowSpace3) {
+      throw new Error(`error: malfunction on dht22 connected at pin ${env.pin_temperatureAndHumidityOfGrowSpace3}`);
     }
 
-    const temperatureOfGrowSpace = ((temperatureOfGrowSpace1+temperatureOfGrowSpace2+temperatureOfGrowSpace3)/3);
-    const humidityOfGrowSpace = ((humidityOfGrowSpace1+humidityOfGrowSpace2+humidityOfGrowSpace3)/3);
-    
+    const temperatureOfGrowSpace = (
+      (temperatureOfGrowSpace1
+      + temperatureOfGrowSpace2
+      + temperatureOfGrowSpace3) / 3
+    );
+    const humidityOfGrowSpace = (
+      (humidityOfGrowSpace1
+      + humidityOfGrowSpace2
+      + humidityOfGrowSpace3) / 3
+    );
+
     return {
       temperatureOfGrowSpace,
-      humidityOfGrowSpace
-    }
+      humidityOfGrowSpace,
+    };
   }),
 };
 

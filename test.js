@@ -1,3 +1,6 @@
+/* eslint-disable no-console */
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 const { airHeaterOfGrowSpace } = require('./peripherals/airHeaters');
 const { airPumpOfNutrientSolution } = require('./peripherals/airPumps');
 const { humidifierOfGrowSpace } = require('./peripherals/humidifiers');
@@ -143,9 +146,9 @@ airHeaterOfGrowSpace.on()
 // Dht22
 // 1
 temperatureAndHumidityOfGrowSpace.get()
-.then((response) => {
-    console.log(response)
-})
-.catch((response) => {
-    console.log(response)
-});
+  .then((response) => {
+    console.info(response);
+  })
+  .catch((response) => {
+    console.info(response);
+  });

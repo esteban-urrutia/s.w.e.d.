@@ -1,8 +1,4 @@
-/* eslint-disable max-len */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-prototype-builtins */
+/* eslint-disable */
 const env = require('dotenv').config().parsed;
 const ObjectsToCsv = require('objects-to-csv');
 const getFolderSize = require('fast-folder-size/sync');
