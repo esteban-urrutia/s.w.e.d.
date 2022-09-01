@@ -1,4 +1,3 @@
-/* eslint-disable */
 const env = require('dotenv').config().parsed;
 const ObjectsToCsv = require('objects-to-csv');
 const getFolderSize = require('fast-folder-size/sync');
