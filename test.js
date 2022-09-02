@@ -14,6 +14,7 @@ const { waterValveForIrrigationOfFrontGarden } = require('./peripherals/waterVal
 const { waterValveForIrrigationOfBackGarden } = require('./peripherals/waterValves');
 const { sleep } = require('./utils/utils');
 const { temperatureAndHumidityOfGrowSpace } = require('./sensors/temperature-humidity');
+const { temperatureOfNutrientSolution } = require('./sensors/waterTemperature');
 
 // Solid State Relay
 // 1
@@ -143,12 +144,23 @@ airHeaterOfGrowSpace.on()
 })
 */
 
+
 // Dht22
-// 1
 temperatureAndHumidityOfGrowSpace.get()
   .then((response) => {
     console.info(response);
   })
-  .catch((response) => {
-    console.info(response);
+  .catch((error) => {
+    console.info(error);
   });
+
+
+// Ds18b20
+temperatureOfNutrientSolution.get()
+.then((response) => {
+  console.info(response);
+})
+.catch((error) => {
+  console.info(error);
+});
+

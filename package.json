@@ -5,6 +5,7 @@
   "dependencies": {
     "compressing": "^1.6.2",
     "dotenv": "^16.0.1",
+    "ds18x20": "^0.2.0",
     "fast-folder-size": "^1.7.0",
     "i2c-bus": "^5.2.2",
     "node-cron": "^3.0.1",
