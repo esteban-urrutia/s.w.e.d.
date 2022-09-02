@@ -58,10 +58,6 @@ class Log {
               \nError details  :  
               ${error.hasOwnProperty('stack') ? error.stack : error}`);
           })
-        .finally(() => {
-          this.cleanObjectsToCsvInstance();
-          semaphoreLog.leave();
-        });
     });
   }
 
