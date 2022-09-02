@@ -57,6 +57,8 @@ class Log {
               \n${JSON.stringify(this.objectsToCsvInstance.data[0])}
               \nError details  :  
               ${error.hasOwnProperty('stack') ? error.stack : error}`);
+            this.cleanObjectsToCsvInstance();
+            semaphoreLog.leave();
           })
     });
   }
