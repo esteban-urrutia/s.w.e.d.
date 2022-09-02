@@ -1,6 +1,6 @@
 const semaphoreMiniDB = require('semaphore')(1);
 const env = require('dotenv').config().parsed;
-const cron = require('node-cron');
+const schedule = require('node-schedule');
 const TelegramBot = require('node-telegram-bot-api');
 
 const log = require('./controllers/logController').getInstance();
@@ -25,7 +25,7 @@ telegramController.sendMessage(telegram, 's.w.e.d. Started', 'text')
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* - - - - - - - - - - LOOPING TASKS - - - - - - - */
-cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
+schedule.scheduleJob(env.loopingTasks_frequencyOfLoop, async function(){
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   // manage grow of Marancandinhuana
@@ -62,60 +62,63 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
 
 /* - - - - - - - - - - SECONDARY TASKS - - - - - - */
 // scheduler that rotate all logs
-cron.schedule(env.logs_frequencyOfRotation, async () => {
+schedule.scheduleJob(env.logs_frequencyOfRotation, async function(){
+  console.log("2")
   await log.rotateLogs()
-    .catch(async (error) => {
-      await log.save(error, 'error');
-    });
+  .catch(async (error) => {
+    await log.save(error, 'error');
+  });
 });
 
 // scheduler that checks internet connection and run tasks after connection is back online
-cron.schedule(env.hardwareAlerts_frequencyOf_internetCheck, async () => {
+schedule.scheduleJob(env.hardwareAlerts_frequencyOf_internetCheck, async function(){
+  console.log("3")
   await secondaryTasksController.internetCheck()
-    .then(async (responseInternetStatus) => {
-      internetStatus = responseInternetStatus.online;
+  .then(async (responseInternetStatus) => {
+    internetStatus = responseInternetStatus.online;
 
-      // tasks to run when internet connection is back online
-      if (responseInternetStatus.runTasks) {
-        // restart telegram connection
-        await telegramController.restartConnection(telegram)
-          .then(async (responseTelegram) => {
-            telegram = responseTelegram;
-            await log.save({
-              message: 'telegram connection restarted and back online',
-              stack: 'main -> CRON_internetCheck -> secondaryTasksController.internetCheck -> telegramController.restartConnection',
-            }, 'error');
+    // tasks to run when internet connection is back online
+    if (responseInternetStatus.runTasks) {
+      // restart telegram connection
+      await telegramController.restartConnection(telegram)
+        .then(async (responseTelegram) => {
+          telegram = responseTelegram;
+          await log.save({
+            message: 'telegram connection restarted and back online',
+            stack: 'main -> CRON_internetCheck -> secondaryTasksController.internetCheck -> telegramController.restartConnection',
+          }, 'error');
 
-            await telegramController.sendMessage(telegram, 'Internet back online\n\n\n'
-                                                            + `Disconnected at:\n${utils.getDateStampFromTimeStamp(responseInternetStatus.timestampDisconnectedAt)}\n\n`
-                                                            + `Reconnected at:\n${utils.getDateStampFromTimeStamp(responseInternetStatus.timestampReconnectedAt)}\n\n`
-                                                            + `Time Offline:\n${Math.floor((responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) / 60)}  minutes\n${
-                                                              (responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) - (60 * Math.floor((responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) / 60))}  seconds`, 'text')
-              .catch(async (telegramError) => {
-                await log.save(telegramError, 'error');
-              });
-          })
-          .catch(async (error) => {
-            await log.save(error, 'error');
-          });
-      }
-    });
+          await telegramController.sendMessage(telegram, 'Internet back online\n\n\n'
+                                                          + `Disconnected at:\n${utils.getDateStampFromTimeStamp(responseInternetStatus.timestampDisconnectedAt)}\n\n`
+                                                          + `Reconnected at:\n${utils.getDateStampFromTimeStamp(responseInternetStatus.timestampReconnectedAt)}\n\n`
+                                                          + `Time Offline:\n${Math.floor((responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) / 60)}  minutes\n${
+                                                            (responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) - (60 * Math.floor((responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) / 60))}  seconds`, 'text')
+            .catch(async (telegramError) => {
+              await log.save(telegramError, 'error');
+            });
+        })
+        .catch(async (error) => {
+          await log.save(error, 'error');
+        });
+    }
+  });
 });
 
 // scheduler that checks hardware (CPU, RAM, DISK, TEMPERATURE)
-cron.schedule(env.hardwareAlerts_frequencyOf_hardwareCheck, async () => {
+schedule.scheduleJob(env.hardwareAlerts_frequencyOf_hardwareCheck, async function(){
+  console.log("4")
   await secondaryTasksController.hardwareCheck()
-    .then(async (hardwareCheckResult) => {
-      if (hardwareCheckResult) {
-        await telegramController.sendMessage(telegram, `HARDWARE ALERT !!!\n\nat  ${utils.getDateStamp()}\n\n\n${hardwareCheckResult}`, 'text')
-          .catch(async (error) => {
-            await log.save(error, 'error');
-          });
-      }
-    })
-    .catch(async (error) => {
-      await log.save(error, 'error');
-    });
+  .then(async (hardwareCheckResult) => {
+    if (hardwareCheckResult) {
+      await telegramController.sendMessage(telegram, `HARDWARE ALERT !!!\n\nat  ${utils.getDateStamp()}\n\n\n${hardwareCheckResult}`, 'text')
+        .catch(async (error) => {
+          await log.save(error, 'error');
+        });
+    }
+  })
+  .catch(async (error) => {
+    await log.save(error, 'error');
+  });
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
