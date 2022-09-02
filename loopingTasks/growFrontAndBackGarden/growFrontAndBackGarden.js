@@ -41,6 +41,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
  * growFrontAndBackGarden: - irrigates front and back garden
  */
 async function growFrontAndBackGarden(miniDB, semaphoreMiniDB) {
+  console.log("growFrontAndBackGarden")
   await manageIrrigation(miniDB, semaphoreMiniDB);
 
   return true;

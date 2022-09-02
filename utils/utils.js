@@ -1,5 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable radix */
+const { exec } = require('child_process');
+
 /**
  * sleep: sleep a certain amount of seconds
  * @returns {promise<void>}
@@ -141,6 +143,17 @@ function normalizeTextForTelegramMessage(param) {
   return response;
 }
 
+function execute(command) {
+  return new Promise((resolve, reject) => {
+   exec(command, (error, stdout, stderr) => {
+    if (error  ||  stderr) {
+      reject(error ? error : stderr);
+    }
+    resolve(stdout);
+   });
+  });
+ }
+
 module.exports = {
   sleep,
   getDateStamp,
@@ -149,4 +162,5 @@ module.exports = {
   getPhotoperiod,
   normalizeTextForCsv,
   normalizeTextForTelegramMessage,
+  execute,
 };

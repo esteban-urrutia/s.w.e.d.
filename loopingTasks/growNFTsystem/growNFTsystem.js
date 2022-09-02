@@ -38,6 +38,7 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
  * growNFTsystem: - irrigates NFT system
  */
 async function growNFTsystem(miniDB, semaphoreMiniDB) {
+  console.log("growNFTsystem")
   await manageIrrigation(miniDB, semaphoreMiniDB);
 
   return true;

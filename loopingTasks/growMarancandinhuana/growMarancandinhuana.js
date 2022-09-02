@@ -208,6 +208,8 @@ async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB) {
     x  defoliation
  */
 async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
+console.log("growMarancandinhuana")
+  
   // await manageGrowSpaceLight(miniDB, semaphoreMiniDB);
   const {
     temperatureOfGrowSpace,
