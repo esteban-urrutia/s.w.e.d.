@@ -37,7 +37,7 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
           await log.save(telegramError, 'error');
         });
     });
-/*
+
   // manage grow of front and back garden
   await growFrontAndBackGarden(miniDB, semaphoreMiniDB)
     .catch(async (error) => {
@@ -57,7 +57,6 @@ cron.schedule(env.loopingTasks_frequencyOfLoop, async () => {
           await log.save(telegramError, 'error');
         });
     });
-    */
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
