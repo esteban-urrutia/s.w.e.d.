@@ -6,10 +6,10 @@ const {
 } = require('../utils/utils');
 
 function getDs18b20Temp(oneWireAddress) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     ds18b20.get(oneWireAddress, (error, temp) => {
     if (error) {
-      reject(error);
+      resolve("readingError");
     }
     resolve(temp);
    })

@@ -101,39 +101,41 @@ async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB) {
 
   const temperatureOfNutSol = await temperatureOfNutrientSolution.get();
 
-  // temperatureOfNutSol <= min
-  if (
-    temperatureOfNutSol
-    <= miniDB
-      .growMarancandinhuanaParams
-      .nutritiveSolution
-      .temperature
-      .values[photoperiod]
-      .min
-  ) {
-    await waterHeaterOfNutrientSolution.on();
-    miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = 'heating';
-  }
-  // temperatureOfNutSol >= max
-  else if (
-    temperatureOfNutSol
-    >= miniDB
-      .growMarancandinhuanaParams
-      .nutritiveSolution
-      .temperature
-      .values[photoperiod]
-      .max
-  ) {
-    await waterHeaterOfNutrientSolution.off();
-    miniDB.growMarancandinhuanaParams.growSpace.temperature.status = null;
-  }
-  // min < temperatureOfNutSol < max
-  else {
-    await waterHeaterOfNutrientSolution.off();
-    miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = null;
-  }
+  if(temperatureOfNutSol !== "readingError"){
+    // temperatureOfNutSol <= min
+    if (
+      temperatureOfNutSol
+      <= miniDB
+        .growMarancandinhuanaParams
+        .nutritiveSolution
+        .temperature
+        .values[photoperiod]
+        .min
+    ) {
+      await waterHeaterOfNutrientSolution.on();
+      miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = 'heating';
+    }
+    // temperatureOfNutSol >= max
+    else if (
+      temperatureOfNutSol
+      >= miniDB
+        .growMarancandinhuanaParams
+        .nutritiveSolution
+        .temperature
+        .values[photoperiod]
+        .max
+    ) {
+      await waterHeaterOfNutrientSolution.off();
+      miniDB.growMarancandinhuanaParams.growSpace.temperature.status = null;
+    }
+    // min < temperatureOfNutSol < max
+    else {
+      await waterHeaterOfNutrientSolution.off();
+      miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = null;
+    }
 
-  await saveMiniDB(semaphoreMiniDB, miniDB);
+    await saveMiniDB(semaphoreMiniDB, miniDB);
+  }
   return true;
 }
 
