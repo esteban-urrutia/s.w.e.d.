@@ -48,12 +48,16 @@ class Log {
 
       // save to log's csv file
       await this.objectsToCsvInstance.toDisk(logFile, { append: true })
-        .catch((error) => {
-          console.log(`Error guardando log  :
-            \n${JSON.stringify(this.objectsToCsvInstance.data[0])}
-            \nError details  :  
-            ${error.hasOwnProperty('stack') ? error.stack : error}`);
+        .then(() => { 
+          this.cleanObjectsToCsvInstance();
+          semaphoreLog.leave();
         })
+        .catch((error) => {
+            console.log(`Error guardando log  :
+              \n${JSON.stringify(this.objectsToCsvInstance.data[0])}
+              \nError details  :  
+              ${error.hasOwnProperty('stack') ? error.stack : error}`);
+          })
         .finally(() => {
           this.cleanObjectsToCsvInstance();
           semaphoreLog.leave();
