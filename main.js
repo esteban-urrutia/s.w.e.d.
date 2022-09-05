@@ -61,14 +61,6 @@ schedule.scheduleJob(env.loopingTasks_frequencyOfLoop, async () => {
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* - - - - - - - - - - SECONDARY TASKS - - - - - - */
-// scheduler that rotate all logs
-schedule.scheduleJob(env.logs_frequencyOfRotation, async () => {
-  await log.rotateLogs()
-    .catch(async (error) => {
-      await log.save(error, 'error');
-    });
-});
-
 // scheduler that checks internet connection and run tasks after connection is back online
 schedule.scheduleJob(env.hardwareAlerts_frequencyOf_internetCheck, async () => {
   await secondaryTasksController.internetCheck()
