@@ -65,36 +65,32 @@ class Log {
 
   async rotateLogs() {
     return new Promise((resolve, reject) => {
-      semaphoreLog.take(async () => {
-        const logs = { filesInFolder: {}, fileSize: {} };
+      const logs = { filesInFolder: {}, fileSize: {} };
 
-        try { logs.logsFolderSize = getFolderSize('./logs') / (1000 * 1000); } catch (error) { logs.logsFolderSize = undefined; }
-        try { logs.filesInFolder.info = fs.readdirSync('./logs/info').length; } catch (error) { logs.filesInFolder.info = undefined; }
-        try { logs.filesInFolder.error = fs.readdirSync('./logs/error').length; } catch (error) { logs.filesInFolder.error = undefined; }
-        try { logs.filesInFolder.incomingTelegramMessages = fs.readdirSync('./logs/incomingTelegramMessages').length; } catch (error) { logs.filesInFolder.incomingTelegramMessages = undefined; }
-        try { logs.fileSize.info = (fs.statSync('./logs/info/log_info.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.info = undefined; }
-        try { logs.fileSize.error = (fs.statSync('./logs/error/log_error.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.error = undefined; }
-        try { logs.fileSize.incomingTelegramMessages = (fs.statSync('./logs/incomingTelegramMessages/log_incomingTelegramMessages.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.incomingTelegramMessages = undefined; }
+      try { logs.logsFolderSize = getFolderSize('./logs') / (1000 * 1000); } catch (error) { logs.logsFolderSize = undefined; }
+      try { logs.filesInFolder.info = fs.readdirSync('./logs/info').length; } catch (error) { logs.filesInFolder.info = undefined; }
+      try { logs.filesInFolder.error = fs.readdirSync('./logs/error').length; } catch (error) { logs.filesInFolder.error = undefined; }
+      try { logs.filesInFolder.incomingTelegramMessages = fs.readdirSync('./logs/incomingTelegramMessages').length; } catch (error) { logs.filesInFolder.incomingTelegramMessages = undefined; }
+      try { logs.fileSize.info = (fs.statSync('./logs/info/log_info.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.info = undefined; }
+      try { logs.fileSize.error = (fs.statSync('./logs/error/log_error.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.error = undefined; }
+      try { logs.fileSize.incomingTelegramMessages = (fs.statSync('./logs/incomingTelegramMessages/log_incomingTelegramMessages.csv')).size / (1000 * 1000); } catch (error) { logs.fileSize.incomingTelegramMessages = undefined; }
 
-        // if a log file size in greater than 10 MB... rotate this log
-        // then... if logs folder size is greater than 2 GB...
-        // erase oldest logFile from folder with more logFiles
-        await this.renameLogFilesGreaterThanSpecified(logs)
-          .then(async (response) => {
-            if (!response.hasOwnProperty('thrownOff')) {
-              await this.eraseOldestLogFileFromFolderWithMoreLogFiles(logs)
-                .then((innerResponse) => {
-                  semaphoreLog.leave();
-                  if (!innerResponse.hasOwnProperty('thrownOff')) {
-                    resolve(innerResponse);
-                  }
-                  reject(innerResponse);
-                });
-            }
-            semaphoreLog.leave();
-            reject(response);
-          });
-      });
+      // if a log file size in greater than 10 MB... rotate this log
+      // then... if logs folder size is greater than 2 GB...
+      // erase oldest logFile from folder with more logFiles
+      await this.renameLogFilesGreaterThanSpecified(logs)
+        .then(async (response) => {
+          if (!response.hasOwnProperty('thrownOff')) {
+            await this.eraseOldestLogFileFromFolderWithMoreLogFiles(logs)
+              .then((innerResponse) => {
+                if (!innerResponse.hasOwnProperty('thrownOff')) {
+                  resolve(innerResponse);
+                }
+                reject(innerResponse);
+              });
+          }
+          reject(response);
+        });
     });
   }
 
