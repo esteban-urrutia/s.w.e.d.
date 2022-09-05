@@ -93,3 +93,35 @@ void deviceManager(char message[]) {
       responseMessage[4] = 'f';
   }
 }
+
+
+
+
+
+#define pin_sensor_PH A0
+#define pin_5_sensor shit ( se prende solo para leer )
+
+																		 for(int i=0;i<10;i++) 
+																							 { 
+																							 buf[i]=analogRead(pin_sensor_PH);
+																							 delay(100);
+																							 }
+																		 for( int i = 0 ; i < 9 ; i++ )
+																									 {
+																									 for( int j = i + 1 ; j < 10 ; j++ )
+																																		{
+																																		 if( buf[i] > buf[j] )
+																																							 {
+																																							 temporal=buf[i];
+																																							 buf[i]=buf[j];
+																																							 buf[j]=temporal;
+																																							 }
+																																		}
+																									 }
+																							 
+																		 promedio_PH_sol_nut = 0;
+																		 promedio_PH_sol_nut = buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7]; 
+																		 promedio_PH_sol_nut = promedio_PH_sol_nut/6;
+
+																		 PH_sol_nut = (float)((calibracion_ph_M * promedio_PH_sol_nut)*(5.0/1023.0) + calibracion_ph_Y);
+																		 
