@@ -101,7 +101,7 @@ async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB) {
 
   const temperatureOfNutSol = await temperatureOfNutrientSolution.get();
 
-  if(temperatureOfNutSol !== "readingError"){
+  if (temperatureOfNutSol !== 'readingError') {
     // temperatureOfNutSol <= min
     if (
       temperatureOfNutSol
@@ -210,7 +210,6 @@ async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB) {
     x  defoliation
  */
 async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
-  console.log("growMarancandinhuana")
   // await manageGrowSpaceLight(miniDB, semaphoreMiniDB);
   const {
     temperatureOfGrowSpace,

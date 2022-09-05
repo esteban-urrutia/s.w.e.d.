@@ -1,35 +1,36 @@
 const env = require('dotenv').config().parsed;
-var ds18b20 = require('ds18x20');
-const { 
+const ds18b20 = require('ds18x20');
+const {
   sleep,
-  execute 
+  execute,
 } = require('../utils/utils');
 
 function getDs18b20Temp(oneWireAddress) {
   return new Promise((resolve) => {
     ds18b20.get(oneWireAddress, (error, temp) => {
-    if (error) {
-      resolve("readingError");
-    }
-    resolve(temp);
-   })
-  })
- }
+      if (error) {
+        resolve('readingError');
+      }
+      resolve(temp);
+    });
+  });
+}
 
 const temperatureOfNutrientSolution = {
   get: (async () => {
-
     // turn On sensor, wait 1 second, read sensor, wait 1 second, turn Off sensor
-    await execute('raspi-gpio set '+env.power_GPIO_sensors_temperatureOfNutrientSolution+' op dh');
+    await execute(`raspi-gpio set ${env.power_GPIO_sensors_temperatureOfNutrientSolution} op dh`);
     await sleep(1);
-  
-    const temperatureOfNutrientSolution = await getDs18b20Temp(env.oneWire_address_sensor_temperatureOfNutrientSolution);
+
+    const temperatureOfNutrientSolution1 = await getDs18b20Temp(
+      env.oneWire_address_sensor_temperatureOfNutrientSolution,
+    );
 
     await sleep(1);
-    await execute('raspi-gpio set '+env.power_GPIO_sensors_temperatureOfNutrientSolution+' op dl');
+    await execute(`raspi-gpio set ${env.power_GPIO_sensors_temperatureOfNutrientSolution} op dl`);
 
     return {
-      temperatureOfNutrientSolution,
+      temperatureOfNutrientSolution1,
     };
   }),
 };

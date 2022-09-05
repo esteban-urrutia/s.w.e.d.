@@ -144,7 +144,6 @@ airHeaterOfGrowSpace.on()
 })
 */
 
-
 // Dht22
 temperatureAndHumidityOfGrowSpace.get()
   .then((response) => {
@@ -154,13 +153,11 @@ temperatureAndHumidityOfGrowSpace.get()
     console.info(error);
   });
 
-
 // Ds18b20
 temperatureOfNutrientSolution.get()
-.then((response) => {
-  console.info(response);
-})
-.catch((error) => {
-  console.info(error);
-});
-
+  .then((response) => {
+    console.info(response);
+  })
+  .catch((error) => {
+    console.info(error);
+  });

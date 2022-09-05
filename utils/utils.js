@@ -1,3 +1,4 @@
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable radix */
 const { exec } = require('child_process');
@@ -145,14 +146,14 @@ function normalizeTextForTelegramMessage(param) {
 
 function execute(command) {
   return new Promise((resolve, reject) => {
-   exec(command, (error, stdout, stderr) => {
-    if (error  ||  stderr) {
-      reject(error ? error : stderr);
-    }
-    resolve(stdout);
-   });
+    exec(command, (error, stdout, stderr) => {
+      if (error || stderr) {
+        reject(error ? error : stderr);
+      }
+      resolve(stdout);
+    });
   });
- }
+}
 
 module.exports = {
   sleep,

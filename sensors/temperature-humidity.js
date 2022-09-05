@@ -1,17 +1,16 @@
 /* eslint-disable radix */
 const env = require('dotenv').config().parsed;
 const dht22 = require('node-dht-sensor').promises;
-const { 
+const {
   sleep,
-  execute 
+  execute,
 } = require('../utils/utils');
 
 const temperatureAndHumidityOfGrowSpace = {
   get: (async () => {
-
   // turn On sensor, wait 1 second, read sensor, wait 1 second, turn Off sensor
-  await execute('raspi-gpio set '+env.power_GPIO_sensors_temperatureAndHumidityOfGrowSpace+' op dh');
-  await sleep(1);
+    await execute(`raspi-gpio set ${env.power_GPIO_sensors_temperatureAndHumidityOfGrowSpace} op dh`);
+    await sleep(1);
 
     const {
       temperature: temperatureOfGrowSpace1,
@@ -47,7 +46,7 @@ const temperatureAndHumidityOfGrowSpace = {
     const humidityOfGrowSpace = humidityOfGrowSpace2;
 
     await sleep(1);
-    await execute('raspi-gpio set '+env.power_GPIO_sensors_temperatureAndHumidityOfGrowSpace+' op dl');
+    await execute(`raspi-gpio set ${env.power_GPIO_sensors_temperatureAndHumidityOfGrowSpace} op dl`);
 
     return {
       temperatureOfGrowSpace,
