@@ -64,7 +64,7 @@ class Log {
   }
 
   async rotateLogs() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const logs = { filesInFolder: {}, fileSize: {} };
 
       try { logs.logsFolderSize = getFolderSize('./logs') / (1000 * 1000); } catch (error) { logs.logsFolderSize = undefined; }
