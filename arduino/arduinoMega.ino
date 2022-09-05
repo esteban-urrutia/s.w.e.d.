@@ -35,7 +35,7 @@ void loop() {
 
 void i2cReceive(int howMany) {
   char message[i2cMessageLength];
-  int aux = 0;
+  int aux = 0;x
 
   while(Wire.available()) {
     char receivedCharacter = Wire.read();
