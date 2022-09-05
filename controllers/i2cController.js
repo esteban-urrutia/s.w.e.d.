@@ -27,17 +27,39 @@ async function receiveMessage(senderAddress) {
 async function post(address, device, pin, status) {
   const messageToSend = `${device}${pin}${status}`;
 
+    // first attempt
   await sendMessage(address, messageToSend);
-  const receivedMessage = await receiveMessage(address);
+  let receivedMessage = await receiveMessage(address);
 
   if (messageToSend === receivedMessage) {
     return true;
   }
   else if (receivedMessage === 'undef') {
-    throw new Error(`message sended(${messageToSend}) was now recognized`);
+    throw new Error(`message sended(${messageToSend}) was not recognized`);
   }
   else {
-    throw new Error(`message sended(${messageToSend}) is different from message received(${receivedMessage})`);
+    // second attempt
+    await sendMessage(address, messageToSend);
+    receivedMessage = await receiveMessage(address);
+
+    if (messageToSend === receivedMessage) {
+      return true;
+    }
+    else if (receivedMessage === 'undef') {
+      throw new Error(`message sended(${messageToSend}) was not recognized`);
+    }
+    else {
+      // third attempt
+      if (messageToSend === receivedMessage) {
+        return true;
+      }
+      else if (receivedMessage === 'undef') {
+        throw new Error(`message sended(${messageToSend}) was not recognized`);
+      }
+      else {
+        throw new Error(`message sended(${messageToSend}) is different from message received(${receivedMessage})`);
+      }
+    }
   }
 }
 
