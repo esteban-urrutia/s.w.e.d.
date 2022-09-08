@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable no-else-return */
 /* eslint-disable brace-style */
 /* eslint-disable no-param-reassign */
@@ -27,7 +28,7 @@ async function receiveMessage(senderAddress) {
 async function post(address, device, pin, status) {
   const messageToSend = `${device}${pin}${status}`;
 
-    // first attempt
+  // first attempt
   await sendMessage(address, messageToSend);
   let receivedMessage = await receiveMessage(address);
 
