@@ -12,11 +12,13 @@ const compress = require('compressing');
 const fs = require('fs');
 const log = require('./logController').getInstance();
 const { normalizeTextForTelegramMessage } = require('../utils/utils');
+const { readMiniDB } = require('./miniDBcontroller');
+const { temperatureAndHumidityOfGrowSpace } = require('../sensors/waterTemperature');
+const { temperatureOfNutrientSolution } = require('../sensors/waterTemperature');
 
-async function sendMessage(telegram, message, type) {
+async function sendMessage(telegram, message, type, deleteFileAfter = false) {
   if (env.telegram_enabled === 'true') {
     return new Promise(async (resolve, reject) => {
-      // send message according to specified type
       switch (type) {
         case 'text':
           message = normalizeTextForTelegramMessage(message);
@@ -39,16 +41,19 @@ async function sendMessage(telegram, message, type) {
         case 'document':
           await telegram.sendDocument(env.telegram_chatId, message)
             .then(async () => {
-              try {
-                fs.unlinkSync(message);
-                resolve(true);
-              } catch (error) {
-                reject({
-                  data: { message, type },
-                  message: (error.hasOwnProperty('stack') ? error.stack : error),
-                  stack: 'telegramController -> sendMessage -> document -> deleting from disk',
-                });
+              if (deleteFileAfter) {
+                try {
+                  fs.unlinkSync(message);
+                  resolve(true);
+                } catch (error) {
+                  reject({
+                    data: { message, type },
+                    message: (error.hasOwnProperty('stack') ? error.stack : error),
+                    stack: 'telegramController -> sendMessage -> document -> deleting from disk',
+                  });
+                }
               }
+              resolve(true);
             })
             .catch(async (error) => {
               await telegram.sendMessage(env.telegram_chatId, `Error executing (send document):  ${error}`)
@@ -72,16 +77,19 @@ async function sendMessage(telegram, message, type) {
         case 'image':
           await telegram.sendPhoto(env.telegram_chatId, message)
             .then(async () => {
-              try {
-                fs.unlinkSync(message);
-                resolve(true);
-              } catch (error) {
-                reject({
-                  data: { message, type },
-                  message: (error.hasOwnProperty('stack') ? error.stack : error),
-                  stack: 'telegramController -> sendMessage -> image -> deleting from disk',
-                });
+              if (deleteFileAfter) {
+                try {
+                  fs.unlinkSync(message);
+                  resolve(true);
+                } catch (error) {
+                  reject({
+                    data: { message, type },
+                    message: (error.hasOwnProperty('stack') ? error.stack : error),
+                    stack: 'telegramController -> sendMessage -> image -> deleting from disk',
+                  });
+                }
               }
+              resolve(true);
             })
             .catch(async (error) => {
               await telegram.sendMessage(env.telegram_chatId, `Error executing (send image):  ${error}`)
@@ -103,6 +111,7 @@ async function sendMessage(telegram, message, type) {
           break;
 
         default:
+          resolve(null);
           break;
       }
     });
@@ -112,18 +121,52 @@ async function sendMessage(telegram, message, type) {
 
 async function helpMenu(telegram) {
   const menu = `Commands for  ${env.telegram_botOf_thisRpi}\n\n\n`
-                + '1)   /profitStatus\n\n'
-                + '2)   /lastOrderStatus\n\n'
-                + '3)   /getLogs\n\n'
-                + '4)   /aliveReport\n\n'
-                + '5)   /configMenu';
-
-  // send helpMenu for this device
+                + '1)   /overview\n\n'
+                + '2)   /getPH\n\n'
+                + '3)   /configMenu';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
     });
 }
+
+async function overview(telegram, semaphoreMiniDB) {
+  const miniDB = await readMiniDB(semaphoreMiniDB);
+
+  const {
+    temperatureOfGrowSpace,
+    humidityOfGrowSpace,
+  } = await temperatureAndHumidityOfGrowSpace.get();
+
+  const temperatureOfNutSol = await temperatureOfNutrientSolution.get();
+
+  const overviewMessage = 'Grow Space: \n'
+                        + `    temperature:  ${temperatureOfGrowSpace}\n`
+                        + `    humidity:  ${humidityOfGrowSpace}\n\n`
+                        + 'Nutrient Solution:\n'
+                        + `    temperature:  ${temperatureOfNutSol}\n\n`
+                        + 'Peripherals Status:\n'
+                        + '    Grow Space:\n\n'
+                        + `        temperature:  ${miniDB.growMarancandinhuanaParams.growSpace.temperature.status}\n`;
+                        ///////////////////
+                        //////////////
+                        ////////////
+  await sendMessage(telegram, overviewMessage, 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+}
+
+async function getPH(telegram) {
+  // get PH, save to miniDB, send over telegram
+  /*
+  await sendMessage(telegram, overviewMessage, 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+  */
+}
+
 async function aliveReport(telegram) {
   const responseArray = [];
   let lastBoot = '';
@@ -263,19 +306,27 @@ async function listenMessages(telegram, semaphoreMiniDB) {
               await helpMenu(telegram);
               break;
 
-            case `/getLogs${botName}`:
-              await getLogs(telegram);
+            case `/overview${botName}`:
+              await overview(telegram, semaphoreMiniDB);
+              break;
+
+            case `/getPH${botName}`:
+              await getPH(telegram);
               break;
 
             case `/aliveReport${botName}`:
               await aliveReport(telegram);
               break;
 
-            case `/config_rebootService ${env.telegram_password}${botName}`:
+            case `/getLogs${botName}`:
+              await getLogs(telegram);
+              break;
+
+            case `/rebootService ${env.telegram_password}${botName}`:
               await rebootService(telegram);
               break;
 
-            case `/config_rebootRpi ${env.telegram_password}${botName}`:
+            case `/rebootRpi ${env.telegram_password}${botName}`:
               await rebootRpi(telegram);
               break;
 

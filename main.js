@@ -8,9 +8,11 @@ const secondaryTasksController = require('./controllers/secondaryTasksController
 const telegramController = require('./controllers/telegramController');
 const utils = require('./utils/utils');
 const { readMiniDB } = require('./controllers/miniDBcontroller');
+/*
 const { growFrontAndBackGarden } = require('./loopingTasks/growFrontAndBackGarden/growFrontAndBackGarden');
 const { growNFTsystem } = require('./loopingTasks/growNFTsystem/growNFTsystem');
 const { growMarancandinhuana } = require('./loopingTasks/growMarancandinhuana/growMarancandinhuana');
+*/
 
 let telegram = (env.telegram_enabled === 'true') ? new TelegramBot(env.telegram_token, { polling: true }) : null;
 // eslint-disable-next-line no-unused-vars
@@ -18,13 +20,14 @@ let internetStatus = null;
 
 /* - - - - - - - - - - STARTUP - - - - - - - - - - */
 // boot notification
-telegramController.sendMessage(telegram, 's.w.e.d. Started', 'text')
+telegramController.sendMessage(telegram, 'SmokeWeedEveryDay.jpg', 'image')
   .catch(async (telegramError) => {
     await log.save(telegramError, 'error');
   });
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* - - - - - - - - - - LOOPING TASKS - - - - - - - */
+/*
 schedule.scheduleJob(env.loopingTasks_frequencyOfLoop, async () => {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
@@ -58,6 +61,7 @@ schedule.scheduleJob(env.loopingTasks_frequencyOfLoop, async () => {
         });
     });
 });
+*/
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* - - - - - - - - - - SECONDARY TASKS - - - - - - */
