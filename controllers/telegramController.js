@@ -267,7 +267,7 @@ async function getLogs(telegram) {
 
     await compress.zip.compressDir('logs', compressedLogs)
       .then(async () => {
-        await sendMessage(telegram, compressedLogs, 'document')
+        await sendMessage(telegram, compressedLogs, 'document', true)
           .catch(async (error) => {
             await log.save(error, 'error');
           });
