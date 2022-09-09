@@ -8,32 +8,37 @@ const {
   waterValveForIrrigationOfBackGarden,
 } = require('../../peripherals/waterValves');
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
+const { getTimeStamp } = require('../../utils/utils');
 
 async function manageIrrigation(miniDB, semaphoreMiniDB) {
-  for (let i = 0; i < miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events.length; i++) {
-    const { start, finish } = miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events[i];
+  if(getTimeStamp() > miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil){
 
-    const now = new Date();
-    const startHour = parseInt(start.substring(0, 2));
-    const startMinute = parseInt(start.substring(3, 5));
-    const finishHour = parseInt(finish.substring(0, 2));
-    const finishMinute = parseInt(finish.substring(3, 5));
+    for (let i = 0; i < miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events.length; i++) {
+      const { start, finish } = miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events[i];
+  
+      const now = new Date();
+      const startHour = parseInt(start.substring(0, 2));
+      const startMinute = parseInt(start.substring(3, 5));
+      const finishHour = parseInt(finish.substring(0, 2));
+      const finishMinute = parseInt(finish.substring(3, 5));
+  
+      if (startHour === now.getHours()
+      && startMinute === now.getMinutes()) {
+        await waterValveForIrrigationOfFrontGarden.on();
+        await waterValveForIrrigationOfBackGarden.on();
+        miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = 'irrigating';
+      }
+      else if (finishHour === now.getHours()
+      && finishMinute === now.getMinutes()) {
+        await waterValveForIrrigationOfFrontGarden.off();
+        await waterValveForIrrigationOfBackGarden.off();
+        miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = null;
+      }
+    }
 
-    if (startHour === now.getHours()
-    && startMinute === now.getMinutes()) {
-      await waterValveForIrrigationOfFrontGarden.on();
-      await waterValveForIrrigationOfBackGarden.on();
-      miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = 'irrigating';
-    }
-    else if (finishHour === now.getHours()
-    && finishMinute === now.getMinutes()) {
-      await waterValveForIrrigationOfFrontGarden.off();
-      await waterValveForIrrigationOfBackGarden.off();
-      miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = null;
-    }
+    await saveMiniDB(semaphoreMiniDB, miniDB);
   }
 
-  await saveMiniDB(semaphoreMiniDB, miniDB);
   return true;
 }
 

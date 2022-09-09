@@ -13,13 +13,13 @@ async function sleep(seconds) {
 }
 
 /**
- * createDateStamp: create dateStamp in format like 31-12-2021_23:59:59
+ * createDateStamp: create dateStamp in format like 31-12-2021  23:59:59
  * @returns {String}
  */
 function createDateStamp(dateObject) {
   return `${(`0${dateObject.getDate()}`).slice(-2)}-${
     (`0${dateObject.getMonth() + 1}`).slice(-2)}-${
-    dateObject.getFullYear()}_${
+    dateObject.getFullYear()}  ${
     (`0${dateObject.getHours()}`).slice(-2)}:${
     (`0${dateObject.getMinutes()}`).slice(-2)}:${
     (`0${dateObject.getSeconds()}`).slice(-2)}`;
@@ -42,7 +42,7 @@ function getTimeStamp() {
 }
 
 /**
- * getDateStamp: get dateStamp in format like 31-12-2021_23:59:59,
+ * getDateStamp: get dateStamp in format like 31-12-2021  23:59:59,
  * from timeStamp in 10 character format
  * @returns {String}
  */

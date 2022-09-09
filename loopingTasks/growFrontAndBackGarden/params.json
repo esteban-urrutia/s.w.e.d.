@@ -3,6 +3,7 @@
     "irrigation": {
       "method": "fixedEvents",
       "status": null,
+      "suspendedUntil": 0,
       "events": [
         {
           "start": "08:00",
