@@ -11,7 +11,10 @@ const { exec } = require('child_process');
 const compress = require('compressing');
 const fs = require('fs');
 const log = require('./logController').getInstance();
-const { normalizeTextForTelegramMessage } = require('../utils/utils');
+const {
+  normalizeTextForTelegramMessage,
+  execute,
+} = require('../utils/utils');
 const { readMiniDB, saveMiniDB } = require('./miniDBcontroller');
 const { temperatureAndHumidityOfGrowSpace } = require('../sensors/temperature-humidity');
 const { temperatureOfNutrientSolution } = require('../sensors/waterTemperature');
@@ -253,9 +256,9 @@ async function overviewNFTsystem(telegram, semaphoreMiniDB) {
 }
 
 async function configMenu(telegram) {
-  const menu = '1)   /aliveReport\n\n'///////////////////////////
+  const menu = '1)   /aliveReport\n\n'
              + '2)   /getLogs\n\n'
-             + '3)   /rebootService\n\n'
+             + '3)   /restartService\n\n'
              + '4)   /rebootRpi\n\n'
              + '5)   /shutdownRpi';
   await sendMessage(telegram, menu, 'text')
@@ -266,80 +269,78 @@ async function configMenu(telegram) {
 
 async function aliveReport(telegram) {
   const responseArray = [];
-  let lastBoot = '';
+  const lastBoot = '';
   let ips = '';
 
-  // Get network interfaces of the device
-  await device.networkInterfaces()
-    .then(async (network) => {
-      network.forEach((net) => {
-        if (net.ifaceName !== 'lo') {
-          ips += `${net.ifaceName}: \n${net.ip4}\n\n`;
-        }
-      });
-
-      // get time since boot
-      await exec('uptime -s', async (error, data) => {
-        lastBoot = data;
-        if (error) {
-          lastBoot = `Error: ${error.message}`;
-        }
-        responseArray.push(`${env.telegram_botOf_thisRpi}: I'm alive! \n\n\n${ips}Last Boot: \n${lastBoot}`);
-
-        // send aliveReport
-        for (const res of responseArray) {
-          await sendMessage(telegram, res, 'text')
-            .catch(async (error) => {
-              await log.save(error, 'error');
-            });
-        }
-      });
-    })
-    .catch(async (error) => {
-      error = {
-        data: 'aliveReport',
-        message: (error.hasOwnProperty('stack') ? error.stack : error),
-        stack: 'telegramController -> aliveReport -> networkInterfaces',
-      };
-      await log.save(error, 'error');
-
-      await sendMessage(telegram, error.message, 'text')
-        .catch(async (telegramError) => {
-          await log.save(telegramError, 'error');
-        });
+  try {
+    // Get network interfaces of the device
+    const network = await device.networkInterfaces();
+    network.forEach((net) => {
+      if (net.ifaceName !== 'lo') {
+        ips += `${net.ifaceName}: \n${net.ip4}\n\n`;
+      }
     });
+    const externalIp = await execute('dig +short myip.opendns.com @resolver1.opendns.com');
+    ips += `${externalIp}: \n${externalIp}\n\n`;
+
+    // get time since boot
+    await execute('uptime -s');
+    responseArray.push(`${env.telegram_botOf_thisRpi}: 
+                      I'm alive! \n\n\n${ips}
+                      Last Boot: \n${lastBoot}`);
+
+    // send aliveReport
+    for (const res of responseArray) {
+      await sendMessage(telegram, res, 'text')
+        .catch(async (error) => {
+          await log.save(error, 'error');
+        });
+    }
+  } catch (error) {
+    await log.save({
+      data: 'aliveReport',
+      message: (error.hasOwnProperty('stack') ? error.stack : error),
+      stack: 'telegramController -> aliveReport -> networkInterfaces',
+    }, 'error');
+
+    await sendMessage(telegram, (error.hasOwnProperty('stack') ? error.stack : error), 'text')
+      .catch(async (telegramError) => {
+        await log.save(telegramError, 'error');
+      });
+  }
 }
 
 async function getLogs(telegram) {
   return new Promise(async (resolve, reject) => {
     const compressedLogs = 'logs.zip';
 
-    await compress.zip.compressDir('logs', compressedLogs)
-      .then(async () => {
-        await sendMessage(telegram, compressedLogs, 'document', true)
-          .catch(async (error) => {
-            await log.save(error, 'error');
-          });
-      })
-      .catch((error) => {
-        reject({
-          message: (error.hasOwnProperty('stack') ? error.stack : error),
-          stack: 'telegramController -> all_logsInZip -> compress.zip.compressDir',
+    try {
+      await compress.zip.compressDir('logs', compressedLogs);
+
+      await sendMessage(telegram, compressedLogs, 'document', true)
+        .catch(async (error) => {
+          await log.save(error, 'error');
         });
+      resolve(true);
+    } catch (error) {
+      reject({
+        message: (error.hasOwnProperty('stack') ? error.stack : error),
+        stack: 'telegramController -> all_logsInZip -> compress.zip.compressDir',
       });
+    }
   });
 }
 
-async function rebootService(telegram) {
-  await telegram.sendMessage(env.telegram_chatId, 'Service Rebooting')
+async function restartService(telegram) {
+  await telegram.sendMessage(env.telegram_chatId, 'Service restart')
     .catch(async (error) => {
       await log.save({
         message: (error.hasOwnProperty('stack') ? error.stack : error),
-        stack: 'rebootRpi -> rebooting',
+        stack: 'restartService -> restart',
       }, 'error');
     })
     .finally(async () => {
-      await exec('pm2 restart main', async (error) => {
+      exec('pm2 restart main', async (error) => {
         if (error) {
           await telegram.sendMessage(env.telegram_chatId, `Error executing (pm2 restart main):  ${error}`)
             .catch(async (error) => {
@@ -363,14 +364,38 @@ async function rebootRpi(telegram) {
       }, 'error');
     })
     .finally(async () => {
-      await exec('sudo reboot now', async (error) => {
+      exec('sudo reboot now', async (error) => {
         if (error) {
           await telegram.sendMessage(env.telegram_chatId, `Error executing (sudo reboot now):  ${error}`)
             .catch(async (error) => {
               await log.save({
-                data: `Error executing (pm2 restart main):  ${error}`,
+                data: `Error executing (sudo reboot now):  ${error}`,
                 message: (error.hasOwnProperty('stack') ? error.stack : error),
                 stack: 'telegramController -> sendErrorMessage -> sudo reboot now',
+              }, 'error');
+            });
+        }
+      });
+    });
+}
+
+async function shutdownRpi(telegram) {
+  await telegram.sendMessage(env.telegram_chatId, 'Rpi shutting down')
+    .catch(async (error) => {
+      await log.save({
+        message: (error.hasOwnProperty('stack') ? error.stack : error),
+        stack: 'shutdownRpi -> shutting down',
+      }, 'error');
+    })
+    .finally(async () => {
+      exec('sudo shutdown now', async (error) => {
+        if (error) {
+          await telegram.sendMessage(env.telegram_chatId, `Error executing (sudo shutdown now):  ${error}`)
+            .catch(async (error) => {
+              await log.save({
+                data: `Error executing (sudo shutdown now):  ${error}`,
+                message: (error.hasOwnProperty('stack') ? error.stack : error),
+                stack: 'telegramController -> sendErrorMessage -> sudo shutdown now',
               }, 'error');
             });
         }
@@ -436,7 +461,7 @@ async function listenMessages(telegram, semaphoreMiniDB) {
               break;
 
             case `/configMenu${botName}`:
-              await configMenu(telegram, semaphoreMiniDB);
+              await configMenu(telegram);
               break;
 
             case `/aliveReport${botName}`:
@@ -447,12 +472,16 @@ async function listenMessages(telegram, semaphoreMiniDB) {
               await getLogs(telegram);
               break;
 
-            case `/rebootService ${env.telegram_password}${botName}`:
-              await rebootService(telegram);
+            case `/restartService ${env.telegram_password}${botName}`:
+              await restartService(telegram);
               break;
 
             case `/rebootRpi ${env.telegram_password}${botName}`:
               await rebootRpi(telegram);
+              break;
+
+            case `/shutdownRpi ${env.telegram_password}${botName}`:
+              await shutdownRpi(telegram);
               break;
 
             default:
