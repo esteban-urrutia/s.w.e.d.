@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable brace-style */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-await-in-loop */
@@ -11,17 +12,16 @@ const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 const { getTimeStamp } = require('../../utils/utils');
 
 async function manageIrrigation(miniDB, semaphoreMiniDB) {
-  if(getTimeStamp() > miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil){
-
+  if (getTimeStamp() > miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil) {
     for (let i = 0; i < miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events.length; i++) {
       const { start, finish } = miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events[i];
-  
+
       const now = new Date();
       const startHour = parseInt(start.substring(0, 2));
       const startMinute = parseInt(start.substring(3, 5));
       const finishHour = parseInt(finish.substring(0, 2));
       const finishMinute = parseInt(finish.substring(3, 5));
-  
+
       if (startHour === now.getHours()
       && startMinute === now.getMinutes()) {
         await waterValveForIrrigationOfFrontGarden.on();

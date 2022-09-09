@@ -1,3 +1,5 @@
+/* eslint-disable radix */
+/* eslint-disable max-len */
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
@@ -15,7 +17,7 @@ const {
   normalizeTextForTelegramMessage,
   execute,
   getTimeStamp,
-  getDateStampFromTimeStamp
+  getDateStampFromTimeStamp,
 } = require('../utils/utils');
 const { readMiniDB, saveMiniDB } = require('./miniDBcontroller');
 const { temperatureAndHumidityOfGrowSpace } = require('../sensors/temperature-humidity');
@@ -165,7 +167,7 @@ async function overviewMarancandinhuana(telegram, semaphoreMiniDB) {
   } = await temperatureAndHumidityOfGrowSpace.get();
 
   const temperatureOfNutSol = await temperatureOfNutrientSolution.get();
-console.log(temperatureOfNutSol)
+
   const overviewMessage = 'Grow Space: \n'
                         + `    temperature:  ${temperatureOfGrowSpace.toFixed(2)} °C\n`
                         + `    humidity:  ${humidityOfGrowSpace.toFixed(2)} %rel\n\n`
@@ -238,8 +240,8 @@ async function overviewFrontAndBackGarden(telegram, semaphoreMiniDB) {
 
   let overviewMessage = 'FrontAndBackGarden:\n'
                         + `    irrigation:  ${miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status}`;
-                        
-  if(getTimeStamp() < miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil){
+
+  if (getTimeStamp() < miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil) {
     overviewMessage += `\n\nsuspended until\n${getDateStampFromTimeStamp(miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil)}`;
   }
   await sendMessage(telegram, overviewMessage, 'text')
@@ -254,7 +256,7 @@ async function suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, hour
   await waterValveForIrrigationOfFrontGarden.off();
   await waterValveForIrrigationOfBackGarden.off();
 
-  miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil = getTimeStamp() + hours*60*60;
+  miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil = getTimeStamp() + hours * 60 * 60;
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
   await sendMessage(telegram, `Manage Of Front And Back Garden\nSuspended until\n${getDateStampFromTimeStamp(miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil)}`, 'text')
@@ -476,7 +478,7 @@ async function listenMessages(telegram, semaphoreMiniDB) {
               await overviewFrontAndBackGarden(telegram, semaphoreMiniDB);
               break;
 
-            case `/suspendManageOfFrontAndBackGarden${botName} 1`:case `/suspendManageOfFrontAndBackGarden${botName} 2`:case `/suspendManageOfFrontAndBackGarden${botName} 3`:case `/suspendManageOfFrontAndBackGarden${botName} 4`:case `/suspendManageOfFrontAndBackGarden${botName} 5`:case `/suspendManageOfFrontAndBackGarden${botName} 6`:case `/suspendManageOfFrontAndBackGarden${botName} 7`:case `/suspendManageOfFrontAndBackGarden${botName} 8`:case `/suspendManageOfFrontAndBackGarden${botName} 9`:case `/suspendManageOfFrontAndBackGarden${botName} 10`:case `/suspendManageOfFrontAndBackGarden${botName} 11`:case `/suspendManageOfFrontAndBackGarden${botName} 12`:case `/suspendManageOfFrontAndBackGarden${botName} 13`:case `/suspendManageOfFrontAndBackGarden${botName} 14`:case `/suspendManageOfFrontAndBackGarden${botName} 15`:case `/suspendManageOfFrontAndBackGarden${botName} 16`:case `/suspendManageOfFrontAndBackGarden${botName} 17`:case `/suspendManageOfFrontAndBackGarden${botName} 18`:case `/suspendManageOfFrontAndBackGarden${botName} 19`:case `/suspendManageOfFrontAndBackGarden${botName} 20`:case `/suspendManageOfFrontAndBackGarden${botName} 21`:case `/suspendManageOfFrontAndBackGarden${botName} 22`:case `/suspendManageOfFrontAndBackGarden${botName} 23`:case `/suspendManageOfFrontAndBackGarden${botName} 24`:
+            case `/suspendManageOfFrontAndBackGarden${botName} 1`: case `/suspendManageOfFrontAndBackGarden${botName} 2`: case `/suspendManageOfFrontAndBackGarden${botName} 3`: case `/suspendManageOfFrontAndBackGarden${botName} 4`: case `/suspendManageOfFrontAndBackGarden${botName} 5`: case `/suspendManageOfFrontAndBackGarden${botName} 6`: case `/suspendManageOfFrontAndBackGarden${botName} 7`: case `/suspendManageOfFrontAndBackGarden${botName} 8`: case `/suspendManageOfFrontAndBackGarden${botName} 9`: case `/suspendManageOfFrontAndBackGarden${botName} 10`: case `/suspendManageOfFrontAndBackGarden${botName} 11`: case `/suspendManageOfFrontAndBackGarden${botName} 12`: case `/suspendManageOfFrontAndBackGarden${botName} 13`: case `/suspendManageOfFrontAndBackGarden${botName} 14`: case `/suspendManageOfFrontAndBackGarden${botName} 15`: case `/suspendManageOfFrontAndBackGarden${botName} 16`: case `/suspendManageOfFrontAndBackGarden${botName} 17`: case `/suspendManageOfFrontAndBackGarden${botName} 18`: case `/suspendManageOfFrontAndBackGarden${botName} 19`: case `/suspendManageOfFrontAndBackGarden${botName} 20`: case `/suspendManageOfFrontAndBackGarden${botName} 21`: case `/suspendManageOfFrontAndBackGarden${botName} 22`: case `/suspendManageOfFrontAndBackGarden${botName} 23`: case `/suspendManageOfFrontAndBackGarden${botName} 24`:
               await suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, parseInt(incomingMessage.command.substring(35)));
               break;
 
