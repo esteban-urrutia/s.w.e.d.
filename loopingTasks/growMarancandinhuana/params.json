@@ -259,14 +259,16 @@
     "ec": {
       "method": "fixedMinMax",
       "status": null,
+      "lastValue": null,
       "values": {
-        "max": 6.5,
-        "min": 5.5
+        "max": 600,
+        "min": 2100
       }
     },
     "ph": {
       "method": "fixedMinMax",
       "status": null,
+      "lastValue": null,
       "values": {
         "max": 6.5,
         "min": 5.5

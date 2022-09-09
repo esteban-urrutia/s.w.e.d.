@@ -1,5 +1,5 @@
 const PHofNutrientSolution = {
-  get: (async () => ''), // i2c obtener
+  get: (async () => 6.0), // i2c obtener
 };
 
 module.exports = {

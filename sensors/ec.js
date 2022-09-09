@@ -1,5 +1,5 @@
 const ECofNutrientSolution = {
-  get: (async () => ''), // i2c obtener
+  get: (async () => 1800), // i2c obtener
 };
 
 module.exports = {
