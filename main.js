@@ -6,15 +6,20 @@ const TelegramBot = require('node-telegram-bot-api');
 const log = require('./controllers/logController').getInstance();
 const secondaryTasksController = require('./controllers/secondaryTasksController');
 const telegramController = require('./controllers/telegramController');
-const utils = require('./utils/utils');
+const {
+  getDateStampFromTimeStamp, 
+  getDateStamp, 
+  sleep
+} = require('./utils/utils');
 const { readMiniDB } = require('./controllers/miniDBcontroller');
-/*
 const { growFrontAndBackGarden } = require('./loopingTasks/growFrontAndBackGarden/growFrontAndBackGarden');
 const { growNFTsystem } = require('./loopingTasks/growNFTsystem/growNFTsystem');
 const { growMarancandinhuana } = require('./loopingTasks/growMarancandinhuana/growMarancandinhuana');
-*/
 
-let telegram = (env.telegram_enabled === 'true') ? new TelegramBot(env.telegram_token, { polling: true }) : null;
+sleep(10)
+ .then(() => {
+  
+  let telegram = (env.telegram_enabled === 'true') ? new TelegramBot(env.telegram_token, { polling: true }) : null;
 // eslint-disable-next-line no-unused-vars
 let internetStatus = null;
 
@@ -27,7 +32,6 @@ telegramController.sendMessage(telegram, 'SmokeWeedEveryDay.jpg', 'image')
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* - - - - - - - - - - LOOPING TASKS - - - - - - - */
-/*
 schedule.scheduleJob(env.loopingTasks_frequencyOfLoop, async () => {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
@@ -61,7 +65,6 @@ schedule.scheduleJob(env.loopingTasks_frequencyOfLoop, async () => {
         });
     });
 });
-*/
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* - - - - - - - - - - SECONDARY TASKS - - - - - - */
@@ -83,8 +86,8 @@ schedule.scheduleJob(env.hardwareAlerts_frequencyOf_internetCheck, async () => {
             }, 'error');
 
             await telegramController.sendMessage(telegram, 'Internet back online\n\n\n'
-                                                          + `Disconnected at:\n${utils.getDateStampFromTimeStamp(responseInternetStatus.timestampDisconnectedAt)}\n\n`
-                                                          + `Reconnected at:\n${utils.getDateStampFromTimeStamp(responseInternetStatus.timestampReconnectedAt)}\n\n`
+                                                          + `Disconnected at:\n${getDateStampFromTimeStamp(responseInternetStatus.timestampDisconnectedAt)}\n\n`
+                                                          + `Reconnected at:\n${getDateStampFromTimeStamp(responseInternetStatus.timestampReconnectedAt)}\n\n`
                                                           + `Time Offline:\n${Math.floor((responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) / 60)}  minutes\n${
                                                             (responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) - (60 * Math.floor((responseInternetStatus.timestampReconnectedAt - responseInternetStatus.timestampDisconnectedAt) / 60))}  seconds`, 'text')
               .catch(async (telegramError) => {
@@ -103,7 +106,7 @@ schedule.scheduleJob(env.hardwareAlerts_frequencyOf_hardwareCheck, async () => {
   await secondaryTasksController.hardwareCheck()
     .then(async (hardwareCheckResult) => {
       if (hardwareCheckResult) {
-        await telegramController.sendMessage(telegram, `HARDWARE ALERT !!!\n\nat  ${utils.getDateStamp()}\n\n\n${hardwareCheckResult}`, 'text')
+        await telegramController.sendMessage(telegram, `HARDWARE ALERT !!!\n\nat  ${getDateStamp()}\n\n\n${hardwareCheckResult}`, 'text')
           .catch(async (error) => {
             await log.save(error, 'error');
           });
@@ -121,6 +124,7 @@ telegramController.listenMessages(telegram, semaphoreMiniDB)
     telegram = response;
   });
 /* - - - - - - - - - - - - - - - - - - - - - - - - */
+});
 
 /* - - - - - - - - - - UNHANDLED-REJECTION AND WARNING HANDLER - - - - - - - */
 const errorHandler = async (error) => {

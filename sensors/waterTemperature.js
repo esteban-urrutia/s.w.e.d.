@@ -29,9 +29,7 @@ const temperatureOfNutrientSolution = {
     await sleep(1);
     await execute(`raspi-gpio set ${env.power_GPIO_sensors_temperatureOfNutrientSolution} op dl`);
 
-    return {
-      temperatureOfNutrientSolution1,
-    };
+    return temperatureOfNutrientSolution1;
   }),
 };
 

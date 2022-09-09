@@ -130,7 +130,7 @@ async function helpMenu(telegram) {
       await log.save(telegramError, 'error');
     });
 
-  const menu = '1)  /marincandinhuanaMenu\n\n'
+  const menu = '1)  /marancandinhuanaMenu\n\n'
              + '2)  /frontAndBackGardenMenu\n\n'
              + '3)  /NFTsystemMenu\n\n'
              + '4)  /configMenu';
@@ -140,17 +140,17 @@ async function helpMenu(telegram) {
     });
 }
 
-async function marincandinhuanaMenu(telegram) {
-  const menu = '1)  /overviewMarincandinhuana\n\n'
-             + '2)  /managePHmarincandinhuana\n\n'
-             + '3)  /manageECmarincandinhuana';
+async function marancandinhuanaMenu(telegram) {
+  const menu = '1)  /overviewMarancandinhuana\n\n'
+             + '2)  /managePHmarancandinhuana\n\n'
+             + '3)  /manageECmarancandinhuana';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
     });
 }
 
-async function overviewMarincandinhuana(telegram, semaphoreMiniDB) {
+async function overviewMarancandinhuana(telegram, semaphoreMiniDB) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   const {
@@ -159,10 +159,10 @@ async function overviewMarincandinhuana(telegram, semaphoreMiniDB) {
   } = await temperatureAndHumidityOfGrowSpace.get();
 
   const temperatureOfNutSol = await temperatureOfNutrientSolution.get();
-
+console.log(temperatureOfNutSol)
   const overviewMessage = 'Grow Space: \n'
-                        + `    temperature:  ${temperatureOfGrowSpace} °C\n`
-                        + `    humidity:  ${humidityOfGrowSpace} %rel\n\n`
+                        + `    temperature:  ${temperatureOfGrowSpace.toFixed(2)} °C\n`
+                        + `    humidity:  ${humidityOfGrowSpace.toFixed(2)} %rel\n\n`
                         + 'Nutrient Solution:\n'
                         + `    temperature:  ${temperatureOfNutSol} °C\n\n`
                         + 'Peripherals Status:\n'
@@ -181,37 +181,37 @@ async function overviewMarincandinhuana(telegram, semaphoreMiniDB) {
     });
 }
 
-async function managePHmarincandinhuana(telegram, semaphoreMiniDB) {
+async function managePHmarancandinhuana(telegram, semaphoreMiniDB) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   const PHofSolNut = await PHofNutrientSolution.get();
 
-  const PHmarincandinhuana = `PH of Nutrient Solution:  ${PHofSolNut}\n\n`
+  const PHmarancandinhuana = `PH of Nutrient Solution:  ${PHofSolNut}\n\n`
                            + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.min}\n`
                            + `Max value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.max}`;
 
   miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.lastValue = PHofSolNut;
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
-  await sendMessage(telegram, PHmarincandinhuana, 'text')
+  await sendMessage(telegram, PHmarancandinhuana, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
     });
 }
 
-async function manageECmarincandinhuana(telegram, semaphoreMiniDB) {
+async function manageECmarancandinhuana(telegram, semaphoreMiniDB) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   const ECofSolNut = await ECofNutrientSolution.get();
 
-  const ECmarincandinhuana = `EC of Nutrient Solution:  ${ECofSolNut}\n\n`
+  const ECmarancandinhuana = `EC of Nutrient Solution:  ${ECofSolNut}\n\n`
                            + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.values.min}\n`
                            + `Max value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.values.max}`;
 
   miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.lastValue = ECofSolNut;
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
-  await sendMessage(telegram, ECmarincandinhuana, 'text')
+  await sendMessage(telegram, ECmarancandinhuana, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
     });
@@ -269,7 +269,6 @@ async function configMenu(telegram) {
 
 async function aliveReport(telegram) {
   const responseArray = [];
-  const lastBoot = '';
   let ips = '';
 
   try {
@@ -281,13 +280,11 @@ async function aliveReport(telegram) {
       }
     });
     const externalIp = await execute('dig +short myip.opendns.com @resolver1.opendns.com');
-    ips += `${externalIp}: \n${externalIp}\n\n`;
+    ips += `external IP: \n${externalIp}\n\n`;
 
     // get time since boot
-    await execute('uptime -s');
-    responseArray.push(`${env.telegram_botOf_thisRpi}: 
-                      I'm alive! \n\n\n${ips}
-                      Last Boot: \n${lastBoot}`);
+    const lastBoot = await execute('uptime -s');
+    responseArray.push(`I'm alive! \n\n${ips}Last Boot: \n${lastBoot}`);
 
     // send aliveReport
     for (const res of responseArray) {
@@ -428,20 +425,20 @@ async function listenMessages(telegram, semaphoreMiniDB) {
               await helpMenu(telegram);
               break;
 
-            case `/marincandinhuanaMenu${botName}`:
-              await marincandinhuanaMenu(telegram);
+            case `/marancandinhuanaMenu${botName}`:
+              await marancandinhuanaMenu(telegram);
               break;
 
-            case `/overviewMarincandinhuana${botName}`:
-              await overviewMarincandinhuana(telegram, semaphoreMiniDB);
+            case `/overviewMarancandinhuana${botName}`:
+              await overviewMarancandinhuana(telegram, semaphoreMiniDB);
               break;
 
-            case `/managePHmarincandinhuana${botName}`:
-              await managePHmarincandinhuana(telegram, semaphoreMiniDB);
+            case `/managePHmarancandinhuana${botName}`:
+              await managePHmarancandinhuana(telegram, semaphoreMiniDB);
               break;
 
-            case `/manageECmarincandinhuana${botName}`:
-              await manageECmarincandinhuana(telegram, semaphoreMiniDB);
+            case `/manageECmarancandinhuana${botName}`:
+              await manageECmarancandinhuana(telegram, semaphoreMiniDB);
               break;
 
             case `/frontAndBackGardenMenu${botName}`:
