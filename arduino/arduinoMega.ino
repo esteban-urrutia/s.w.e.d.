@@ -7,7 +7,12 @@ char responseMessage[i2cMessageLength];
 
 // Solid State Relay
 #define startPin_solidStateRelay 23
-#define finishPin_solidStateRelay 38
+#define finishPin_solidStateRelay 37
+
+// PH Sensor
+#define pin_sensor_PH A0
+float ph_cal_Y = 222.49;
+float ph_cal_M = -56.48;
 
 void setup() {
   delay(2000);
@@ -88,40 +93,50 @@ void deviceManager(char message[]) {
     }
   }
 
+  // read EC of Nutrient Solution
+  if(message[0] == 'P'
+  && message[1] == 'H'
+  && message[1] == 'a'
+  && message[1] == 's'
+  && message[1] == 'k') {
+
+    int buf[10];
+    int temporal = 0;
+
+    for (int i = 0; i < 10; i++)
+    {
+      buf[i] = analogRead(pin_sensor_PH);
+      delay(100);
+    }
+    for (int i = 0; i < 9; i++)
+    {
+      for (int j = i + 1; j < 10; j++)
+      {
+        if (buf[i] > buf[j])
+        {
+          temporal = buf[i];
+          buf[i] = buf[j];
+          buf[j] = temporal;
+        }
+      }
+    }
+
+    float PH_sol_nut_analogReading = (buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7])/6;
+    int PH_sol_nut = (float)((ph_cal_M * PH_sol_nut_analogReading)*(5.0/1023.0) + ph_cal_Y);
+
+    char PH_sol_nut_1 = (char) (PH_sol_nut/100);
+    char PH_sol_nut_2 = (char) ((PH_sol_nut - ((PH_sol_nut/100)*100))/10);
+    char PH_sol_nut_2 = (char) (PH_sol_nut - ((PH_sol_nut/100)*100) - (((PH_sol_nut - ((PH_sol_nut/100)*100))/10)*10));
+
+    responseMessage[0] = 'P';
+    responseMessage[1] = 'H';
+    responseMessage[2] = PH_sol_nut_1;
+    responseMessage[3] = PH_sol_nut_2;
+    responseMessage[4] = PH_sol_nut_2;
+  }
+
   // manages undefined message
   else {
     i2cResponseUndefined();
   }
 }
-
-
-
-
-
-#define pin_sensor_PH A0
-#define pin_5_sensor shit ( se prende solo para leer )
-
-																		 for(int i=0;i<10;i++) 
-																							 { 
-																							 buf[i]=analogRead(pin_sensor_PH);
-																							 delay(100);
-																							 }
-																		 for( int i = 0 ; i < 9 ; i++ )
-																									 {
-																									 for( int j = i + 1 ; j < 10 ; j++ )
-																																		{
-																																		 if( buf[i] > buf[j] )
-																																							 {
-																																							 temporal=buf[i];
-																																							 buf[i]=buf[j];
-																																							 buf[j]=temporal;
-																																							 }
-																																		}
-																									 }
-																							 
-																		 promedio_PH_sol_nut = 0;
-																		 promedio_PH_sol_nut = buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7]; 
-																		 promedio_PH_sol_nut = promedio_PH_sol_nut/6;
-
-																		 PH_sol_nut = (float)((calibracion_ph_M * promedio_PH_sol_nut)*(5.0/1023.0) + calibracion_ph_Y);
-																		 
