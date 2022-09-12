@@ -8,7 +8,7 @@ const {
 } = require('../../peripherals/waterPumps');
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 
-async function manageIrrigation(miniDB, semaphoreMiniDB) {
+async function manageIrrigation(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   for (let i = 0; i < miniDB.growNFTsystemParams.growSpace.irrigation.events.length; i++) {
     const { start, finish } = miniDB.growNFTsystemParams.growSpace.irrigation.events[i];
 
@@ -20,12 +20,12 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 
     if (startHour === now.getHours()
     && startMinute === now.getMinutes()) {
-      await waterPumpForNFTsystem.on();
+      await waterPumpForNFTsystem.on(semaphoreI2cController);
       miniDB.growNFTsystemParams.growSpace.irrigation.status = 'irrigating';
     }
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
-      await waterPumpForNFTsystem.off();
+      await waterPumpForNFTsystem.off(semaphoreI2cController);
       miniDB.growNFTsystemParams.growSpace.irrigation.status = null;
     }
   }
@@ -37,8 +37,8 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 /**
  * growNFTsystem: - irrigates NFT system
  */
-async function growNFTsystem(miniDB, semaphoreMiniDB) {
-  await manageIrrigation(miniDB, semaphoreMiniDB);
+async function growNFTsystem(miniDB, semaphoreMiniDB, semaphoreI2cController) {
+  await manageIrrigation(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
   return true;
 }

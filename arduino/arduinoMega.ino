@@ -29,9 +29,7 @@ void setup() {
   digitalWrite(22, HIGH);
 }
 
-void loop() {
-  delay(200);
-}
+void loop() {}
 
 void i2cReceive(int howMany) {
   char message[i2cMessageLength];
@@ -55,6 +53,14 @@ void i2cSend() {
   }
 }
 
+void i2cResponseUndefined() {
+      responseMessage[0] = 'u';
+      responseMessage[1] = 'n';
+      responseMessage[2] = 'd';
+      responseMessage[3] = 'e';
+      responseMessage[4] = 'f';
+}
+
 void deviceManager(char message[]) {
   // manages SolidStateRelay
   if(message[0] == 'S'
@@ -73,24 +79,18 @@ void deviceManager(char message[]) {
       else if(message[4] == 'd') { digitalWrite(pin, HIGH); }
   
       // response with same message
-      for(int i = 0; i < i2cMessageLength; i++) { responseMessage[i] = message[i]; }
+      for(int i = 0; i < i2cMessageLength; i++) {
+        responseMessage[i] = message[i];
+      }
     }    
     else {
-      responseMessage[0] = 'u';
-      responseMessage[1] = 'n';
-      responseMessage[2] = 'd';
-      responseMessage[3] = 'e';
-      responseMessage[4] = 'f';
+      i2cResponseUndefined();
     }
   }
 
   // manages undefined message
   else {
-      responseMessage[0] = 'u';
-      responseMessage[1] = 'n';
-      responseMessage[2] = 'd';
-      responseMessage[3] = 'e';
-      responseMessage[4] = 'f';
+    i2cResponseUndefined();
   }
 }
 

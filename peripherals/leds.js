@@ -1,6 +1,6 @@
 const ledOfGrowSpace = {
-  on: (async () => ''), // i2c encender
-  off: (async () => ''), // i2c apagar
+  on: (async (semaphoreI2cController) => ''), // i2c encender
+  off: (async (semaphoreI2cController) => ''), // i2c apagar
 };
 
 module.exports = {

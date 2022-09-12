@@ -1,5 +1,7 @@
+/* eslint-disable max-len */
 /* eslint-disable import/newline-after-import */
 const semaphoreMiniDB = require('semaphore')(1);
+const semaphoreI2cController = require('semaphore')(1);
 const env = require('dotenv').config().parsed;
 const schedule = require('node-schedule');
 const TelegramBot = require('node-telegram-bot-api');
@@ -37,7 +39,7 @@ sleep(10)
       const miniDB = await readMiniDB(semaphoreMiniDB);
 
       // manage grow of Marancandinhuana
-      await growMarancandinhuana(miniDB, semaphoreMiniDB)
+      await growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cController)
         .catch(async (error) => {
           await log.save(error, 'error');
           await telegramController.sendMessage(telegram, error, 'text')
@@ -47,7 +49,7 @@ sleep(10)
         });
 
       // manage grow of front and back garden
-      await growFrontAndBackGarden(miniDB, semaphoreMiniDB)
+      await growFrontAndBackGarden(miniDB, semaphoreMiniDB, semaphoreI2cController)
         .catch(async (error) => {
           await log.save(error, 'error');
           await telegramController.sendMessage(telegram, error, 'text')
@@ -57,7 +59,7 @@ sleep(10)
         });
 
       // manage grow of NFT System
-      await growNFTsystem(miniDB, semaphoreMiniDB)
+      await growNFTsystem(miniDB, semaphoreMiniDB, semaphoreI2cController)
         .catch(async (error) => {
           await log.save(error, 'error');
           await telegramController.sendMessage(telegram, error, 'text')
@@ -78,7 +80,7 @@ sleep(10)
           // tasks to run when internet connection is back online
           if (responseInternetStatus.runTasks) {
             // restart telegram connection
-            await telegramController.restartConnection(telegram)
+            await telegramController.restartConnection(telegram, semaphoreMiniDB, semaphoreI2cController)
               .then(async (responseTelegram) => {
                 telegram = responseTelegram;
                 await log.save({
@@ -120,7 +122,7 @@ sleep(10)
     /* - - - - - - - - - - - - - - - - - - - - - - - - */
 
     /* - - - - - - - - - - MESSAGING - - - - - - - - - */
-    telegramController.listenMessages(telegram, semaphoreMiniDB)
+    telegramController.listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
       .then((response) => {
         telegram = response;
       });

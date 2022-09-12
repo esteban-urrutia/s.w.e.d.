@@ -15,7 +15,7 @@ const { temperatureOfNutrientSolution } = require('../../sensors/waterTemperatur
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 const { getPhotoperiod } = require('../../utils/utils');
 
-async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperatureOfGrowSpace) {
+async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController, temperatureOfGrowSpace) {
   const photoperiod = getPhotoperiod(miniDB);
 
   // temperatureOfGrowSpace <= min
@@ -28,8 +28,8 @@ async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperatureOf
       .values[photoperiod]
       .min
   ) {
-    await airHeaterOfGrowSpace.on();
-    await ventilatorOfGrowSpace.off();
+    await airHeaterOfGrowSpace.on(semaphoreI2cController);
+    await ventilatorOfGrowSpace.off(semaphoreI2cController);
     miniDB.growMarancandinhuanaParams.growSpace.temperature.status = 'heating';
   }
   // temperatureOfGrowSpace >= max
@@ -42,14 +42,14 @@ async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperatureOf
       .values[photoperiod]
       .max
   ) {
-    await airHeaterOfGrowSpace.off();
-    await ventilatorOfGrowSpace.on();
+    await airHeaterOfGrowSpace.off(semaphoreI2cController);
+    await ventilatorOfGrowSpace.on(semaphoreI2cController);
     miniDB.growMarancandinhuanaParams.growSpace.temperature.status = 'cooling';
   }
   // min < temperatureOfGrowSpace < max
   else {
-    await airHeaterOfGrowSpace.off();
-    await ventilatorOfGrowSpace.off();
+    await airHeaterOfGrowSpace.off(semaphoreI2cController);
+    await ventilatorOfGrowSpace.off(semaphoreI2cController);
     miniDB.growMarancandinhuanaParams.growSpace.temperature.status = null;
   }
 
@@ -57,7 +57,7 @@ async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperatureOf
   return true;
 }
 
-async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidityOfGrowSpace) {
+async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, semaphoreI2cController, humidityOfGrowSpace) {
   const photoperiod = getPhotoperiod(miniDB);
 
   // humidityOfGrowSpace <= min
@@ -70,7 +70,7 @@ async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidityOfGrowSp
       .values[photoperiod]
       .min
   ) {
-    await humidifierOfGrowSpace.on();
+    await humidifierOfGrowSpace.on(semaphoreI2cController);
     miniDB.growMarancandinhuanaParams.growSpace.humidity.status = 'humidifying';
   }
   // humidityOfGrowSpace >= max
@@ -83,12 +83,12 @@ async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidityOfGrowSp
       .values[photoperiod]
       .max
   ) {
-    await humidifierOfGrowSpace.off();
+    await humidifierOfGrowSpace.off(semaphoreI2cController);
     miniDB.growMarancandinhuanaParams.growSpace.humidity.status = null;
   }
   // min < humidityOfGrowSpace < max
   else {
-    await humidifierOfGrowSpace.off();
+    await humidifierOfGrowSpace.off(semaphoreI2cController);
     miniDB.growMarancandinhuanaParams.growSpace.humidity.status = null;
   }
 
@@ -96,7 +96,7 @@ async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidityOfGrowSp
   return true;
 }
 
-async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB) {
+async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   const photoperiod = getPhotoperiod(miniDB);
 
   const temperatureOfNutSol = await temperatureOfNutrientSolution.get();
@@ -112,7 +112,7 @@ async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB) {
         .values[photoperiod]
         .min
     ) {
-      await waterHeaterOfNutrientSolution.on();
+      await waterHeaterOfNutrientSolution.on(semaphoreI2cController);
       miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = 'heating';
     }
     // temperatureOfNutSol >= max
@@ -125,12 +125,12 @@ async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB) {
         .values[photoperiod]
         .max
     ) {
-      await waterHeaterOfNutrientSolution.off();
+      await waterHeaterOfNutrientSolution.off(semaphoreI2cController);
       miniDB.growMarancandinhuanaParams.growSpace.temperature.status = null;
     }
     // min < temperatureOfNutSol < max
     else {
-      await waterHeaterOfNutrientSolution.off();
+      await waterHeaterOfNutrientSolution.off(semaphoreI2cController);
       miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status = null;
     }
 
@@ -139,7 +139,7 @@ async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB) {
   return true;
 }
 
-async function manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB) {
+async function manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   for (let i = 0; i < miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.events.length; i++) {
     const { start, finish } = miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.events[i];
 
@@ -151,12 +151,12 @@ async function manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB) {
 
     if (startHour === now.getHours()
     && startMinute === now.getMinutes()) {
-      await waterPumpForRecirculationOfNutrientSolution.on();
+      await waterPumpForRecirculationOfNutrientSolution.on(semaphoreI2cController);
       miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.status = 'recirculating';
     }
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
-      await waterPumpForRecirculationOfNutrientSolution.off();
+      await waterPumpForRecirculationOfNutrientSolution.off(semaphoreI2cController);
       miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.status = null;
     }
   }
@@ -165,7 +165,7 @@ async function manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB) {
   return true;
 }
 
-async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB) {
+async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   for (let i = 0; i < miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.events.length; i++) {
     const { start, finish } = miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.events[i];
 
@@ -177,12 +177,12 @@ async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB) {
 
     if (startHour === now.getHours()
     && startMinute === now.getMinutes()) {
-      await airPumpOfNutrientSolution.on();
+      await airPumpOfNutrientSolution.on(semaphoreI2cController);
       miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.status = 'oxygenating';
     }
     else if (finishHour === now.getHours()
     && finishMinute === now.getMinutes()) {
-      await airPumpOfNutrientSolution.off();
+      await airPumpOfNutrientSolution.off(semaphoreI2cController);
       miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.status = null;
     }
   }
@@ -209,28 +209,28 @@ async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB) {
     x  pruning
     x  defoliation
  */
-async function growMarancandinhuana(miniDB, semaphoreMiniDB) {
+async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   // await manageGrowSpaceLight(miniDB, semaphoreMiniDB);
   const {
     temperatureOfGrowSpace,
     humidityOfGrowSpace,
   } = await temperatureAndHumidityOfGrowSpace.get();
 
-  await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, temperatureOfGrowSpace);
+  await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController, temperatureOfGrowSpace);
 
-  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, humidityOfGrowSpace);
+  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, semaphoreI2cController, humidityOfGrowSpace);
 
   // await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
 
-  await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
-  await manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
   // await manageNutritiveSolutionEc(miniDB, semaphoreMiniDB);
 
   // await manageNutritiveSolutionPh(miniDB, semaphoreMiniDB);
 
-  await manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB);
+  await manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
   // await manageTrainingTopping(miniDB, semaphoreMiniDB);
 

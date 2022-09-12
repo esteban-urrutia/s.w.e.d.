@@ -11,7 +11,7 @@ const {
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 const { getTimeStamp } = require('../../utils/utils');
 
-async function manageIrrigation(miniDB, semaphoreMiniDB) {
+async function manageIrrigation(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   if (getTimeStamp() > miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil) {
     for (let i = 0; i < miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events.length; i++) {
       const { start, finish } = miniDB.growFrontAndBackGardenParams.growSpace.irrigation.events[i];
@@ -24,14 +24,14 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 
       if (startHour === now.getHours()
       && startMinute === now.getMinutes()) {
-        await waterValveForIrrigationOfFrontGarden.on();
-        await waterValveForIrrigationOfBackGarden.on();
+        await waterValveForIrrigationOfFrontGarden.on(semaphoreI2cController);
+        await waterValveForIrrigationOfBackGarden.on(semaphoreI2cController);
         miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = 'irrigating';
       }
       else if (finishHour === now.getHours()
       && finishMinute === now.getMinutes()) {
-        await waterValveForIrrigationOfFrontGarden.off();
-        await waterValveForIrrigationOfBackGarden.off();
+        await waterValveForIrrigationOfFrontGarden.off(semaphoreI2cController);
+        await waterValveForIrrigationOfBackGarden.off(semaphoreI2cController);
         miniDB.growFrontAndBackGardenParams.growSpace.irrigation.status = null;
       }
     }
@@ -45,8 +45,8 @@ async function manageIrrigation(miniDB, semaphoreMiniDB) {
 /**
  * growFrontAndBackGarden: - irrigates front and back garden
  */
-async function growFrontAndBackGarden(miniDB, semaphoreMiniDB) {
-  await manageIrrigation(miniDB, semaphoreMiniDB);
+async function growFrontAndBackGarden(miniDB, semaphoreMiniDB, semaphoreI2cController) {
+  await manageIrrigation(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
   return true;
 }

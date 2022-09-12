@@ -250,11 +250,11 @@ async function overviewFrontAndBackGarden(telegram, semaphoreMiniDB) {
     });
 }
 
-async function suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, hours) {
+async function suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, semaphoreI2cController, hours) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
-  await waterValveForIrrigationOfFrontGarden.off();
-  await waterValveForIrrigationOfBackGarden.off();
+  await waterValveForIrrigationOfFrontGarden.off(semaphoreI2cController);
+  await waterValveForIrrigationOfBackGarden.off(semaphoreI2cController);
 
   miniDB.growFrontAndBackGardenParams.growSpace.irrigation.suspendedUntil = getTimeStamp() + hours * 60 * 60;
   await saveMiniDB(semaphoreMiniDB, miniDB);
@@ -429,7 +429,7 @@ async function shutdownRpi(telegram) {
     });
 }
 
-async function listenMessages(telegram, semaphoreMiniDB) {
+async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController) {
   if (env.telegram_enabled === 'true') {
     return new Promise(async (resolve) => {
       // message handler
@@ -479,7 +479,7 @@ async function listenMessages(telegram, semaphoreMiniDB) {
               break;
 
             case `/suspendManageOfFrontAndBackGarden${botName} 1`: case `/suspendManageOfFrontAndBackGarden${botName} 2`: case `/suspendManageOfFrontAndBackGarden${botName} 3`: case `/suspendManageOfFrontAndBackGarden${botName} 4`: case `/suspendManageOfFrontAndBackGarden${botName} 5`: case `/suspendManageOfFrontAndBackGarden${botName} 6`: case `/suspendManageOfFrontAndBackGarden${botName} 7`: case `/suspendManageOfFrontAndBackGarden${botName} 8`: case `/suspendManageOfFrontAndBackGarden${botName} 9`: case `/suspendManageOfFrontAndBackGarden${botName} 10`: case `/suspendManageOfFrontAndBackGarden${botName} 11`: case `/suspendManageOfFrontAndBackGarden${botName} 12`: case `/suspendManageOfFrontAndBackGarden${botName} 13`: case `/suspendManageOfFrontAndBackGarden${botName} 14`: case `/suspendManageOfFrontAndBackGarden${botName} 15`: case `/suspendManageOfFrontAndBackGarden${botName} 16`: case `/suspendManageOfFrontAndBackGarden${botName} 17`: case `/suspendManageOfFrontAndBackGarden${botName} 18`: case `/suspendManageOfFrontAndBackGarden${botName} 19`: case `/suspendManageOfFrontAndBackGarden${botName} 20`: case `/suspendManageOfFrontAndBackGarden${botName} 21`: case `/suspendManageOfFrontAndBackGarden${botName} 22`: case `/suspendManageOfFrontAndBackGarden${botName} 23`: case `/suspendManageOfFrontAndBackGarden${botName} 24`:
-              await suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, parseInt(incomingMessage.command.substring(35)));
+              await suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, semaphoreI2cController, parseInt(incomingMessage.command.substring(35)));
               break;
 
             case `/NFTsystemMenu${botName}`:
@@ -539,7 +539,7 @@ async function listenMessages(telegram, semaphoreMiniDB) {
   return null;
 }
 
-async function restartConnection(telegram) {
+async function restartConnection(telegram, semaphoreMiniDB, semaphoreI2cController) {
   if (env.telegram_enabled === 'true') {
     return new Promise(async (resolve, reject) => {
       await telegram.stopPolling()
@@ -548,7 +548,7 @@ async function restartConnection(telegram) {
             .then(async () => {
               await telegram.startPolling({ restart: true })
                 .then(async () => {
-                  await listenMessages(telegram)
+                  await listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
                     .then((response) => {
                       resolve(response);
                     });
