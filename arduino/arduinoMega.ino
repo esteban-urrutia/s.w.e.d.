@@ -11,8 +11,6 @@ char responseMessage[i2cMessageLength];
 
 // PH Sensor
 #define pin_sensor_PH A0
-float ph_cal_Y = 222.49;
-float ph_cal_M = -56.48;
 
 void setup() {
   delay(2000);
