@@ -93,19 +93,18 @@ void deviceManager(char message[]) {
     }
   }
 
-  // read EC of Nutrient Solution
+  // read PH of Nutrient Solution
   if(message[0] == 'P'
   && message[1] == 'H'
-  && message[1] == 'a'
-  && message[1] == 's'
-  && message[1] == 'k') {
+  && message[2] == 'a'
+  && message[3] == 's'
+  && message[4] == 'k') {
 
     int buf[10];
     int temporal = 0;
-
-    for (int i = 0; i < 10; i++)
+    for (int k = 0; k < 10; k++)
     {
-      buf[i] = analogRead(pin_sensor_PH);
+      buf[k] = analogRead(pin_sensor_PH);
       delay(100);
     }
     for (int i = 0; i < 9; i++)
@@ -121,18 +120,17 @@ void deviceManager(char message[]) {
       }
     }
 
-    float PH_sol_nut_analogReading = (buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7])/6;
-    int PH_sol_nut = (float)((ph_cal_M * PH_sol_nut_analogReading)*(5.0/1023.0) + ph_cal_Y);
+    int PH_sol_nut_analogReading = (buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7])/6;
 
-    char PH_sol_nut_1 = (char) (PH_sol_nut/100);
-    char PH_sol_nut_2 = (char) ((PH_sol_nut - ((PH_sol_nut/100)*100))/10);
-    char PH_sol_nut_2 = (char) (PH_sol_nut - ((PH_sol_nut/100)*100) - (((PH_sol_nut - ((PH_sol_nut/100)*100))/10)*10));
+    char PH_sol_nut_analogReading_1 = (char) (PH_sol_nut_analogReading/100);
+    char PH_sol_nut_analogReading_2 = (char) ((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10);
+    char PH_sol_nut_analogReading_3 = (char) (PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100) - (((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10)*10));
 
     responseMessage[0] = 'P';
     responseMessage[1] = 'H';
-    responseMessage[2] = PH_sol_nut_1;
-    responseMessage[3] = PH_sol_nut_2;
-    responseMessage[4] = PH_sol_nut_2;
+    responseMessage[2] = PH_sol_nut_analogReading_1;
+    responseMessage[3] = PH_sol_nut_analogReading_2;
+    responseMessage[4] = PH_sol_nut_analogReading_3;
   }
 
   // manages undefined message
