@@ -194,7 +194,7 @@ async function managePHmarancandinhuana(telegram, semaphoreMiniDB, semaphoreI2cC
 
   const PHofSolNut = await PHofNutrientSolution.get(semaphoreI2cController);
 
-  const PHmarancandinhuana = `PH of Nutrient Solution:  ${PHofSolNut}\n\n`
+  const PHmarancandinhuana = `PH of Nutrient Solution:  ${PHofSolNut.toFixed(1)}\n\n`
                            + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.min}\n`
                            + `Max value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.max}`;
 

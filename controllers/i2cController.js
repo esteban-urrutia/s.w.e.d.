@@ -71,7 +71,7 @@ async function get(address, device) {
   // first attempt
   await sendMessage(address, messageToSend);
   let receivedMessage = await receiveMessage(address);
-
+  
   if (receivedMessage.charAt(0) === device.charAt(0)
    && receivedMessage.charAt(1) === device.charAt(1)
    && isDigit(receivedMessage.charAt(2))

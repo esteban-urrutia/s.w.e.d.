@@ -3,19 +3,23 @@ const i2c = require('../controllers/i2cController');
 
 const PHofNutrientSolution = {
   get: (async (semaphoreI2cController) => {
-    semaphoreI2cController.take(async () => {
-      const analogPHreading = await i2c.get(env.i2c_arduinoMega_address, 'PH');
+    return new Promise(async (resolve, reject) => {
 
-      console.log(analogPHreading);
+      semaphoreI2cController.take(async () => {
+        try{
+          const analogPHreading = await i2c.get(env.i2c_arduinoMega_address, 'PH');
+          semaphoreI2cController.leave();
+  
+          const PHvalue = (-56.48 * analogPHreading) * (5.0 / 1023.0) + 222.49;
 
-      const PHvalue = (-56.48 * analogPHreading) * (5.0 / 1023.0) + 222.49;
-
-      console.log(PHvalue);
-
-      semaphoreI2cController.leave();
-
-      return PHvalue;
-    });
+          resolve(PHvalue);
+        }
+        catch(error){
+          semaphoreI2cController.leave();
+          reject(error);
+        }
+      });
+    })
   }),
 };
 

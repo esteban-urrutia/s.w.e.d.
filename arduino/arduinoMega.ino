@@ -92,7 +92,7 @@ void deviceManager(char message[]) {
   }
 
   // read PH of Nutrient Solution
-  if(message[0] == 'g'
+  else if(message[0] == 'g'
   && message[1] == 'e'
   && message[2] == 't'
   && message[3] == 'P'
@@ -122,9 +122,9 @@ void deviceManager(char message[]) {
 
 Serial.println(PH_sol_nut_analogReading);
 
-    char PH_sol_nut_analogReading_1 = (char) (PH_sol_nut_analogReading/100);
-    char PH_sol_nut_analogReading_2 = (char) ((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10);
-    char PH_sol_nut_analogReading_3 = (char) (PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100) - (((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10)*10));
+    int PH_sol_nut_analogReading_1 = (PH_sol_nut_analogReading/100);
+    int PH_sol_nut_analogReading_2 = ((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10);
+    int PH_sol_nut_analogReading_3 = (PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100) - (((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10)*10));
 
 Serial.println(PH_sol_nut_analogReading_1);
 Serial.println(PH_sol_nut_analogReading_2);
