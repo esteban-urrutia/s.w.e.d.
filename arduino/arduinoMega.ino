@@ -7,7 +7,7 @@ char responseMessage[i2cMessageLength];
 
 // Solid State Relay
 #define startPin_solidStateRelay 23
-#define finishPin_solidStateRelay 37
+#define finishPin_solidStateRelay 38
 
 // PH Sensor
 #define pin_sensor_PH A0
@@ -92,11 +92,11 @@ void deviceManager(char message[]) {
   }
 
   // read PH of Nutrient Solution
-  if(message[0] == 'P'
-  && message[1] == 'H'
-  && message[2] == 'a'
-  && message[3] == 's'
-  && message[4] == 'k') {
+  if(message[0] == 'g'
+  && message[1] == 'e'
+  && message[2] == 't'
+  && message[3] == 'P'
+  && message[4] == 'H') {
 
     int buf[10];
     int temporal = 0;
@@ -120,9 +120,15 @@ void deviceManager(char message[]) {
 
     int PH_sol_nut_analogReading = (buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7])/6;
 
+serial.println(PH_sol_nut_analogReading);
+
     char PH_sol_nut_analogReading_1 = (char) (PH_sol_nut_analogReading/100);
     char PH_sol_nut_analogReading_2 = (char) ((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10);
     char PH_sol_nut_analogReading_3 = (char) (PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100) - (((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10)*10));
+
+serial.println(PH_sol_nut_analogReading_1);
+serial.println(PH_sol_nut_analogReading_2;
+serial.println(PH_sol_nut_analogReading_3);
 
     responseMessage[0] = 'P';
     responseMessage[1] = 'H';

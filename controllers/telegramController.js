@@ -189,10 +189,10 @@ async function overviewMarancandinhuana(telegram, semaphoreMiniDB) {
     });
 }
 
-async function managePHmarancandinhuana(telegram, semaphoreMiniDB) {
+async function managePHmarancandinhuana(telegram, semaphoreMiniDB, semaphoreI2cController) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
-  const PHofSolNut = await PHofNutrientSolution.get();
+  const PHofSolNut = await PHofNutrientSolution.get(semaphoreI2cController);
 
   const PHmarancandinhuana = `PH of Nutrient Solution:  ${PHofSolNut}\n\n`
                            + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.min}\n`
@@ -463,7 +463,7 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
               break;
 
             case `/managePHmarancandinhuana${botName}`:
-              await managePHmarancandinhuana(telegram, semaphoreMiniDB);
+              await managePHmarancandinhuana(telegram, semaphoreMiniDB, semaphoreI2cController);
               break;
 
             case `/manageECmarancandinhuana${botName}`:

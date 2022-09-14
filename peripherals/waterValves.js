@@ -14,12 +14,14 @@ const waterValveForIrrigationOfBackGarden = {
   on: (async (semaphoreI2cController) => {
     semaphoreI2cController.take(async () => {
       await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfBackGarden, 'e');
+
       semaphoreI2cController.leave();
     });
   }),
   off: (async (semaphoreI2cController) => {
     semaphoreI2cController.take(async () => {
       await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfBackGarden, 'd');
+
       semaphoreI2cController.leave();
     });
   }),

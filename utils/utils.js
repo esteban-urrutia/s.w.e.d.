@@ -53,57 +53,11 @@ function getDateStampFromTimeStamp(timeStamp) {
 }
 
 /**
- * getPhotoperiod: get photoperiod based on start/finish time
- * @returns {String}
+ * validates if string is made only of digits
+ * @returns {boolean}
  */
-function getPhotoperiod(miniDB) {
-  const now = new Date();
-
-  const startTime = new Date();
-  const startHour = parseInt(
-    miniDB
-      .growMarancandinhuanaParams
-      .training
-      .photoperiod
-      .start.substring(0, 2),
-  );
-  const startMinute = parseInt(
-    miniDB
-      .growMarancandinhuanaParams
-      .training
-      .photoperiod
-      .start.substring(3, 5),
-  );
-  startTime.setHours(startHour);
-  startTime.setMinutes(startMinute);
-  startTime.setSeconds(0);
-  startTime.setMilliseconds(0);
-
-  const finishTime = new Date();
-  const finishHour = parseInt(
-    miniDB
-      .growMarancandinhuanaParams
-      .training
-      .photoperiod
-      .finish.substring(0, 2),
-  );
-  const finishMinute = parseInt(
-    miniDB
-      .growMarancandinhuanaParams
-      .training
-      .photoperiod
-      .finish.substring(3, 5),
-  );
-  finishTime.setHours(finishHour);
-  finishTime.setMinutes(finishMinute);
-  finishTime.setSeconds(0);
-  finishTime.setMilliseconds(0);
-
-  if (startTime.getTime() <= now.getTime()
-  && now.getTime() <= finishTime.getTime()) {
-    return 'day';
-  }
-  return 'night';
+function isDigit(string) {
+  return [...string].every((c) => '0123456789'.includes(c));
 }
 
 /**
@@ -160,7 +114,7 @@ module.exports = {
   getDateStamp,
   getTimeStamp,
   getDateStampFromTimeStamp,
-  getPhotoperiod,
+  isDigit,
   normalizeTextForCsv,
   normalizeTextForTelegramMessage,
   execute,
