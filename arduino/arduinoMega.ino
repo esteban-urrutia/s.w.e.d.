@@ -120,15 +120,15 @@ void deviceManager(char message[]) {
 
     int PH_sol_nut_analogReading = (buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7])/6;
 
-serial.println(PH_sol_nut_analogReading);
+Serial.println(PH_sol_nut_analogReading);
 
     char PH_sol_nut_analogReading_1 = (char) (PH_sol_nut_analogReading/100);
     char PH_sol_nut_analogReading_2 = (char) ((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10);
     char PH_sol_nut_analogReading_3 = (char) (PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100) - (((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10)*10));
 
-serial.println(PH_sol_nut_analogReading_1);
-serial.println(PH_sol_nut_analogReading_2;
-serial.println(PH_sol_nut_analogReading_3);
+Serial.println(PH_sol_nut_analogReading_1);
+Serial.println(PH_sol_nut_analogReading_2);
+Serial.println(PH_sol_nut_analogReading_3);
 
     responseMessage[0] = 'P';
     responseMessage[1] = 'H';
