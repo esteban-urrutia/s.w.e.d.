@@ -24,6 +24,7 @@ const { temperatureAndHumidityOfGrowSpace } = require('../sensors/temperature-hu
 const { temperatureOfNutrientSolution } = require('../sensors/waterTemperature');
 const { PHofNutrientSolution } = require('../sensors/ph');
 const { ECofNutrientSolution } = require('../sensors/ec');
+const { lightingOfGrowSpace } = require('../peripherals/lighting');
 const {
   waterValveForIrrigationOfFrontGarden,
   waterValveForIrrigationOfBackGarden,
@@ -151,7 +152,8 @@ async function helpMenu(telegram) {
 async function marancandinhuanaMenu(telegram) {
   const menu = '1)  /overviewMarancandinhuana\n\n'
              + '2)  /managePHmarancandinhuana\n\n'
-             + '3)  /manageECmarancandinhuana';
+             + '3)  /manageECmarancandinhuana\n\n'
+             + '4)  /managePeripheralsMarancandinhuana';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
@@ -175,6 +177,7 @@ async function overviewMarancandinhuana(telegram, semaphoreMiniDB) {
                         + `    temperature:  ${temperatureOfNutSol} °C\n\n`
                         + 'Peripherals Status:\n'
                         + '    Grow Space:\n'
+                        + `        light:  ${miniDB.growMarancandinhuanaParams.growSpace.light.status}\n`
                         + `        temperature:  ${miniDB.growMarancandinhuanaParams.growSpace.temperature.status}\n`
                         + `        humidity:  ${miniDB.growMarancandinhuanaParams.growSpace.humidity.status}\n`
                         + '    Nutritive Solution:\n'
@@ -220,6 +223,51 @@ async function manageECmarancandinhuana(telegram, semaphoreMiniDB) {
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
   await sendMessage(telegram, ECmarancandinhuana, 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+}
+
+async function managePeripheralsMarancandinhuana(telegram) {
+  const menu = '1)  /growSpaceLighting';
+  await sendMessage(telegram, menu, 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+}
+
+async function growSpaceLighting(telegram) {
+  const menu = '1)  /enableGrowSpaceLighting\n\n'
+             + '2)  /disableGrowSpaceLighting';
+  await sendMessage(telegram, menu, 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+}
+
+async function enableGrowSpaceLighting(telegram, semaphoreMiniDB, semaphoreI2cController) {
+  const miniDB = await readMiniDB(semaphoreMiniDB);
+
+  await lightingOfGrowSpace.on(semaphoreI2cController);
+  miniDB.growMarancandinhuanaParams.growSpace.light.status = 'lighting';
+
+  await saveMiniDB(semaphoreMiniDB, miniDB);
+
+  await sendMessage(telegram, 'Lighting Of GrowSpace Enabled', 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+}
+
+async function disableGrowSpaceLighting(telegram, semaphoreMiniDB, semaphoreI2cController) {
+  const miniDB = await readMiniDB(semaphoreMiniDB);
+
+  await lightingOfGrowSpace.off(semaphoreI2cController);
+  miniDB.growMarancandinhuanaParams.growSpace.light.status = 'lighting';
+
+  await saveMiniDB(semaphoreMiniDB, miniDB);
+
+  await sendMessage(telegram, 'Lighting Of GrowSpace Disabled', 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
     });
@@ -468,6 +516,22 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
 
             case `/manageECmarancandinhuana${botName}`:
               await manageECmarancandinhuana(telegram, semaphoreMiniDB);
+              break;
+
+            case `/managePeripheralsMarancandinhuana${botName}`:
+              await managePeripheralsMarancandinhuana(telegram, semaphoreMiniDB);
+              break;
+
+            case `/growSpaceLighting${botName}`:
+              await growSpaceLighting(telegram, semaphoreMiniDB);
+              break;
+
+            case `/enableGrowSpaceLighting${botName}`:
+              await enableGrowSpaceLighting(telegram, semaphoreMiniDB, semaphoreI2cController);
+              break;
+
+            case `/disableGrowSpaceLighting${botName}`:
+              await disableGrowSpaceLighting(telegram, semaphoreMiniDB, semaphoreI2cController);
               break;
 
             case `/frontAndBackGardenMenu${botName}`:

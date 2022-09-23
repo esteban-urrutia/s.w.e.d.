@@ -1,5 +1,15 @@
 {
   "growSpace": {
+    "light": {
+      "method": "fixedEvents",
+      "status": null,
+      "events": [
+        {
+          "start": "20:00",
+          "finish": "08:00"
+        }
+      ]
+    },
     "temperature": {
       "method": "fixedDayNightMinMax",
       "status": null,
