@@ -263,7 +263,7 @@ async function disableGrowSpaceLighting(telegram, semaphoreMiniDB, semaphoreI2cC
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   await lightingOfGrowSpace.off(semaphoreI2cController);
-  miniDB.growMarancandinhuanaParams.growSpace.light.status = 'lighting';
+  miniDB.growMarancandinhuanaParams.growSpace.light.status = 'null';
 
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
