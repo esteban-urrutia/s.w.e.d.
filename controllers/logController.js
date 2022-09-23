@@ -26,7 +26,7 @@ class Log {
           logFile = './logs/error/log_error.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
           this.objectsToCsvInstance.data[0].errorMessage = utils.normalizeTextForCsv(dataToLog.message);
-          this.objectsToCsvInstance.data[0].from = utils.normalizeTextForCsv(dataToLog.stack);
+          this.objectsToCsvInstance.data[0].from = utils.normalizeTextForCsv(dataToLog.hasOwnProperty('stack') ? dataToLog.stack : dataToLog); 
           break;
 
         case 'incomingTelegramMessages':
