@@ -19,7 +19,11 @@ const {
   getTimeStamp,
   getDateStampFromTimeStamp,
 } = require('../utils/utils');
-const { readMiniDB, saveMiniDB } = require('./miniDBcontroller');
+const {
+  readMiniDB,
+  saveMiniDB,
+  deleteMiniDB: deleteMiniDb,
+} = require('./miniDBcontroller');
 const { temperatureAndHumidityOfGrowSpace } = require('../sensors/temperature-humidity');
 const { temperatureOfNutrientSolution } = require('../sensors/waterTemperature');
 const { PHofNutrientSolution } = require('../sensors/ph');
@@ -399,26 +403,38 @@ async function getLogs(telegram) {
     } catch (error) {
       reject({
         message: (error.hasOwnProperty('stack') ? error.stack : error),
-        stack: 'telegramController -> all_logsInZip -> compress.zip.compressDir',
+        stack: 'telegramController -> getLogs -> compress.zip.compressDir',
       });
     }
   });
 }
 
-async function deleteMiniDB(telegram) {
-  exec('sudo rm miniDB.json', async (error) => {
-    if (error) {
-      await sendMessage(telegram, `Error executing (sudo rm miniDB.json):  ${error}`, 'text')
-        .catch(async (error) => {
-          await log.save(error, 'error');
+async function getMiniDB(telegram, semaphoreMiniDB) {
+  return new Promise(async (resolve, reject) => {
+    semaphoreMiniDB.take(async () => {
+      try {
+        await sendMessage(telegram, 'miniDB.json', 'document');
+
+        semaphoreMiniDB.leave();
+        resolve(true);
+      } catch (error) {
+        semaphoreMiniDB.leave();
+        reject({
+          message: (error.hasOwnProperty('stack') ? error.stack : error),
+          stack: 'telegramDBcontroller -> getMiniDB',
         });
-    } else {
-      await sendMessage(telegram, 'miniDB.json successfully deleted', 'text')
-        .catch(async (error) => {
-          await log.save(error, 'error');
-        });
-    }
+      }
+    });
   });
+}
+
+async function deleteMiniDB(telegram, semaphoreMiniDB) {
+  try {
+    await deleteMiniDb(semaphoreMiniDB);
+    await sendMessage(telegram, 'miniDB.json successfully deleted', 'text');
+  } catch (error) {
+    await log.save(error, 'error');
+  }
 }
 
 async function restartService(telegram) {
@@ -561,8 +577,12 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
               await getLogs(telegram);
               break;
 
+            case `/getMiniDB${botName}`:
+              await getMiniDB(telegram, semaphoreMiniDB);
+              break;
+
             case `/deleteMiniDB ${env.telegram_password}${botName}`:
-              await deleteMiniDB(telegram);
+              await deleteMiniDB(telegram, semaphoreMiniDB);
               break;
 
             case `/restartService ${env.telegram_password}${botName}`:

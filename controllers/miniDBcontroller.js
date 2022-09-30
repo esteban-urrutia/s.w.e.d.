@@ -6,6 +6,7 @@ const fs = require('fs');
 const growFrontAndBackGardenParams = require('../loopingTasks/growFrontAndBackGarden/params.json');
 const growNFTsystemParams = require('../loopingTasks/growNFTsystem/params.json');
 const growMarancandinhuanaParams = require('../loopingTasks/growMarancandinhuana/params.json');
+const { execute } = require('../utils/utils');
 
 const miniDBtemplate = {
   growMarancandinhuanaParams,
@@ -61,7 +62,27 @@ async function saveMiniDB(semaphoreMiniDB, miniDB) {
   });
 }
 
+async function deleteMiniDB(semaphoreMiniDB) {
+  return new Promise(async (resolve, reject) => {
+    semaphoreMiniDB.take(async () => {
+      try {
+        await execute('sudo rm miniDB.json');
+
+        semaphoreMiniDB.leave();
+        resolve(true);
+      } catch (error) {
+        semaphoreMiniDB.leave();
+        reject({
+          message: (error.hasOwnProperty('stack') ? error.stack : error),
+          stack: 'miniDBcontroller -> deleteMiniDB',
+        });
+      }
+    });
+  });
+}
+
 module.exports = {
   readMiniDB,
   saveMiniDB,
+  deleteMiniDB,
 };
