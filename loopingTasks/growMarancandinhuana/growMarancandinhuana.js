@@ -14,6 +14,7 @@ const { waterPumpForRecirculationOfNutrientSolution } = require('../../periphera
 const { temperatureAndHumidityOfGrowSpace } = require('../../sensors/temperature-humidity');
 const { temperatureOfNutrientSolution } = require('../../sensors/waterTemperature');
 const { saveMiniDB } = require('../../controllers/miniDBcontroller');
+const log = require('../../controllers/logController').getInstance();
 
 /**
  * getPhotoperiod: get photoperiod based on start/finish time
@@ -193,7 +194,11 @@ async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB, semap
 
     await saveMiniDB(semaphoreMiniDB, miniDB);
   }
-  return true;
+  return {
+    sensorsData2: {
+      temperatureOfNutSol,
+    },
+  };
 }
 
 async function manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB, semaphoreI2cController) {
@@ -270,14 +275,14 @@ async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cControl
   await manageGrowSpaceLight(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
   // eslint-disable-next-line no-unused-vars
-  const { temperatureOfGrowSpace, humidityOfGrowSpace } = await temperatureAndHumidityOfGrowSpace.get();
+  const { temperatureOfGrowSpace, humidityOfGrowSpace, sensorsData1 } = await temperatureAndHumidityOfGrowSpace.get();
   await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController, temperatureOfGrowSpace);
 
   // await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, semaphoreI2cController, humidityOfGrowSpace);
 
   // await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
 
-  await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController);
+  const { sensorsData2 } = await manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
   await manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
@@ -292,6 +297,16 @@ async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cControl
   // await manageTrainingPruning(miniDB, semaphoreMiniDB);
 
   // await manageTrainingDefoliation(miniDB, semaphoreMiniDB);
+
+  await log.save({
+    temperatureOfGrowSpace1: sensorsData1.temperatureOfGrowSpace1.toFixed(1),
+    humidityOfGrowSpace1: sensorsData1.humidityOfGrowSpace1.toFixed(1),
+    temperatureOfGrowSpace2: sensorsData1.temperatureOfGrowSpace2.toFixed(1),
+    humidityOfGrowSpace2: sensorsData1.humidityOfGrowSpace2.toFixed(1),
+    temperatureOfGrowSpace3: sensorsData1.temperatureOfGrowSpace3.toFixed(1),
+    humidityOfGrowSpace3: sensorsData1.humidityOfGrowSpace3.toFixed(1),
+    temperatureOfNutSol: sensorsData2.temperatureOfNutSol.toFixed(1),
+  }, 'stats');
 
   return true;
 }

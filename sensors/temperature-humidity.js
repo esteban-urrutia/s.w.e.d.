@@ -52,6 +52,14 @@ const temperatureAndHumidityOfGrowSpace = {
     return {
       temperatureOfGrowSpace,
       humidityOfGrowSpace,
+      sensorsData1: {
+        temperatureOfGrowSpace1,
+        humidityOfGrowSpace1,
+        temperatureOfGrowSpace2,
+        humidityOfGrowSpace2,
+        temperatureOfGrowSpace3,
+        humidityOfGrowSpace3,
+      },
     };
   }),
 };
