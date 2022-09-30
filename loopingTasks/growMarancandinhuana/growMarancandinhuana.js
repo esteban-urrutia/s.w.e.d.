@@ -252,13 +252,13 @@ async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB, semap
     growSpace
     ✓   light
     ✓   temperature
-   ✓/2  humidity
+    x   humidity
     x   airRenew
   nutritiveSolution
    ✓/2  temperature
     ✓   recirculation
     x   ec
-   ✓/2   ph
+   ✓/2  ph
     ✓   oxygenation
   training
     x  topping
@@ -268,14 +268,11 @@ async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB, semap
 async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   await manageGrowSpaceLight(miniDB, semaphoreMiniDB, semaphoreI2cController);
 
-  const {
-    temperatureOfGrowSpace,
-    humidityOfGrowSpace,
-  } = await temperatureAndHumidityOfGrowSpace.get();
-
+  // eslint-disable-next-line no-unused-vars
+  const { temperatureOfGrowSpace, humidityOfGrowSpace } = await temperatureAndHumidityOfGrowSpace.get();
   await manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, semaphoreI2cController, temperatureOfGrowSpace);
 
-  await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, semaphoreI2cController, humidityOfGrowSpace);
+  // await manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, semaphoreI2cController, humidityOfGrowSpace);
 
   // await manageGrowSpaceAirRenew(miniDB, semaphoreMiniDB);
 
