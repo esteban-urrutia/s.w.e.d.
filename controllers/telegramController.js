@@ -18,6 +18,7 @@ const {
   execute,
   getTimeStamp,
   getDateStampFromTimeStamp,
+  sleep,
 } = require('../utils/utils');
 const {
   readMiniDB,
@@ -29,6 +30,7 @@ const { temperatureOfNutrientSolution } = require('../sensors/waterTemperature')
 const { PHofNutrientSolution } = require('../sensors/ph');
 const { ECofNutrientSolution } = require('../sensors/ec');
 const { lightingOfGrowSpace } = require('../peripherals/lighting');
+const { waterPumpForSampleOfNutrientSolution } = require('../peripherals/waterPumps');
 const {
   waterValveForIrrigationOfFrontGarden,
   waterValveForIrrigationOfBackGarden,
@@ -155,9 +157,10 @@ async function helpMenu(telegram) {
 
 async function marancandinhuanaMenu(telegram) {
   const menu = '1)  /overviewMarancandinhuana\n\n'
-             + '2)  /managePHmarancandinhuana\n\n'
-             + '3)  /manageECmarancandinhuana\n\n'
-             + '4)  /managePeripheralsMarancandinhuana';
+             + '2)  /getSampleOfNutrientSolution\n\n'
+             + '3)  /getPHofSample\n\n'
+             + '4)  /getECofSample\n\n'
+             + '5)  /managePeripheralsMarancandinhuana';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
@@ -196,7 +199,21 @@ async function overviewMarancandinhuana(telegram, semaphoreMiniDB) {
     });
 }
 
-async function managePHmarancandinhuana(telegram, semaphoreMiniDB, semaphoreI2cController) {
+async function getSampleOfNutrientSolution(telegram, semaphoreI2cController) {
+  try {
+    await waterPumpForSampleOfNutrientSolution.on(semaphoreI2cController);
+    await sendMessage(telegram, 'waterPump for Sample Of NutrientSolution ON', 'text');
+
+    await sleep(parseInt(env.secondOfActionWaterPumpForSampleOfNutrientSolution));
+
+    await waterPumpForSampleOfNutrientSolution.off(semaphoreI2cController);
+    await sendMessage(telegram, 'waterPump for Sample Of NutrientSolution OFF', 'text');
+  } catch (error) {
+    await log.save(error, 'error');
+  }
+}
+
+async function getPHofSample(telegram, semaphoreMiniDB, semaphoreI2cController) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   const PHofSolNut = await PHofNutrientSolution.get(semaphoreI2cController);
@@ -214,7 +231,7 @@ async function managePHmarancandinhuana(telegram, semaphoreMiniDB, semaphoreI2cC
     });
 }
 
-async function manageECmarancandinhuana(telegram, semaphoreMiniDB) {
+async function getECofSample(telegram, semaphoreMiniDB) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
   const ECofSolNut = await ECofNutrientSolution.get();
@@ -521,12 +538,16 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
               await overviewMarancandinhuana(telegram, semaphoreMiniDB);
               break;
 
-            case `/managePHmarancandinhuana${botName}`:
-              await managePHmarancandinhuana(telegram, semaphoreMiniDB, semaphoreI2cController);
+            case `/getSampleOfNutrientSolution${botName}`:
+              await getSampleOfNutrientSolution(telegram, semaphoreI2cController);
               break;
 
-            case `/manageECmarancandinhuana${botName}`:
-              await manageECmarancandinhuana(telegram, semaphoreMiniDB);
+            case `/getPHofSample${botName}`:
+              await getPHofSample(telegram, semaphoreMiniDB, semaphoreI2cController);
+              break;
+
+            case `/getECofSample${botName}`:
+              await getECofSample(telegram, semaphoreMiniDB);
               break;
 
             case `/managePeripheralsMarancandinhuana${botName}`:
