@@ -113,6 +113,7 @@ async function manageGrowSpaceTemperature(miniDB, semaphoreMiniDB, semaphoreI2cC
   return true;
 }
 
+// eslint-disable-next-line no-unused-vars
 async function manageGrowSpaceHumidity(miniDB, semaphoreMiniDB, semaphoreI2cController, humidityOfGrowSpace) {
   const photoperiod = getPhotoperiod(miniDB);
 

@@ -9,7 +9,7 @@ const PHofNutrientSolution = {
         const analogPHreading = await i2c.get(env.i2c_arduinoMega_address, 'PH');
         semaphoreI2cController.leave();
 
-        const PHvalue = ((-56.48 * analogPHreading) * (5.0 / 1023.0) + 222.49)/10;
+        const PHvalue = ((-56.48 * analogPHreading) * (5.0 / 1023.0) + 222.49) / 10;
 
         resolve(PHvalue);
       } catch (error) {

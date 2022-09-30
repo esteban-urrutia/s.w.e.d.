@@ -405,24 +405,33 @@ async function getLogs(telegram) {
   });
 }
 
+async function deleteMiniDB(telegram) {
+  exec('sudo rm miniDB.json', async (error) => {
+    if (error) {
+      await sendMessage(telegram, `Error executing (sudo rm miniDB.json):  ${error}`, 'text')
+        .catch(async (error) => {
+          await log.save(error, 'error');
+        });
+    } else {
+      await sendMessage(telegram, 'miniDB.json successfully deleted', 'text')
+        .catch(async (error) => {
+          await log.save(error, 'error');
+        });
+    }
+  });
+}
+
 async function restartService(telegram) {
-  await telegram.sendMessage(env.telegram_chatId, 'Service restart')
+  await sendMessage(telegram, 'Service restart', 'text')
     .catch(async (error) => {
-      await log.save({
-        message: (error.hasOwnProperty('stack') ? error.stack : error),
-        stack: 'restartService -> restart',
-      }, 'error');
+      await log.save(error, 'error');
     })
     .finally(async () => {
       exec('pm2 restart main', async (error) => {
         if (error) {
-          await telegram.sendMessage(env.telegram_chatId, `Error executing (pm2 restart main):  ${error}`)
+          await sendMessage(telegram, 'Error executing (pm2 restart main)', 'text')
             .catch(async (error) => {
-              await log.save({
-                data: `Error executing (pm2 restart main):  ${error}`,
-                message: (error.hasOwnProperty('stack') ? error.stack : error),
-                stack: 'telegramController -> sendErrorMessage -> pm2 restart main',
-              }, 'error');
+              await log.save(error, 'error');
             });
         }
       });
@@ -430,23 +439,16 @@ async function restartService(telegram) {
 }
 
 async function rebootRpi(telegram) {
-  await telegram.sendMessage(env.telegram_chatId, 'Rpi rebooting')
+  await sendMessage(telegram, 'Rpi rebooting', 'text')
     .catch(async (error) => {
-      await log.save({
-        message: (error.hasOwnProperty('stack') ? error.stack : error),
-        stack: 'rebootRpi -> rebooting',
-      }, 'error');
+      await log.save(error, 'error');
     })
     .finally(async () => {
       exec('sudo reboot now', async (error) => {
         if (error) {
-          await telegram.sendMessage(env.telegram_chatId, `Error executing (sudo reboot now):  ${error}`)
+          await sendMessage(telegram, `Error executing (sudo reboot now):  ${error}`, 'text')
             .catch(async (error) => {
-              await log.save({
-                data: `Error executing (sudo reboot now):  ${error}`,
-                message: (error.hasOwnProperty('stack') ? error.stack : error),
-                stack: 'telegramController -> sendErrorMessage -> sudo reboot now',
-              }, 'error');
+              await log.save(error, 'error');
             });
         }
       });
@@ -454,23 +456,16 @@ async function rebootRpi(telegram) {
 }
 
 async function shutdownRpi(telegram) {
-  await telegram.sendMessage(env.telegram_chatId, 'Rpi shutting down')
+  await sendMessage(telegram, 'Rpi shutting down', 'text')
     .catch(async (error) => {
-      await log.save({
-        message: (error.hasOwnProperty('stack') ? error.stack : error),
-        stack: 'shutdownRpi -> shutting down',
-      }, 'error');
+      await log.save(error, 'error');
     })
     .finally(async () => {
       exec('sudo shutdown now', async (error) => {
         if (error) {
-          await telegram.sendMessage(env.telegram_chatId, `Error executing (sudo shutdown now):  ${error}`)
+          await sendMessage(telegram, `Error executing (sudo shutdown now):  ${error}`, 'text')
             .catch(async (error) => {
-              await log.save({
-                data: `Error executing (sudo shutdown now):  ${error}`,
-                message: (error.hasOwnProperty('stack') ? error.stack : error),
-                stack: 'telegramController -> sendErrorMessage -> sudo shutdown now',
-              }, 'error');
+              await log.save(error, 'error');
             });
         }
       });
@@ -564,6 +559,10 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
 
             case `/getLogs${botName}`:
               await getLogs(telegram);
+              break;
+
+            case `/deleteMiniDB ${env.telegram_password}${botName}`:
+              await deleteMiniDB(telegram);
               break;
 
             case `/restartService ${env.telegram_password}${botName}`:
