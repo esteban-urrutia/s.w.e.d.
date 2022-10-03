@@ -3,24 +3,19 @@
     "light": {
       "method": "fixedEvents",
       "status": null,
-      "events": [
-        {
-          "start": "20:00",
-          "finish": "08:00"
-        }
-      ]
+      "events": []
     },
     "temperature": {
       "method": "fixedDayNightMinMax",
       "status": null,
       "values": {
         "day":{
-          "max": 100,
-          "min": 0
+          "max": 25.5,
+          "min": 24.5
         },
         "night":{
-          "max": 100,
-          "min": 0
+          "max": 25.5,
+          "min": 24.5
         }
       }
     },
@@ -29,12 +24,12 @@
       "status": null,
       "values": {
         "day":{
-          "max": 100,
-          "min": 0
+          "max": 95.5,
+          "min": 94.5
         },
         "night":{
-          "max": 100,
-          "min": 0
+          "max": 95.5,
+          "min": 94.5
         }
       }
     },
@@ -282,8 +277,8 @@
       "y": 222.49,
       "lastValue": null,
       "values": {
-        "max": 6.5,
-        "min": 5.5
+        "max": 6.1,
+        "min": 5.9
       }
     },
     "oxygenation": {
