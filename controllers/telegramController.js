@@ -160,6 +160,7 @@ async function marancandinhuanaMenu(telegram) {
   const menu = '1)  /overviewMarancandinhuana\n\n'
              + '2)  /getSampleOfNutrientSolution\n\n'
              + '3)  /getPHofSample\n\n'
+             // + '4)  /getECofSample\n\n'
              + '4)  /postECofSample\n\n'
              + '5)  /managePeripheralsMarancandinhuana';
   await sendMessage(telegram, menu, 'text')
