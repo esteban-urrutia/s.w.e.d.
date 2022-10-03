@@ -1,3 +1,4 @@
+/* eslint-disable brace-style */
 /* eslint-disable radix */
 /* eslint-disable max-len */
 /* eslint-disable prefer-promise-reject-errors */
@@ -159,7 +160,7 @@ async function marancandinhuanaMenu(telegram) {
   const menu = '1)  /overviewMarancandinhuana\n\n'
              + '2)  /getSampleOfNutrientSolution\n\n'
              + '3)  /getPHofSample\n\n'
-             + '4)  /getECofSample\n\n'
+             + '4)  /postECofSample\n\n'
              + '5)  /managePeripheralsMarancandinhuana';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
@@ -236,14 +237,34 @@ async function getPHofSample(telegram, semaphoreMiniDB, semaphoreI2cController) 
 async function getECofSample(telegram, semaphoreMiniDB) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
-  const ECofSolNut = await ECofNutrientSolution.get();
+  const ECofNutSol = await ECofNutrientSolution.get();
 
-  const ECmarancandinhuana = `EC of Nutrient Solution:  ${ECofSolNut}\n\n`
+  const ECmarancandinhuana = `EC of Nutrient Solution:  ${ECofNutSol}\n\n`
                            + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.values.min}\n`
                            + `Max value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.values.max}`;
 
-  miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.lastValue = ECofSolNut;
+  miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.lastValue = ECofNutSol;
   await saveMiniDB(semaphoreMiniDB, miniDB);
+
+  await log.save({ ECofNutSol }, 'manual-stats-EC');
+
+  await sendMessage(telegram, ECmarancandinhuana, 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+}
+
+async function postECofSample(telegram, semaphoreMiniDB, ECinput) {
+  const miniDB = await readMiniDB(semaphoreMiniDB);
+
+  const ECmarancandinhuana = `EC of Nutrient Solution:  ${ECinput}\n\n`
+                           + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.values.min}\n`
+                           + `Max value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.values.max}`;
+
+  miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.lastValue = ECinput;
+  await saveMiniDB(semaphoreMiniDB, miniDB);
+
+  await log.save({ ECinput }, 'manual-stats-EC');
 
   await sendMessage(telegram, ECmarancandinhuana, 'text')
     .catch(async (error) => {
@@ -576,10 +597,6 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
               await overviewFrontAndBackGarden(telegram, semaphoreMiniDB);
               break;
 
-            case `/suspendManageOfFrontAndBackGarden${botName} 1`: case `/suspendManageOfFrontAndBackGarden${botName} 2`: case `/suspendManageOfFrontAndBackGarden${botName} 3`: case `/suspendManageOfFrontAndBackGarden${botName} 4`: case `/suspendManageOfFrontAndBackGarden${botName} 5`: case `/suspendManageOfFrontAndBackGarden${botName} 6`: case `/suspendManageOfFrontAndBackGarden${botName} 7`: case `/suspendManageOfFrontAndBackGarden${botName} 8`: case `/suspendManageOfFrontAndBackGarden${botName} 9`: case `/suspendManageOfFrontAndBackGarden${botName} 10`: case `/suspendManageOfFrontAndBackGarden${botName} 11`: case `/suspendManageOfFrontAndBackGarden${botName} 12`: case `/suspendManageOfFrontAndBackGarden${botName} 13`: case `/suspendManageOfFrontAndBackGarden${botName} 14`: case `/suspendManageOfFrontAndBackGarden${botName} 15`: case `/suspendManageOfFrontAndBackGarden${botName} 16`: case `/suspendManageOfFrontAndBackGarden${botName} 17`: case `/suspendManageOfFrontAndBackGarden${botName} 18`: case `/suspendManageOfFrontAndBackGarden${botName} 19`: case `/suspendManageOfFrontAndBackGarden${botName} 20`: case `/suspendManageOfFrontAndBackGarden${botName} 21`: case `/suspendManageOfFrontAndBackGarden${botName} 22`: case `/suspendManageOfFrontAndBackGarden${botName} 23`: case `/suspendManageOfFrontAndBackGarden${botName} 24`:
-              await suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, semaphoreI2cController, parseInt(incomingMessage.command.substring(35)));
-              break;
-
             case `/NFTsystemMenu${botName}`:
               await NFTsystemMenu(telegram);
               break;
@@ -622,6 +639,20 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
 
             default:
               break;
+          }
+
+          if (incomingMessage.command.substring(0, 34) === '/suspendManageOfFrontAndBackGarden') {
+            const hours = parseInt(incomingMessage.command.substring(35));
+            if (hours <= 24 && hours >= 1) {
+              await suspendManageOfFrontAndBackGarden(telegram, semaphoreMiniDB, semaphoreI2cController, hours);
+            }
+          }
+
+          else if (incomingMessage.command.substring(0, 15) === '/postECofSample') {
+            const ECinput = parseInt(incomingMessage.command.substring(16));
+            if (ECinput <= 100000 && ECinput >= 1) {
+              await postECofSample(telegram, semaphoreMiniDB, ECinput);
+            }
           }
         }
       };
