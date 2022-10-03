@@ -216,14 +216,16 @@ async function getSampleOfNutrientSolution(telegram, semaphoreI2cController) {
 async function getPHofSample(telegram, semaphoreMiniDB, semaphoreI2cController) {
   const miniDB = await readMiniDB(semaphoreMiniDB);
 
-  const PHofSolNut = await PHofNutrientSolution.get(semaphoreI2cController);
+  const PHofNutSol = await PHofNutrientSolution.get(semaphoreI2cController);
 
-  const PHmarancandinhuana = `PH of Nutrient Solution:  ${PHofSolNut.toFixed(1)}\n\n`
+  const PHmarancandinhuana = `PH of Nutrient Solution:  ${PHofNutSol.toFixed(1)}\n\n`
                            + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.min}\n`
                            + `Max value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.max}`;
 
-  miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.lastValue = PHofSolNut;
+  miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.lastValue = PHofNutSol;
   await saveMiniDB(semaphoreMiniDB, miniDB);
+
+  await log.save({ PHofNutSol }, 'manual-stats-PH');
 
   await sendMessage(telegram, PHmarancandinhuana, 'text')
     .catch(async (error) => {
