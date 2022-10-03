@@ -278,6 +278,8 @@
     "ph": {
       "method": "fixedMinMax",
       "status": null,
+      "m": -56.48,
+      "y": 222.49,
       "lastValue": null,
       "values": {
         "max": 6.5,
