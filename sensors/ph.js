@@ -6,16 +6,16 @@ const PHofNutrientSolution = {
   get: (async (miniDB, semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        const analogPHreading = await i2c.get(env.i2c_arduinoMega_address, 'PH');
+        const analogPhVoltageReading = await i2c.get(env.i2c_arduinoMega_address, 'PH');
         semaphoreI2cController.leave();
 
-        const PHvalue = (
-          ((analogPHreading * miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.m)
+        const PHofNutSol = (
+          ((analogPhVoltageReading * miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.m)
           * (5.0 / 1023.0))
           + miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.y
         ) / 10;
 
-        resolve(PHvalue);
+        resolve({ PHofNutSol, analogPhVoltageReading });
       } catch (error) {
         semaphoreI2cController.leave();
         reject(error);
