@@ -305,13 +305,13 @@ async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cControl
   // await manageTrainingDefoliation(miniDB, semaphoreMiniDB);
 
   await log.save({
-    temperatureOfGrowSpace1: sensorsData1.temperatureOfGrowSpace1,
-    humidityOfGrowSpace1: sensorsData1.humidityOfGrowSpace1,
-    temperatureOfGrowSpace2: sensorsData1.temperatureOfGrowSpace2,
-    humidityOfGrowSpace2: sensorsData1.humidityOfGrowSpace2,
-    temperatureOfGrowSpace3: sensorsData1.temperatureOfGrowSpace3,
-    humidityOfGrowSpace3: sensorsData1.humidityOfGrowSpace3,
-    temperatureOfNutSol: sensorsData2.temperatureOfNutSol,
+    temperatureOfGrowSpace1: sensorsData1.temperatureOfGrowSpace1.toFixed(1),
+    humidityOfGrowSpace1: sensorsData1.humidityOfGrowSpace1.toFixed(1),
+    temperatureOfGrowSpace2: sensorsData1.temperatureOfGrowSpace2.toFixed(1),
+    humidityOfGrowSpace2: sensorsData1.humidityOfGrowSpace2.toFixed(1),
+    temperatureOfGrowSpace3: sensorsData1.temperatureOfGrowSpace3.toFixed(1),
+    humidityOfGrowSpace3: sensorsData1.humidityOfGrowSpace3.toFixed(1),
+    temperatureOfNutSol: sensorsData2.temperatureOfNutSol.toFixed(1),
   }, 'scheduled-stats');
 
   return true;
