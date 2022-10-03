@@ -12,7 +12,6 @@ const env = require('dotenv').config().parsed;
 const device = require('systeminformation');
 const { exec } = require('child_process');
 const compress = require('compressing');
-const fs = require('fs');
 const log = require('./logController').getInstance();
 const {
   normalizeTextForTelegramMessage,

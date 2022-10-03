@@ -75,22 +75,28 @@ class Log {
 
       // rotate log of any file greater than 10 mb
       const maxSizeOfEachLogFileInMB = parseInt(env.logs_maxSizeOfEachLogFileInMB, 10);
-      if ((fs.statSync('./logs/info/log-info.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
+      if (fs.existsSync('./logs/info/log-info.csv')
+      && (fs.statSync('./logs/info/log-info.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
         await utils.execute(`sudo mv ./logs/info/log-info.csv ./logs/info/log-info-${utils.getDateStampForFileName()}.csv`);
       }
-      if ((fs.statSync('./logs/stats/log-scheduled-stats.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
+      if (fs.existsSync('./logs/stats/log-scheduled-stats.csv')
+      && (fs.statSync('./logs/stats/log-scheduled-stats.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
         await utils.execute(`sudo mv ./logs/stats/log-scheduled-stats.csv ./logs/stats/log-scheduled-stats-${utils.getDateStampForFileName()}.csv`);
       }
-      if ((fs.statSync('./logs/stats/log-manual-stats-EC.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
+      if (fs.existsSync('./logs/stats/log-manual-stats-EC.csv')
+      && (fs.statSync('./logs/stats/log-manual-stats-EC.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
         await utils.execute(`sudo mv ./logs/stats/log-manual-stats-EC.csv ./logs/stats/log-manual-stats-EC-${utils.getDateStampForFileName()}.csv`);
       }
-      if ((fs.statSync('./logs/stats/log-manual-stats-PH.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
+      if (fs.existsSync('./logs/stats/log-manual-stats-PH.csv')
+      && (fs.statSync('./logs/stats/log-manual-stats-PH.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
         await utils.execute(`sudo mv ./logs/stats/log-manual-stats-PH.csv ./logs/stats/log-manual-stats-PH-${utils.getDateStampForFileName()}.csv`);
       }
-      if ((fs.statSync('./logs/error/log-error.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
+      if (fs.existsSync('./logs/error/log-error.csv')
+      && (fs.statSync('./logs/error/log-error.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
         await utils.execute(`sudo mv ./logs/error/log-error.csv ./logs/error/log-error-${utils.getDateStampForFileName()}.csv`);
       }
-      if ((fs.statSync('./logs/incomingTelegramMessages/log-incomingTelegramMessages.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
+      if (fs.existsSync('./logs/incomingTelegramMessages/log-incomingTelegramMessages.csv')
+      && (fs.statSync('./logs/incomingTelegramMessages/log-incomingTelegramMessages.csv').size / (1024 * 1024)) > maxSizeOfEachLogFileInMB) {
         await utils.execute(`sudo mv ./logs/incomingTelegramMessages/log-incomingTelegramMessages.csv ./logs/incomingTelegramMessages/log-incomingTelegramMessages-${utils.getDateStampForFileName()}.csv`);
       }
 
