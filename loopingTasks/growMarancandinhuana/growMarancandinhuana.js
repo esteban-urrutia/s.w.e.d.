@@ -306,7 +306,7 @@ async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cControl
     temperatureOfGrowSpace3: sensorsData1.temperatureOfGrowSpace3.toFixed(1),
     humidityOfGrowSpace3: sensorsData1.humidityOfGrowSpace3.toFixed(1),
     temperatureOfNutSol: sensorsData2.temperatureOfNutSol.toFixed(1),
-  }, 'stats');
+  }, 'scheduled-stats');
 
   return true;
 }

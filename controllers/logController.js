@@ -18,13 +18,13 @@ class Log {
       let logFile;
       switch (logType) {
         case 'info':
-          logFile = './logs/info/log_info.csv';
+          logFile = './logs/info/log-info.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
           this.objectsToCsvInstance.data[0].data = utils.normalizeTextForCsv(dataToLog);
           break;
 
-        case 'stats':
-          logFile = './logs/stats/log_stats.csv';
+        case 'scheduled-stats':
+          logFile = './logs/stats/log-scheduled-stats.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
           this.objectsToCsvInstance.data[0].temperatureOfGrowSpace1 = dataToLog.temperatureOfGrowSpace1;
           this.objectsToCsvInstance.data[0].humidityOfGrowSpace1 = dataToLog.humidityOfGrowSpace1;
@@ -35,15 +35,27 @@ class Log {
           this.objectsToCsvInstance.data[0].temperatureOfNutSol = dataToLog.temperatureOfNutSol;
           break;
 
+        case 'manual-stats-PH':
+          logFile = './logs/stats/log-manual-stats-PH.csv';
+          this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
+          this.objectsToCsvInstance.data[0].PHofNutSol = dataToLog.PHofNutSol;
+          break;
+
+        case 'manual-stats-EC':
+          logFile = './logs/stats/log-manual-stats-EC.csv';
+          this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
+          this.objectsToCsvInstance.data[0].ECofNutSol = dataToLog.ECofNutSol;
+          break;
+
         case 'error':
-          logFile = './logs/error/log_error.csv';
+          logFile = './logs/error/log-error.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
           this.objectsToCsvInstance.data[0].errorMessage = utils.normalizeTextForCsv(dataToLog.message);
           this.objectsToCsvInstance.data[0].from = utils.normalizeTextForCsv(dataToLog.hasOwnProperty('stack') ? dataToLog.stack : dataToLog);
           break;
 
         case 'incomingTelegramMessages':
-          logFile = './logs/incomingTelegramMessages/log_incomingTelegramMessages.csv';
+          logFile = './logs/incomingTelegramMessages/log-incomingTelegramMessages.csv';
           this.objectsToCsvInstance.data[0].dateStamp = utils.getDateStamp();
           this.objectsToCsvInstance.data[0].from = dataToLog.from;
           this.objectsToCsvInstance.data[0].command = utils.normalizeTextForCsv(dataToLog.command);
