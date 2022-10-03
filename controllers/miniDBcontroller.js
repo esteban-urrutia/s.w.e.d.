@@ -22,14 +22,20 @@ async function readMiniDB(semaphoreMiniDB) {
         // if miniDB.json exist
         if (fs.existsSync('miniDB.json')) {
           // read and parse miniDB.json
-          miniDB = await JSON.parse((fs.readFileSync('miniDB.json')).toString());
+          fs.readFile('miniDB.json', async (err, data) => {
+            if (err) throw err;
+            miniDB = await JSON.parse(data.toString());
+            semaphoreMiniDB.leave();
+            resolve(miniDB);
+          });
         } else {
           miniDB = miniDBtemplate;
-          fs.writeFileSync('miniDB.json', JSON.stringify(miniDB, null, 4));
+          fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
+            if (err) throw err;
+            semaphoreMiniDB.leave();
+            resolve(miniDB);
+          });
         }
-
-        semaphoreMiniDB.leave();
-        resolve(miniDB);
       } catch (error) {
         semaphoreMiniDB.leave();
         reject({
@@ -46,10 +52,11 @@ async function saveMiniDB(semaphoreMiniDB, miniDB) {
   return new Promise(async (resolve, reject) => {
     semaphoreMiniDB.take(async () => {
       try {
-        fs.writeFileSync('miniDB.json', JSON.stringify(miniDB, null, 4));
-
-        semaphoreMiniDB.leave();
-        resolve(true);
+        fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
+          if (err) throw err;
+          semaphoreMiniDB.leave();
+          resolve(true);
+        });
       } catch (error) {
         semaphoreMiniDB.leave();
         reject({

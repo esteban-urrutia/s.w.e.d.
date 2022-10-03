@@ -64,7 +64,7 @@ async function sendMessage(telegram, message, type, deleteFileAfter = false) {
             .then(async () => {
               if (deleteFileAfter) {
                 try {
-                  fs.unlinkSync(message);
+                  await execute(`sudo rm ${message}`);
                   resolve(true);
                 } catch (error) {
                   reject({
@@ -100,7 +100,7 @@ async function sendMessage(telegram, message, type, deleteFileAfter = false) {
             .then(async () => {
               if (deleteFileAfter) {
                 try {
-                  fs.unlinkSync(message);
+                  await execute(`sudo rm ${message}`);
                   resolve(true);
                 } catch (error) {
                   reject({
