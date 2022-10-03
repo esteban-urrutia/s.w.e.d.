@@ -17,23 +17,23 @@ const { saveMiniDB } = require('../../controllers/miniDBcontroller');
 const log = require('../../controllers/logController').getInstance();
 
 /**
- * getPhotoperiod: get photoperiod based on start/finish time
+ * getPhotoperiod: get photoperiod day based on start/finish time
  * @returns {String}
  */
 function getPhotoperiod(miniDB) {
   const now = new Date();
 
   const startTime = new Date();
-  const startHour = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiod.start.substring(0, 2));
-  const startMinute = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiod.start.substring(3, 5));
+  const startHour = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiodDay.start.substring(0, 2));
+  const startMinute = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiodDay.start.substring(3, 5));
   startTime.setHours(startHour);
   startTime.setMinutes(startMinute);
   startTime.setSeconds(0);
   startTime.setMilliseconds(0);
 
   const finishTime = new Date();
-  const finishHour = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiod.finish.substring(0, 2));
-  const finishMinute = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiod.finish.substring(3, 5));
+  const finishHour = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiodDay.finish.substring(0, 2));
+  const finishMinute = parseInt(miniDB.growMarancandinhuanaParams.training.photoperiodDay.finish.substring(3, 5));
   finishTime.setHours(finishHour);
   finishTime.setMinutes(finishMinute);
   finishTime.setSeconds(0);
@@ -47,28 +47,30 @@ function getPhotoperiod(miniDB) {
 }
 
 async function manageGrowSpaceLight(miniDB, semaphoreMiniDB, semaphoreI2cController) {
-  for (let i = 0; i < miniDB.growMarancandinhuanaParams.growSpace.light.events.length; i++) {
-    const { start, finish } = miniDB.growMarancandinhuanaParams.growSpace.light.events[i];
+  if (miniDB.growMarancandinhuanaParams.growSpace.light.events.length > 0) {
+    for (let i = 0; i < miniDB.growMarancandinhuanaParams.growSpace.light.events.length; i++) {
+      const { start, finish } = miniDB.growMarancandinhuanaParams.growSpace.light.events[i];
 
-    const now = new Date();
-    const startHour = parseInt(start.substring(0, 2));
-    const startMinute = parseInt(start.substring(3, 5));
-    const finishHour = parseInt(finish.substring(0, 2));
-    const finishMinute = parseInt(finish.substring(3, 5));
+      const now = new Date();
+      const startHour = parseInt(start.substring(0, 2));
+      const startMinute = parseInt(start.substring(3, 5));
+      const finishHour = parseInt(finish.substring(0, 2));
+      const finishMinute = parseInt(finish.substring(3, 5));
 
-    if (startHour === now.getHours()
-    && startMinute === now.getMinutes()) {
-      await lightingOfGrowSpace.on(semaphoreI2cController);
-      miniDB.growMarancandinhuanaParams.growSpace.light.status = 'lighting';
+      if (startHour === now.getHours()
+      && startMinute === now.getMinutes()) {
+        await lightingOfGrowSpace.on(semaphoreI2cController);
+        miniDB.growMarancandinhuanaParams.growSpace.light.status = 'lighting';
+      }
+      else if (finishHour === now.getHours()
+      && finishMinute === now.getMinutes()) {
+        await lightingOfGrowSpace.off(semaphoreI2cController);
+        miniDB.growMarancandinhuanaParams.growSpace.light.status = null;
+      }
     }
-    else if (finishHour === now.getHours()
-    && finishMinute === now.getMinutes()) {
-      await lightingOfGrowSpace.off(semaphoreI2cController);
-      miniDB.growMarancandinhuanaParams.growSpace.light.status = null;
-    }
+    await saveMiniDB(semaphoreMiniDB, miniDB);
   }
 
-  await saveMiniDB(semaphoreMiniDB, miniDB);
   return true;
 }
 
@@ -202,54 +204,58 @@ async function manageNutritiveSolutionTemperature(miniDB, semaphoreMiniDB, semap
 }
 
 async function manageNutritiveSolutionRecirculation(miniDB, semaphoreMiniDB, semaphoreI2cController) {
-  for (let i = 0; i < miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.events.length; i++) {
-    const { start, finish } = miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.events[i];
+  if (miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.events.length > 0) {
+    for (let i = 0; i < miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.events.length; i++) {
+      const { start, finish } = miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.events[i];
 
-    const now = new Date();
-    const startHour = parseInt(start.substring(0, 2));
-    const startMinute = parseInt(start.substring(3, 5));
-    const finishHour = parseInt(finish.substring(0, 2));
-    const finishMinute = parseInt(finish.substring(3, 5));
+      const now = new Date();
+      const startHour = parseInt(start.substring(0, 2));
+      const startMinute = parseInt(start.substring(3, 5));
+      const finishHour = parseInt(finish.substring(0, 2));
+      const finishMinute = parseInt(finish.substring(3, 5));
 
-    if (startHour === now.getHours()
-    && startMinute === now.getMinutes()) {
-      await waterPumpForRecirculationOfNutrientSolution.on(semaphoreI2cController);
-      miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.status = 'recirculating';
+      if (startHour === now.getHours()
+      && startMinute === now.getMinutes()) {
+        await waterPumpForRecirculationOfNutrientSolution.on(semaphoreI2cController);
+        miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.status = 'recirculating';
+      }
+      else if (finishHour === now.getHours()
+      && finishMinute === now.getMinutes()) {
+        await waterPumpForRecirculationOfNutrientSolution.off(semaphoreI2cController);
+        miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.status = null;
+      }
     }
-    else if (finishHour === now.getHours()
-    && finishMinute === now.getMinutes()) {
-      await waterPumpForRecirculationOfNutrientSolution.off(semaphoreI2cController);
-      miniDB.growMarancandinhuanaParams.nutritiveSolution.recirculation.status = null;
-    }
+    await saveMiniDB(semaphoreMiniDB, miniDB);
   }
 
-  await saveMiniDB(semaphoreMiniDB, miniDB);
   return true;
 }
 
 async function manageNutritiveSolutionOxygenation(miniDB, semaphoreMiniDB, semaphoreI2cController) {
-  for (let i = 0; i < miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.events.length; i++) {
-    const { start, finish } = miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.events[i];
+  if (miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.events.length > 0) {
+    for (let i = 0; i < miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.events.length; i++) {
+      const { start, finish } = miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.events[i];
 
-    const now = new Date();
-    const startHour = parseInt(start.substring(0, 2));
-    const startMinute = parseInt(start.substring(3, 5));
-    const finishHour = parseInt(finish.substring(0, 2));
-    const finishMinute = parseInt(finish.substring(3, 5));
+      const now = new Date();
+      const startHour = parseInt(start.substring(0, 2));
+      const startMinute = parseInt(start.substring(3, 5));
+      const finishHour = parseInt(finish.substring(0, 2));
+      const finishMinute = parseInt(finish.substring(3, 5));
 
-    if (startHour === now.getHours()
-    && startMinute === now.getMinutes()) {
-      await airPumpOfNutrientSolution.on(semaphoreI2cController);
-      miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.status = 'oxygenating';
+      if (startHour === now.getHours()
+      && startMinute === now.getMinutes()) {
+        await airPumpOfNutrientSolution.on(semaphoreI2cController);
+        miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.status = 'oxygenating';
+      }
+      else if (finishHour === now.getHours()
+      && finishMinute === now.getMinutes()) {
+        await airPumpOfNutrientSolution.off(semaphoreI2cController);
+        miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.status = null;
+      }
     }
-    else if (finishHour === now.getHours()
-    && finishMinute === now.getMinutes()) {
-      await airPumpOfNutrientSolution.off(semaphoreI2cController);
-      miniDB.growMarancandinhuanaParams.nutritiveSolution.oxygenation.status = null;
-    }
+    await saveMiniDB(semaphoreMiniDB, miniDB);
   }
 
-  await saveMiniDB(semaphoreMiniDB, miniDB);
   return true;
 }
 

@@ -499,7 +499,7 @@
       "date": null,
       "daysOfBlock": 15
     },
-    "photoperiod": {
+    "photoperiodDay": {
       "start": "08:00",
       "finish": "20:00"
     }
