@@ -42,7 +42,11 @@ const temperatureAndHumidityOfGrowSpace = {
       + temperatureOfGrowSpace3) / 3
     );
 
-    const humidityOfGrowSpace = humidityOfGrowSpace3;
+    const humidityOfGrowSpace = (
+      (humidityOfGrowSpace1
+      + humidityOfGrowSpace2
+      + humidityOfGrowSpace3) / 3
+    );
 
     await sleep(1);
     await execute(`raspi-gpio set ${env.power_GPIO_sensors_temperatureAndHumidityOfGrowSpace} op dl`);

@@ -305,13 +305,13 @@ async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cControl
   // await manageTrainingDefoliation(miniDB, semaphoreMiniDB);
 
   await log.save({
-    temperatureOfGrowSpace1: (typeof sensorsData1.temperatureOfGrowSpace1 === 'number' ? (Math.round(sensorsData1.temperatureOfGrowSpace1 * 10) / 10) : sensorsData1.temperatureOfGrowSpace1),
-    humidityOfGrowSpace1: (typeof sensorsData1.humidityOfGrowSpace1 === 'number' ? (Math.round(sensorsData1.humidityOfGrowSpace1 * 10) / 10) : sensorsData1.humidityOfGrowSpace1),
-    temperatureOfGrowSpace2: (typeof sensorsData1.temperatureOfGrowSpace2 === 'number' ? (Math.round(sensorsData1.temperatureOfGrowSpace2 * 10) / 10) : sensorsData1.temperatureOfGrowSpace2),
-    humidityOfGrowSpace2: (typeof sensorsData1.humidityOfGrowSpace2 === 'number' ? (Math.round(sensorsData1.humidityOfGrowSpace2 * 10) / 10) : sensorsData1.humidityOfGrowSpace2),
-    temperatureOfGrowSpace3: (typeof sensorsData1.temperatureOfGrowSpace3 === 'number' ? (Math.round(sensorsData1.temperatureOfGrowSpace3 * 10) / 10) : sensorsData1.temperatureOfGrowSpace3),
-    humidityOfGrowSpace3: (typeof sensorsData1.humidityOfGrowSpace3 === 'number' ? (Math.round(sensorsData1.humidityOfGrowSpace3 * 10) / 10) : sensorsData1.humidityOfGrowSpace3),
-    temperatureOfNutSol: (typeof sensorsData2.temperatureOfNutSol === 'number' ? (Math.round(sensorsData2.temperatureOfNutSol * 10) / 10) : sensorsData2.temperatureOfNutSol),
+    temperatureOfGrowSpace1: (Math.round(sensorsData1.temperatureOfGrowSpace1 * 10) / 10),
+    humidityOfGrowSpace1: (Math.round(sensorsData1.humidityOfGrowSpace1 * 10) / 10),
+    temperatureOfGrowSpace2: (Math.round(sensorsData1.temperatureOfGrowSpace2 * 10) / 10),
+    humidityOfGrowSpace2: (Math.round(sensorsData1.humidityOfGrowSpace2 * 10) / 10),
+    temperatureOfGrowSpace3: (Math.round(sensorsData1.temperatureOfGrowSpace3 * 10) / 10),
+    humidityOfGrowSpace3: (Math.round(sensorsData1.humidityOfGrowSpace3 * 10) / 10),
+    temperatureOfNutSol: (Math.round(sensorsData2.temperatureOfNutSol * 10) / 10),
   }, 'scheduled-stats');
 
   return true;
