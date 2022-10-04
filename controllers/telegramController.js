@@ -219,15 +219,15 @@ async function getPHofSample(telegram, semaphoreMiniDB, semaphoreI2cController) 
 
   const { PHofNutSol, analogPhVoltageReading } = await PHofNutrientSolution.get(miniDB, semaphoreI2cController);
 
-  const PHmarancandinhuana = `PH of Nutrient Solution:  ${PHofNutSol.toFixed(1)}\n\n`
+  const PHmarancandinhuana = `PH of Nutrient Solution:  ${(Math.round(PHofNutSol * 10) / 10)}\n\n`
                            + `Min value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.min}\n`
                            + `Max value: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.values.max}\n\n`
                            + `Analog PH Voltage reading: ${analogPhVoltageReading}`;
 
-  miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.lastValue = PHofNutSol;
+  miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.lastValue = (Math.round(PHofNutSol * 10) / 10);
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
-  await log.save({ PHofNutSol }, 'manual-stats-PH');
+  await log.save({ PHofNutSol: (Math.round(PHofNutSol * 10) / 10) }, 'manual-stats-PH');
 
   await sendMessage(telegram, PHmarancandinhuana, 'text')
     .catch(async (error) => {
@@ -265,7 +265,7 @@ async function postECofSample(telegram, semaphoreMiniDB, ECinput) {
   miniDB.growMarancandinhuanaParams.nutritiveSolution.ec.lastValue = ECinput;
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
-  await log.save({ ECinput }, 'manual-stats-EC');
+  await log.save({ ECofNutSol: ECinput }, 'manual-stats-EC');
 
   await sendMessage(telegram, ECmarancandinhuana, 'text')
     .catch(async (error) => {
@@ -380,9 +380,11 @@ async function overviewNFTsystem(telegram, semaphoreMiniDB) {
 async function configMenu(telegram) {
   const menu = '1)   /aliveReport\n\n'
              + '2)   /getLogs\n\n'
-             + '3)   /restartService\n\n'
-             + '4)   /rebootRpi\n\n'
-             + '5)   /shutdownRpi';
+             + '3)   /getMiniDB\n\n'
+             + '4)   /deleteMiniDB\n\n'
+             + '5)   /restartService\n\n'
+             + '6)   /rebootRpi\n\n'
+             + '7)   /shutdownRpi';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
