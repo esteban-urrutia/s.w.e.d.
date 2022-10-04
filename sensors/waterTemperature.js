@@ -8,7 +8,7 @@ const {
 function getDs18b20Temp(oneWireAddress) {
   return new Promise((resolve) => {
     ds18b20.get(oneWireAddress, (error, temp) => {
-      if (error) {
+      if (error || typeof temp !== 'number') {
         resolve('readingError');
       }
       resolve(temp);

@@ -305,13 +305,13 @@ async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cControl
   // await manageTrainingDefoliation(miniDB, semaphoreMiniDB);
 
   await log.save({
-    temperatureOfGrowSpace1: sensorsData1.temperatureOfGrowSpace1.toFixed(1),
-    humidityOfGrowSpace1: sensorsData1.humidityOfGrowSpace1.toFixed(1),
-    temperatureOfGrowSpace2: sensorsData1.temperatureOfGrowSpace2.toFixed(1),
-    humidityOfGrowSpace2: sensorsData1.humidityOfGrowSpace2.toFixed(1),
-    temperatureOfGrowSpace3: sensorsData1.temperatureOfGrowSpace3.toFixed(1),
-    humidityOfGrowSpace3: sensorsData1.humidityOfGrowSpace3.toFixed(1),
-    temperatureOfNutSol: sensorsData2.temperatureOfNutSol.toFixed(1),
+    temperatureOfGrowSpace1: (typeof sensorsData1.temperatureOfGrowSpace1 === 'number' ? sensorsData1.temperatureOfGrowSpace1.toFixed(1) : sensorsData1.temperatureOfGrowSpace1),
+    humidityOfGrowSpace1: (typeof sensorsData1.humidityOfGrowSpace1 === 'number' ? sensorsData1.humidityOfGrowSpace1.toFixed(1) : sensorsData1.humidityOfGrowSpace1),
+    temperatureOfGrowSpace2: (typeof sensorsData1.temperatureOfGrowSpace2 === 'number' ? sensorsData1.temperatureOfGrowSpace2.toFixed(1) : sensorsData1.temperatureOfGrowSpace2),
+    humidityOfGrowSpace2: (typeof sensorsData1.humidityOfGrowSpace2 === 'number' ? sensorsData1.humidityOfGrowSpace2.toFixed(1) : sensorsData1.humidityOfGrowSpace2),
+    temperatureOfGrowSpace3: (typeof sensorsData1.temperatureOfGrowSpace3 === 'number' ? sensorsData1.temperatureOfGrowSpace3.toFixed(1) : sensorsData1.temperatureOfGrowSpace3),
+    humidityOfGrowSpace3: (typeof sensorsData1.humidityOfGrowSpace3 === 'number' ? sensorsData1.humidityOfGrowSpace3.toFixed(1) : sensorsData1.humidityOfGrowSpace3),
+    temperatureOfNutSol: (typeof sensorsData2.temperatureOfNutSol === 'number' ? sensorsData2.temperatureOfNutSol.toFixed(1) : sensorsData2.temperatureOfNutSol),
   }, 'scheduled-stats');
 
   return true;

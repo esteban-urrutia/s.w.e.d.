@@ -16,7 +16,7 @@ const temperatureAndHumidityOfGrowSpace = {
       temperature: temperatureOfGrowSpace1,
       humidity: humidityOfGrowSpace1,
     } = await dht22.read(22, parseInt(env.pin_sensor_temperatureAndHumidityOfGrowSpace1));
-    if (!temperatureOfGrowSpace1 || !humidityOfGrowSpace1) {
+    if (typeof temperatureOfGrowSpace1 !== 'number' || typeof humidityOfGrowSpace1 !== 'number') {
       throw new Error(`error: malfunction on dht22 connected at pin ${env.pin_sensor_temperatureAndHumidityOfGrowSpace1}`);
     }
 
@@ -24,7 +24,7 @@ const temperatureAndHumidityOfGrowSpace = {
       temperature: temperatureOfGrowSpace2,
       humidity: humidityOfGrowSpace2,
     } = await dht22.read(22, parseInt(env.pin_sensor_temperatureAndHumidityOfGrowSpace2));
-    if (!temperatureOfGrowSpace2 || !humidityOfGrowSpace2) {
+    if (typeof temperatureOfGrowSpace2 !== 'number' || typeof humidityOfGrowSpace2 !== 'number') {
       throw new Error(`error: malfunction on dht22 connected at pin ${env.pin_sensor_temperatureAndHumidityOfGrowSpace2}`);
     }
 
@@ -32,7 +32,7 @@ const temperatureAndHumidityOfGrowSpace = {
       temperature: temperatureOfGrowSpace3,
       humidity: humidityOfGrowSpace3,
     } = await dht22.read(22, parseInt(env.pin_sensor_temperatureAndHumidityOfGrowSpace3));
-    if (!temperatureOfGrowSpace3 || !humidityOfGrowSpace3) {
+    if (typeof temperatureOfGrowSpace2 !== 'number' || typeof humidityOfGrowSpace2 !== 'number') {
       throw new Error(`error: malfunction on dht22 connected at pin ${env.pin_sensor_temperatureAndHumidityOfGrowSpace3}`);
     }
 
