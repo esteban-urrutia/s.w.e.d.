@@ -36,17 +36,17 @@ const temperatureAndHumidityOfGrowSpace = {
       throw new Error(`error: malfunction on dht22 connected at pin ${env.pin_sensor_temperatureAndHumidityOfGrowSpace3}`);
     }
 
-    const temperatureOfGrowSpace = (
+    const temperatureOfGrowSpace = (Math.round((
       (temperatureOfGrowSpace1
       + temperatureOfGrowSpace2
       + temperatureOfGrowSpace3) / 3
-    );
+    ) * 10) / 10);
 
-    const humidityOfGrowSpace = (
+    const humidityOfGrowSpace = (Math.round((
       (humidityOfGrowSpace1
       + humidityOfGrowSpace2
       + humidityOfGrowSpace3) / 3
-    );
+    ) * 10) / 10);
 
     await sleep(1);
     await execute(`raspi-gpio set ${env.power_GPIO_sensors_temperatureAndHumidityOfGrowSpace} op dl`);
@@ -55,12 +55,12 @@ const temperatureAndHumidityOfGrowSpace = {
       temperatureOfGrowSpace,
       humidityOfGrowSpace,
       sensorsData1: {
-        temperatureOfGrowSpace1,
-        humidityOfGrowSpace1,
-        temperatureOfGrowSpace2,
-        humidityOfGrowSpace2,
-        temperatureOfGrowSpace3,
-        humidityOfGrowSpace3,
+        temperatureOfGrowSpace1: (Math.round(temperatureOfGrowSpace1 * 10) / 10),
+        humidityOfGrowSpace1: (Math.round(humidityOfGrowSpace1 * 10) / 10),
+        temperatureOfGrowSpace2: (Math.round(temperatureOfGrowSpace2 * 10) / 10),
+        humidityOfGrowSpace2: (Math.round(humidityOfGrowSpace2 * 10) / 10),
+        temperatureOfGrowSpace3: (Math.round(temperatureOfGrowSpace3 * 10) / 10),
+        humidityOfGrowSpace3: (Math.round(humidityOfGrowSpace3 * 10) / 10),
       },
     };
   }),

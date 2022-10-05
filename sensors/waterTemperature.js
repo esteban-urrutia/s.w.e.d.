@@ -8,10 +8,10 @@ const {
 function getDs18b20Temp(oneWireAddress) {
   return new Promise((resolve) => {
     ds18b20.get(oneWireAddress, (error, temp) => {
-      if (error || typeof temp !== 'number') {
+      if (error || typeof temp !== 'number' || temp > 80) {
         resolve('readingError');
       }
-      resolve(temp);
+      resolve((Math.round(temp * 10) / 10));
     });
   });
 }
