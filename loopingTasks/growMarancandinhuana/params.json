@@ -10,12 +10,12 @@
       "status": null,
       "values": {
         "day":{
-          "max": 25.5,
-          "min": 24.5
+          "max": 26,
+          "min": 20
         },
         "night":{
-          "max": 25.5,
-          "min": 24.5
+          "max": 26,
+          "min": 20
         }
       }
     },
