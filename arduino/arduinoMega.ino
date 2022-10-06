@@ -9,12 +9,15 @@ char responseMessage[i2cMessageLength];
 #define startPin_solidStateRelay 23
 #define finishPin_solidStateRelay 38
 
+// peripherals
+#define pin_airHeaterOfGrowSpace 12
+
 // PH Sensor
 #define pin_sensor_PH A0
 
 void setup() {
   delay(2000);
-  Serial.begin(9600);
+  //Serial.begin(9600);
   Wire.begin(i2cArduinoMegaAddress);
   
   Wire.onReceive(i2cReceive);
@@ -30,6 +33,10 @@ void setup() {
   delay(2000);
   pinMode(22, OUTPUT);
   digitalWrite(22, HIGH);
+
+  // airHeater of growSpace initial state
+  pinMode(pin_airHeaterOfGrowSpace, OUTPUT);
+  digitalWrite(pin_airHeaterOfGrowSpace, HIGH);
 }
 
 void loop() {}
@@ -65,8 +72,8 @@ void i2cResponseUndefined() {
 }
 
 void deviceManager(char message[]) {
-  // manages SolidStateRelay
-  if(message[0] == 'S'
+  // manages Up State Relay
+  if(message[0] == 'U'
   && message[1] == 'R'
   && isDigit(message[2])
   && isDigit(message[3])
@@ -74,8 +81,9 @@ void deviceManager(char message[]) {
     int pin = (String(message[2]) + String(message[3])).toInt();
 
     // validate pin received
-    if(pin >= startPin_solidStateRelay
-    && pin <= finishPin_solidStateRelay) {
+    if((pin >= startPin_solidStateRelay
+    && pin <= finishPin_solidStateRelay)
+    || pin == pin_airHeaterOfGrowSpace) {
       
       // pin enable/disable
       if(message[4] == 'e') { digitalWrite(pin, LOW); }
@@ -120,15 +128,9 @@ void deviceManager(char message[]) {
 
     int PH_sol_nut_analogReading = (buf[2] + buf[3] + buf[4] + buf[5] + buf[6] + buf[7])/6;
 
-Serial.println(PH_sol_nut_analogReading);
-
     int PH_sol_nut_analogReading_1 = (PH_sol_nut_analogReading/100);
     int PH_sol_nut_analogReading_2 = ((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10);
     int PH_sol_nut_analogReading_3 = (PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100) - (((PH_sol_nut_analogReading - ((PH_sol_nut_analogReading/100)*100))/10)*10));
-
-Serial.println(PH_sol_nut_analogReading_1);
-Serial.println(PH_sol_nut_analogReading_2);
-Serial.println(PH_sol_nut_analogReading_3);
 
     responseMessage[0] = 'P';
     responseMessage[1] = 'H';

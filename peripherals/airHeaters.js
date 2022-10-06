@@ -6,7 +6,7 @@ const airHeaterOfGrowSpace = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_airHeaterOfGrowSpace, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_airHeaterOfGrowSpace, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -18,7 +18,7 @@ const airHeaterOfGrowSpace = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_airHeaterOfGrowSpace, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_airHeaterOfGrowSpace, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {

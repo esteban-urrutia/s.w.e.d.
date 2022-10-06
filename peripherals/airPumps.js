@@ -6,7 +6,7 @@ const airPumpOfNutrientSolution = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_airPumpOfNutrientSolution, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_airPumpOfNutrientSolution, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -18,7 +18,7 @@ const airPumpOfNutrientSolution = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_airPumpOfNutrientSolution, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_airPumpOfNutrientSolution, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {

@@ -6,7 +6,7 @@ const humidifierOfGrowSpace = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_humidifierOfGrowSpace, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_humidifierOfGrowSpace, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -18,7 +18,7 @@ const humidifierOfGrowSpace = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_humidifierOfGrowSpace, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_humidifierOfGrowSpace, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {

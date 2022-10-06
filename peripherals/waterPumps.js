@@ -6,7 +6,7 @@ const waterPumpForRecirculationOfNutrientSolution = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForRecirculationOfNutrientSolution, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForRecirculationOfNutrientSolution, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -18,7 +18,7 @@ const waterPumpForRecirculationOfNutrientSolution = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForRecirculationOfNutrientSolution, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForRecirculationOfNutrientSolution, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -33,7 +33,7 @@ const waterPumpForSampleOfNutrientSolution = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForSampleOfNutrientSolution, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForSampleOfNutrientSolution, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -45,7 +45,7 @@ const waterPumpForSampleOfNutrientSolution = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForSampleOfNutrientSolution, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForSampleOfNutrientSolution, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -60,7 +60,7 @@ const waterPumpForNFTsystem = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForNFTsystem, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForNFTsystem, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -72,7 +72,7 @@ const waterPumpForNFTsystem = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForNFTsystem, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForNFTsystem, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -87,7 +87,7 @@ const waterPumpForSampleOfNFTsystem = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForSampleOfNFTsystem, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForSampleOfNFTsystem, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -99,7 +99,7 @@ const waterPumpForSampleOfNFTsystem = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterPumpForSampleOfNFTsystem, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterPumpForSampleOfNFTsystem, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {

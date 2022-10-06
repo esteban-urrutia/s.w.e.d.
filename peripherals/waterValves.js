@@ -6,7 +6,7 @@ const waterValveForIrrigationOfFrontGarden = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfFrontGarden, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterValveForIrrigationOfFrontGarden, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -18,7 +18,7 @@ const waterValveForIrrigationOfFrontGarden = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfFrontGarden, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterValveForIrrigationOfFrontGarden, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -33,7 +33,7 @@ const waterValveForIrrigationOfBackGarden = {
   on: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfBackGarden, 'e');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterValveForIrrigationOfBackGarden, 'e');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
@@ -45,7 +45,7 @@ const waterValveForIrrigationOfBackGarden = {
   off: (async (semaphoreI2cController) => new Promise(async (resolve, reject) => {
     semaphoreI2cController.take(async () => {
       try {
-        await i2c.post(env.i2c_arduinoMega_address, 'SR', env.pin_waterValveForIrrigationOfBackGarden, 'd');
+        await i2c.post(env.i2c_arduinoMega_address, 'UR', env.pin_waterValveForIrrigationOfBackGarden, 'd');
         semaphoreI2cController.leave();
         resolve(true);
       } catch (error) {
