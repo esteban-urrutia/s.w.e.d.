@@ -99,7 +99,7 @@ void deviceManager(char message[]) {
   }
 
   // manages Down State Relay
-  if(message[0] == 'd'
+  else if(message[0] == 'd'
   && message[1] == 'r'
   && isDigit(message[2])
   && isDigit(message[3])
