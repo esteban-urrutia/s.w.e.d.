@@ -36,7 +36,7 @@ void setup() {
 
   // airHeater of growSpace initial state
   pinMode(pin_airHeaterOfGrowSpace, OUTPUT);
-  digitalWrite(pin_airHeaterOfGrowSpace, HIGH);
+  digitalWrite(pin_airHeaterOfGrowSpace, LOW);
 }
 
 void loop() {}
@@ -81,13 +81,37 @@ void deviceManager(char message[]) {
     int pin = (String(message[2]) + String(message[3])).toInt();
 
     // validate pin received
-    if((pin >= startPin_solidStateRelay
-    && pin <= finishPin_solidStateRelay)
-    || pin == pin_airHeaterOfGrowSpace) {
+    if(pin >= startPin_solidStateRelay
+    && pin <= finishPin_solidStateRelay) {
       
       // pin enable/disable
       if(message[4] == 'e') { digitalWrite(pin, LOW); }
       else if(message[4] == 'd') { digitalWrite(pin, HIGH); }
+  
+      // response with same message
+      for(int i = 0; i < i2cMessageLength; i++) {
+        responseMessage[i] = message[i];
+      }
+    }    
+    else {
+      i2cResponseUndefined();
+    }
+  }
+
+  // manages Down State Relay
+  if(message[0] == 'd'
+  && message[1] == 'r'
+  && isDigit(message[2])
+  && isDigit(message[3])
+  && (message[4] == 'e' || message[4] == 'd')) {
+    int pin = (String(message[2]) + String(message[3])).toInt();
+
+    // validate pin received
+    if(pin == pin_airHeaterOfGrowSpace) {
+      
+      // pin enable/disable
+      if(message[4] == 'e') { digitalWrite(pin, HIGH); }
+      else if(message[4] == 'd') { digitalWrite(pin, LOW); }
   
       // response with same message
       for(int i = 0; i < i2cMessageLength; i++) {

@@ -3,7 +3,12 @@
     "light": {
       "method": "fixedEvents",
       "status": null,
-      "events": []
+      "events": [
+        {
+          "start": "20:30",
+          "finish": "07:30"
+        }
+      ]
     },
     "temperature": {
       "method": "fixedDayNightMinMax",
@@ -295,8 +300,8 @@
       "daysOfBlock": 15
     },
     "photoperiodDay": {
-      "start": "08:00",
-      "finish": "20:00"
+      "start": "07:30",
+      "finish": "20:30"
     }
   }
 }
