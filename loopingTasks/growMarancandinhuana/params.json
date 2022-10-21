@@ -41,7 +41,12 @@
     "airRenew": {
       "method": "fixedEvents",
       "status": null,
-      "events": []
+      "events": [
+        {
+          "start": "11:30",
+          "finish": "20:00"
+        }
+      ]
     }
   },
   "nutritiveSolution": {

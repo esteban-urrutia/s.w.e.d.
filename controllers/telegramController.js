@@ -188,6 +188,7 @@ async function overviewMarancandinhuana(telegram, semaphoreMiniDB) {
                         + `        light:  ${miniDB.growMarancandinhuanaParams.growSpace.light.status}\n`
                         + `        temperature:  ${miniDB.growMarancandinhuanaParams.growSpace.temperature.status}\n`
                         + `        humidity:  ${miniDB.growMarancandinhuanaParams.growSpace.humidity.status}\n`
+                        + `        air renew:  ${miniDB.growMarancandinhuanaParams.growSpace.airRenew.status}\n`
                         + '    Nutritive Solution:\n'
                         + `        temperature:  ${miniDB.growMarancandinhuanaParams.nutritiveSolution.temperature.status}\n`
                         + `        PH (last reading):  ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.lastValue}\n`
