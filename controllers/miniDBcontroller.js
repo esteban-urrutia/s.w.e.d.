@@ -44,12 +44,10 @@ async function readMiniDB(semaphoreMiniDB) {
               miniDB = miniDBtemplate;
               fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
                 semaphoreMiniDB.leave();
-                if (err) {
-                  reject({
-                    message: (err.hasOwnProperty('stack') ? err.stack : err),
-                    stack: 'miniDBcontroller -> readMiniDB -> parsing error -> writeFile',
-                  });
-                }
+                if (err) { reject({
+                  message: (err.hasOwnProperty('stack') ? err.stack : err),
+                  stack: 'miniDBcontroller -> readMiniDB -> parsing error -> writeFile',
+                }); }
 
                 resolve(miniDB);
               });
