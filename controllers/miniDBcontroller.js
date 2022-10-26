@@ -1,3 +1,5 @@
+/* eslint-disable brace-style */
+/* eslint-disable no-shadow */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable prefer-promise-reject-errors */
@@ -51,10 +53,10 @@ async function readMiniDB(semaphoreMiniDB) {
 
                 resolve(miniDB);
               });
-            } catch (error) {
+            } catch (error2) {
               semaphoreMiniDB.leave();
               reject({
-                message: (error.hasOwnProperty('stack') ? error.stack : error),
+                message: (error2.hasOwnProperty('stack') ? error2.stack : error2),
                 stack: 'miniDBcontroller -> readMiniDB -> parsing error -> deleting error',
               });
             }
