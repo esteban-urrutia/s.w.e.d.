@@ -43,8 +43,8 @@ async function readMiniDB(semaphoreMiniDB) {
 
               miniDB = miniDBtemplate;
               fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
+                semaphoreMiniDB.leave();
                 if (err) {
-                  semaphoreMiniDB.leave();
                   reject({
                     message: (err.hasOwnProperty('stack') ? err.stack : err),
                     stack: 'miniDBcontroller -> readMiniDB -> parsing error -> writeFile',
@@ -55,6 +55,7 @@ async function readMiniDB(semaphoreMiniDB) {
               });
             } catch (error2) {
               semaphoreMiniDB.leave();
+              
               reject({
                 message: (error2.hasOwnProperty('stack') ? error2.stack : error2),
                 stack: 'miniDBcontroller -> readMiniDB -> parsing error -> deleting error',
@@ -68,12 +69,11 @@ async function readMiniDB(semaphoreMiniDB) {
         miniDB = miniDBtemplate;
         fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
           semaphoreMiniDB.leave();
-          if (err) {
-            reject({
-              message: (err.hasOwnProperty('stack') ? err.stack : err),
-              stack: 'miniDBcontroller -> readMiniDB -> writeFile',
-            });
-          }
+
+          if (err) reject({
+            message: (err.hasOwnProperty('stack') ? err.stack : err),
+            stack: 'miniDBcontroller -> readMiniDB -> writeFile',
+          });
 
           resolve(miniDB);
         });
@@ -87,8 +87,14 @@ async function saveMiniDB(semaphoreMiniDB, miniDB) {
     semaphoreMiniDB.take(async () => {
       try {
         fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
-          if (err) throw err;
           semaphoreMiniDB.leave();
+
+          if (err) reject({
+          data: miniDB,
+          message: (error.hasOwnProperty('stack') ? error.stack : error),
+          stack: 'miniDBcontroller -> saveMiniDB',
+        });
+
           resolve(true);
         });
       } catch (error) {
