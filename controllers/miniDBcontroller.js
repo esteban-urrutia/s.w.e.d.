@@ -55,7 +55,7 @@ async function readMiniDB(semaphoreMiniDB) {
               });
             } catch (error2) {
               semaphoreMiniDB.leave();
-              
+
               reject({
                 message: (error2.hasOwnProperty('stack') ? error2.stack : error2),
                 stack: 'miniDBcontroller -> readMiniDB -> parsing error -> deleting error',
@@ -70,10 +70,10 @@ async function readMiniDB(semaphoreMiniDB) {
         fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
           semaphoreMiniDB.leave();
 
-          if (err) reject({
+          if (err) { reject({
             message: (err.hasOwnProperty('stack') ? err.stack : err),
             stack: 'miniDBcontroller -> readMiniDB -> writeFile',
-          });
+          }); }
 
           resolve(miniDB);
         });
@@ -89,11 +89,11 @@ async function saveMiniDB(semaphoreMiniDB, miniDB) {
         fs.writeFile('miniDB.json', JSON.stringify(miniDB, null, 4), (err) => {
           semaphoreMiniDB.leave();
 
-          if (err) reject({
-          data: miniDB,
-          message: (error.hasOwnProperty('stack') ? error.stack : error),
-          stack: 'miniDBcontroller -> saveMiniDB',
-        });
+          if (err) { reject({
+            data: miniDB,
+            message: (err.hasOwnProperty('stack') ? err.stack : err),
+            stack: 'miniDBcontroller -> saveMiniDB',
+          }); }
 
           resolve(true);
         });
