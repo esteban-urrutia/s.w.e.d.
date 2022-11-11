@@ -160,7 +160,7 @@ async function marancandinhuanaMenu(telegram) {
              + '2)  /getSampleOfNutrientSolution\n\n'
              + '3)  /getPHofSample\n\n'
              // + '4)  /getECofSample\n\n'
-             + '4)  /postECofSample\n\n'
+             + '4)  /postECofSample number\n\n'
              + '5)  /managePeripheralsMarancandinhuana';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
@@ -275,7 +275,10 @@ async function postECofSample(telegram, semaphoreMiniDB, ECinput) {
 }
 
 async function managePeripheralsMarancandinhuana(telegram) {
-  const menu = '1)  /growSpaceLighting';
+  const menu = '1)  /growSpaceLighting\n\n'
+             + '2)  /calibratePHsensor xxx yyy\n'
+             + '    (analog voltage reading\n'
+             + '     on PH buffer at 4.0 & 7.0)\n';
   await sendMessage(telegram, menu, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
@@ -314,6 +317,20 @@ async function disableGrowSpaceLighting(telegram, semaphoreMiniDB, semaphoreI2cC
   await saveMiniDB(semaphoreMiniDB, miniDB);
 
   await sendMessage(telegram, 'Lighting Of GrowSpace Disabled', 'text')
+    .catch(async (error) => {
+      await log.save(error, 'error');
+    });
+}
+
+async function calibratePHsensor(telegram, semaphoreMiniDB, analogVoltageAtBuffer4, analogVoltageAtBuffer7) {
+  const miniDB = await readMiniDB(semaphoreMiniDB);
+
+  miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.m = (6 * 1023) / (analogVoltageAtBuffer7 - analogVoltageAtBuffer4);
+  miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.y = 40 - ((analogVoltageAtBuffer4 * miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.m * 5) / 1023);
+
+  await saveMiniDB(semaphoreMiniDB, miniDB);
+
+  await sendMessage(telegram, `PH sensor calibrated\n\nm: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.m}\ny: ${miniDB.growMarancandinhuanaParams.nutritiveSolution.ph.y}`, 'text')
     .catch(async (error) => {
       await log.save(error, 'error');
     });
@@ -656,6 +673,16 @@ async function listenMessages(telegram, semaphoreMiniDB, semaphoreI2cController)
             const ECinput = parseInt(incomingMessage.command.substring(16));
             if (ECinput <= 100000 && ECinput >= 1) {
               await postECofSample(telegram, semaphoreMiniDB, ECinput);
+            }
+          }
+
+          else if (incomingMessage.command.substring(0, 18) === '/calibratePHsensor') {
+            const analogVoltageAtBuffer4 = parseInt(incomingMessage.command.substring(19, 22));
+            const analogVoltageAtBuffer7 = parseInt(incomingMessage.command.substring(23, 26));
+
+            if (analogVoltageAtBuffer4 >= 1 && analogVoltageAtBuffer4 <= 999
+            && analogVoltageAtBuffer7 >= 1 && analogVoltageAtBuffer7 <= 999) {
+              await calibratePHsensor(telegram, semaphoreMiniDB, analogVoltageAtBuffer4, analogVoltageAtBuffer7);
             }
           }
         }
