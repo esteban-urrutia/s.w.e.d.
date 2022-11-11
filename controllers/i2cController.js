@@ -99,6 +99,9 @@ async function get(address, device) {
     }
     else {
       // third attempt
+      await sendMessage(address, messageToSend);
+      receivedMessage = await receiveMessage(address);
+
       if (receivedMessage.charAt(0) === device.charAt(0)
        && receivedMessage.charAt(1) === device.charAt(1)
        && isDigit(receivedMessage.charAt(2))
