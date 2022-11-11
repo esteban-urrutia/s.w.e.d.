@@ -7,10 +7,21 @@ const fs = require('fs');
 const env = require('dotenv').config().parsed;
 const utils = require('../utils/utils');
 
+let lastMinute = 60;
+
 class Log {
   constructor() {
     this.objectsToCsvInstance = new ObjectsToCsv([{}]);
     Log.instance = null;
+  }
+
+  async saveOncePerMinute(dataToLog, logType) {
+    const currentMinute = (new Date()).getMinutes();
+
+    if (currentMinute !== lastMinute) {
+      lastMinute = currentMinute;
+      await this.save(dataToLog, logType);
+    }
   }
 
   async save(dataToLog, logType) {

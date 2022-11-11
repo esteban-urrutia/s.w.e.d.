@@ -335,7 +335,7 @@ async function growMarancandinhuana(miniDB, semaphoreMiniDB, semaphoreI2cControl
 
   // await manageTrainingDefoliation(miniDB, semaphoreMiniDB);
 
-  await log.save({
+  await log.saveOncePerMinute({
     temperatureOfGrowSpace1: sensorsData1.temperatureOfGrowSpace1,
     humidityOfGrowSpace1: sensorsData1.humidityOfGrowSpace1,
     temperatureOfGrowSpace2: sensorsData1.temperatureOfGrowSpace2,
