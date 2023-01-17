@@ -49,10 +49,11 @@ function getPhotoperiod(miniDB) {
 
 async function manageGrowSpaceLight(miniDB, semaphoreMiniDB, semaphoreI2cController) {
   if (miniDB.growMarancandinhuanaParams.growSpace.light.events.length > 0) {
+    const now = new Date();
+
     for (let i = 0; i < miniDB.growMarancandinhuanaParams.growSpace.light.events.length; i++) {
       const { start, finish } = miniDB.growMarancandinhuanaParams.growSpace.light.events[i];
 
-      const now = new Date();
       const startHour = parseInt(start.substring(0, 2));
       const startMinute = parseInt(start.substring(3, 5));
       const finishHour = parseInt(finish.substring(0, 2));
@@ -62,11 +63,13 @@ async function manageGrowSpaceLight(miniDB, semaphoreMiniDB, semaphoreI2cControl
       && startMinute === now.getMinutes()) {
         await lightingOfGrowSpace.on(semaphoreI2cController);
         miniDB.growMarancandinhuanaParams.growSpace.light.status = 'lighting';
+        i = miniDB.growMarancandinhuanaParams.growSpace.light.events.length;
       }
       else if (finishHour === now.getHours()
       && finishMinute === now.getMinutes()) {
         await lightingOfGrowSpace.off(semaphoreI2cController);
         miniDB.growMarancandinhuanaParams.growSpace.light.status = null;
+        i = miniDB.growMarancandinhuanaParams.growSpace.light.events.length;
       }
     }
     await saveMiniDB(semaphoreMiniDB, miniDB);
